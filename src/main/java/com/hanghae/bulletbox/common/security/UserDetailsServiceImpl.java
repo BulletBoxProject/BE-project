@@ -1,4 +1,4 @@
-package com.hanghae.bulletbox.common.security.jwt;
+package com.hanghae.bulletbox.common.security;
 
 import com.hanghae.bulletbox.common.security.UserDetailsImpl;
 import com.hanghae.bulletbox.member.entity.Member;
