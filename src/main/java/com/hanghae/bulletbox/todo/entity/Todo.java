@@ -46,13 +46,13 @@ public class Todo extends TimeStamped {
     private String todoContent;
 
     @Column(nullable = true)
-    private Long year;
+    private Long todoYear;
 
     @Column(nullable = true)
-    private Long month;
+    private Long todoMonth;
 
     @Column(nullable = true)
-    private Long day;
+    private Long todoDay;
 
     @Column(nullable = true)
     private String dayOfTheWeek;
@@ -61,15 +61,15 @@ public class Todo extends TimeStamped {
     private String time;
 
     @Builder
-    public Todo(Member member, Long categoryId, String categoryColor, TodoBullet todoBullet, String todoContent, Long year, Long month, Long day, String dayOfTheWeek, String time) {
+    public Todo(Member member, Long categoryId, String categoryColor, TodoBullet todoBullet, String todoContent, Long todoYear, Long todoMonth, Long todoDay, String dayOfTheWeek, String time) {
         this.member = member;
         this.categoryId = categoryId;
         this.categoryColor = categoryColor;
         this.todoBullet = todoBullet;
         this.todoContent = todoContent;
-        this.year = year;
-        this.month = month;
-        this.day = day;
+        this.todoYear = todoYear;
+        this.todoMonth = todoMonth;
+        this.todoDay = todoDay;
         this.dayOfTheWeek = dayOfTheWeek;
         this.time = time;
     }
