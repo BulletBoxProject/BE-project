@@ -5,7 +5,9 @@ import com.hanghae.bulletbox.member.dto.RequestSignupDto;
 import com.hanghae.bulletbox.member.dto.SignupDto;
 import com.hanghae.bulletbox.member.mapper.MemberMapper;
 import com.hanghae.bulletbox.member.service.MemberService;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
