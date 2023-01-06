@@ -1,5 +1,6 @@
 package com.hanghae.bulletbox.common.security.jwt;
 
+import com.hanghae.bulletbox.common.security.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
