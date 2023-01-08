@@ -6,6 +6,12 @@ import lombok.Getter;
 public enum ExceptionMessage {
     EXCEPTION_MESSAGE_SAMPLE(401,"예외 내용을 적어주세요"),
 
+    DUPLICATE_EMAIL_MSG(400, "이미 가입한 이메일입니다."),
+
+    NOT_FOUND_EMAIL_MSG(400,"이메일 또는 비밀번호를 확인해주세요."),
+
+    DIFFERENT_PASSWORD_MSG(400, "아이디 또는 비밀번호가 일치하지 않습니다."),
+
     /*Jwt, Security */
     TOKEN_NOT_FOUND_MSG(401,"토큰이 존재하지 않습니다."),
 
