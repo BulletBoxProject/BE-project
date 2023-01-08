@@ -31,6 +31,21 @@ jobs:
       - uses: actions/checkout@v3
       - run: touch ./src/main/resources/application-security.properties
       - run: echo "${{ secrets.JWT }}" > ./src/main/resources/application-security.properties
+      
+      # Gradle 캐싱
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # Gradle 권한 설정
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
       # Gradle로 빌드
       - name: Build with Gradle
