@@ -1,10 +1,8 @@
 package com.hanghae.bulletbox.member.service;
 
 import com.hanghae.bulletbox.common.security.jwt.JwtUtil;
-import com.hanghae.bulletbox.member.dto.LoginDto;
-import com.hanghae.bulletbox.member.dto.SignupDto;
+import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
-import com.hanghae.bulletbox.member.mapper.MemberMapper;
 import com.hanghae.bulletbox.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -32,29 +30,27 @@ public class MemberService {
 
     private final JwtUtil jwtUtil;
 
-    private void isDuplicateEmail(String email){
+    private void checkDuplicatedEmail(String email){
         memberRepository.findByEmail(email).ifPresent(
                 m -> {throw new IllegalArgumentException(DUPLICATE_EMAIL_MSG.getMsg());
                 });
     }
 
     @Transactional
-    public void signup(SignupDto signupDto){
-        String email = signupDto.getEmail();
-        String password = signupDto.getPassword();
+    public void signup(MemberDto memberDto){
+        String email = memberDto.getEmail();
+        String encodedPassword = passwordEncoder.encode(memberDto.getPassword());
 
-        String encodedPassword = passwordEncoder.encode(password);
+        checkDuplicatedEmail(email);
 
-        isDuplicateEmail(email);
-
-        Member member = MemberMapper.toMember(signupDto, encodedPassword);
+        Member member = new Member(memberDto.getEmail(), memberDto.getNickname(), encodedPassword, null);
         memberRepository.save(member);
     }
 
     @Transactional
-    public void login(LoginDto loginDto, HttpServletResponse httpServletResponse){
-        String email = loginDto.getEmail();
-        String password = loginDto.getPassword();
+    public void login(MemberDto memberDto, HttpServletResponse httpServletResponse){
+        String email = memberDto.getEmail();
+        String password = memberDto.getPassword();
 
         Member member = memberRepository.findByEmail(email).orElseThrow(
                 () -> new NoSuchElementException(NOT_FOUND_EMAIL_MSG.getMsg())
