@@ -43,11 +43,11 @@ public class MemberService {
 
         checkDuplicatedEmail(email);
 
-        Member member = new Member(memberDto.getEmail(), memberDto.getNickname(), encodedPassword, null);
+        Member member = Member.toMember(memberDto.getEmail(), memberDto.getNickname(), encodedPassword, null);
         memberRepository.save(member);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public void login(MemberDto memberDto, HttpServletResponse httpServletResponse){
         String email = memberDto.getEmail();
         String password = memberDto.getPassword();

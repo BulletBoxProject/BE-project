@@ -24,20 +24,19 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/signup")
-    public Response signup(@Validated @RequestBody RequestSignupDto requestSignupDto){
+    public Response<?> signup(@Validated @RequestBody RequestSignupDto requestSignupDto){
 
-        MemberDto.toMemberDto(requestSignupDto);
-        memberService.signup(MemberDto.toMemberDto(requestSignupDto));
+        MemberDto memberDto = MemberDto.toMemberDto(requestSignupDto);
+        memberService.signup(memberDto);
 
         return Response.success(201, "회원가입이 완료되었습니다.", null);
     }
 
     @PostMapping("/login")
-    public Response login(@RequestBody RequestLoginDto requestLoginDto, HttpServletResponse httpServletResponse){
+    public Response<?> login(@RequestBody RequestLoginDto requestLoginDto, HttpServletResponse httpServletResponse){
 
-        MemberDto.toMemberDto(requestLoginDto);
-
-        memberService.login(MemberDto.toMemberDto(requestLoginDto), httpServletResponse);
+        MemberDto memberDto = MemberDto.toMemberDto(requestLoginDto);
+        memberService.login(memberDto, httpServletResponse);
 
         return Response.success(200, "로그인이 완료되었습니다.", null);
     }
