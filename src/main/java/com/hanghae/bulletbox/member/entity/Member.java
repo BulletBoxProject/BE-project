@@ -1,7 +1,6 @@
 package com.hanghae.bulletbox.member.entity;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,11 +30,14 @@ public class Member {
     @Column(nullable = true)
     private String profileImgUrl;
 
-    @Builder
-    public Member(String email, String nickname, String password, String profileImgUrl) {
+    private Member(String email, String nickname, String password, String profileImgUrl) {
         this.email = email;
         this.nickname = nickname;
         this.password = password;
         this.profileImgUrl = profileImgUrl;
+    }
+
+    public static Member toMember(String email, String nickname, String password, String profileImgUrl) {
+        return new Member(email, nickname, password, null);
     }
 }
