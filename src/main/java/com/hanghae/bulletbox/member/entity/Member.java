@@ -30,7 +30,7 @@ public class Member {
     @Column(nullable = true)
     private String profileImgUrl;
 
-    private Member(String email, String nickname, String password, String profileImgUrl) {
+    public Member(String email, String nickname, String password, String profileImgUrl) {
         this.email = email;
         this.nickname = nickname;
         this.password = password;
