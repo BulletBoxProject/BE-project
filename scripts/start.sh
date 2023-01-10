@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-PROJECT_ROOT="/home/ubuntu/jaeju"
-JAR_FILE="$PROJECT_ROOT/jaeju-webapp.jar"
+PROJECT_ROOT="/home/ubuntu/BulletBox"
+JAR_FILE="$PROJECT_ROOT/bulletBox-webapp.jar"
 
 APP_LOG="$PROJECT_ROOT/application.log"
 ERROR_LOG="$PROJECT_ROOT/error.log"
