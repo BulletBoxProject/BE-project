@@ -12,6 +12,8 @@ public enum ExceptionMessage {
 
     DIFFERENT_PASSWORD_MSG(400, "이메일 또는 비밀번호가 일치하지 않습니다."),
 
+    DIFFERENT_CODE_MSG(400, "인증번호가 일치하지 않습니다."),
+
     /*Jwt, Security */
     TOKEN_NOT_FOUND_MSG(401,"토큰이 존재하지 않습니다."),
 
