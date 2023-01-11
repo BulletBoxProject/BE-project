@@ -39,6 +39,10 @@ jobs:
       - run: touch ./src/main/resources/application-security.properties
       - run: echo "${{ secrets.SECURITY_SECRET }}" > ./src/main/resources/application-security.properties
 
+      # db 정보 로딩 및 application-dev 파일 생성
+      - run: touch ./src/main/resources/application-dev.properties
+      - run: echo "${{ secrets.DB }}" > ./src/main/resources/application-dev.properties
+
       # 이메일 인증에 필요한 파일 생성
       - run: touch ./src/main/resources/mail-security.properties
       - run: echo "${{ secrets.MAIL }}" > ./src/main/resources/mail-security.properties
