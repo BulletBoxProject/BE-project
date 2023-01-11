@@ -40,3 +40,4 @@ out/
 
 ### properties ###
 application-security.properties
+mail-security.properties
