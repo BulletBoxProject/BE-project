@@ -4,7 +4,6 @@ import com.hanghae.bulletbox.common.entity.TimeStamped;
 import com.hanghae.bulletbox.member.entity.Member;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -36,7 +35,6 @@ public class Category extends TimeStamped {
     @Column(nullable = true)
     private String categoryColor;
 
-    @Builder
     public Category(Member member, String categoryName, String categoryColor) {
         this.member = member;
         this.categoryName = categoryName;
