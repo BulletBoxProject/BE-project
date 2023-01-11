@@ -2,6 +2,7 @@ package com.hanghae.bulletbox.member.service;
 
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.repository.MemberRepository;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.mail.MailException;
