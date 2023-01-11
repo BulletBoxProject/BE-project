@@ -34,7 +34,7 @@ jobs:
 
       # 이메일 인증에 필요한 파일 생성
       - run: touch ./src/main/resources/mail-security.properties
-      - run: echo "${{ secrets.MAIL }}" > ./src/main/resources/security.properties
+      - run: echo "${{ secrets.MAIL }}" > ./src/main/resources/mail-security.properties
 
       # Gradle 캐싱
       - name: Gradle Caching
