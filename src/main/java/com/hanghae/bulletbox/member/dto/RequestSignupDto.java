@@ -1,6 +1,5 @@
 package com.hanghae.bulletbox.member.dto;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,7 +20,7 @@ public class RequestSignupDto {
     private String password;
     private String profileImgUrl;
 
-    @Builder
+
     public RequestSignupDto(String email, String nickname, String password, String profileImgUrl) {
         this.email = email;
         this.nickname = nickname;
