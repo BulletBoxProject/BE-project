@@ -9,4 +9,6 @@ import java.util.List;
 
 public interface TodoRepository extends JpaRepository<Todo, Long> {
     List<Todo> findAllByMember(Member member);
+
+    List<Todo> findAllByMemberAndTodoYearAndTodoMonth(Member member, Long todoYear, Long todoMonth);
 }
