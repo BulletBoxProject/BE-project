@@ -5,7 +5,6 @@ import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.todo.MemoBullet;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -43,7 +42,6 @@ public class Memo extends TimeStamped {
     @Column(nullable = true)
     private String memoContent;
 
-    @Builder
     public Memo(Member member, Todo todo, MemoBullet memoBullet, String memoContent) {
         this.member = member;
         this.todo = todo;
