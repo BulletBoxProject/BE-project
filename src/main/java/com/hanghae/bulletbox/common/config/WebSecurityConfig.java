@@ -33,15 +33,6 @@ public class WebSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // WebSecurityCustomizer 는 FilterChain 보다 먼저 작동됨.
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        // h2-console 사용 및 resources 접근 허용 설정
-        return web -> web.ignoring()
-                .requestMatchers(PathRequest.toH2Console())
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
-    }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // CSRF(Cross-site request forgery) 비활성화 설정
