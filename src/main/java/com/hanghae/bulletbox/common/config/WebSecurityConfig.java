@@ -65,12 +65,12 @@ public class WebSecurityConfig {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:3000");
-        configuration.addAllowedOrigin("http://localhost:3001");
-        configuration.addAllowedOrigin("http://localhost:3002");
-        configuration.addAllowedOrigin("http://localhost:3003");
-        configuration.addAllowedOrigin("http://localhost:3004");
-        configuration.addAllowedOrigin("http://localhost:3005");
+        configuration.addAllowedOrigin("http://localhost:7000");
+        configuration.addAllowedOrigin("http://localhost:7001");
+        configuration.addAllowedOrigin("http://localhost:7002");
+        configuration.addAllowedOrigin("http://localhost:7003");
+        configuration.addAllowedOrigin("http://localhost:7004");
+        configuration.addAllowedOrigin("http://localhost:7005");
         configuration.addAllowedMethod("*"); // 허용할 Http Method
         configuration.addAllowedHeader("*"); // 허용할 헤더
         configuration.setAllowCredentials(true); // 내 서버가 응답할 때 json 을 js 에서 처리할 수 있게 설정
