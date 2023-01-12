@@ -7,9 +7,10 @@ import com.hanghae.bulletbox.diary.dto.CalendarDto;
 import com.hanghae.bulletbox.diary.dto.DailyDto;
 import com.hanghae.bulletbox.diary.dto.ResponseChangeCalendarDto;
 import com.hanghae.bulletbox.diary.dto.ResponseMainDto;
+import com.hanghae.bulletbox.diary.dto.ResponseShowDailyDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.member.repository.MemberRepository;
-
+import com.hanghae.bulletbox.todo.dto.TodoDto;
 import com.hanghae.bulletbox.todo.entity.Memo;
 import com.hanghae.bulletbox.todo.entity.Todo;
 import com.hanghae.bulletbox.todo.repository.MemoRepository;
@@ -128,5 +129,30 @@ public class MainService {
         }
 
         return ResponseChangeCalendarDto.toResponseChangeCalendarDto(calendarDtoList);
+    }
+
+    public ResponseShowDailyDto showDaily(TodoDto todoDto) {
+        Long memberId = todoDto.getMemberId();
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new IllegalArgumentException(NOT_FOUND_MEMBER_MSG.getMsg())
+        );
+
+        Long todoYear = todoDto.getTodoYear();
+        Long todoMonth = todoDto.getTodoMonth();
+        Long todoDay = todoDto.getTodoDay();
+        List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonthAndTodoDay(member, todoYear, todoMonth, todoDay);
+        List<Memo> memoList = memoRepository.findAllByMember(member);
+
+        List<DailyDto> dailyDtoList = new ArrayList<>();
+        // 투두 entity -> toDailyDto 변환
+        for (Todo todo : todoList) {
+            for (Memo memo : memoList) {
+                if (memo.getTodo().equals(todo)) {
+                    dailyDtoList.add(DailyDto.toDailyDto(todo, memoList));
+                }
+            }
+        }
+
+        return ResponseShowDailyDto.toResponseShowDailyDto(dailyDtoList);
     }
 }
