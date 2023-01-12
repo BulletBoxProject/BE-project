@@ -4,15 +4,17 @@ import com.hanghae.bulletbox.common.response.Response;
 import com.hanghae.bulletbox.common.security.UserDetailsImpl;
 import com.hanghae.bulletbox.diary.dto.ResponseChangeCalendarDto;
 import com.hanghae.bulletbox.diary.dto.ResponseMainDto;
+import com.hanghae.bulletbox.diary.dto.ResponseShowDailyDto;
 import com.hanghae.bulletbox.diary.service.MainService;
+import com.hanghae.bulletbox.todo.dto.TodoDto;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -37,5 +39,17 @@ public class MainController {
         Long memberId = userDetails.getMember().getMemberId();
         ResponseChangeCalendarDto responseChangeCalendarDto = mainService.changeCalendar(todoYear, todoMonth, memberId);
         return Response.success(200, "달력의 날짜 변경 조회를 성공했습니다.", responseChangeCalendarDto);
+    }
+
+    @GetMapping("/daily")
+    public Response showDaily(@RequestParam(value = "todoYear") Long todoYear,
+                              @RequestParam(value = "todoMonth") Long todoMonth,
+                              @RequestParam(value = "todoDay") Long todoDay,
+                              @AuthenticationPrincipal UserDetailsImpl userDetails)
+    {
+        Long memberId = userDetails.getMember().getMemberId();
+        TodoDto todoDto = TodoDto.toTodoDto(memberId, todoYear, todoMonth, todoDay);
+        ResponseShowDailyDto responseShowDailyDto = mainService.showDaily(todoDto);
+        return Response.success(200, "데일리 로그 날짜 변경 조회를 성공했습니다.", responseShowDailyDto);
     }
 }
