@@ -1,7 +1,5 @@
 package com.hanghae.bulletbox.common.security.jwt;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hanghae.bulletbox.common.exception.ExceptionMessage;
 import io.jsonwebtoken.Claims;
 
 import lombok.RequiredArgsConstructor;
