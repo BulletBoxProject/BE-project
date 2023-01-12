@@ -16,7 +16,7 @@ public class RequestSignupDto {
     private String nickname;
 
     @Pattern
-    (regexp="(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,25}")
+    (regexp="^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%^&*()<>])[A-Za-z\\d!@#$%^&*()<>]{8,25}$")
     private String password;
     private String profileImgUrl;
 
