@@ -20,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,9 +43,9 @@ public class MainService {
 
         // 사용자 유효성 검사
         Member member = memberRepository.findById(memberId).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
+                () -> new IllegalArgumentException(NOT_FOUND_MEMBER_MSG.getMsg())
         );
-
+        
         // 카테고리 entity 대신 dto 사용
         List<CategoryDto> categoryDtoList = new ArrayList<>();
         List<Category> categoryList = categoryRepository.findAllByMember(member);
@@ -56,7 +58,11 @@ public class MainService {
 
         // daily
         List<DailyDto> dailyDtoList = new ArrayList<>();
-        List<Todo> todoList = todoRepository.findAllByMember(member);
+
+        // 메인 페이지 조회 시, 현재 연도, 월의 달력을 보여주기 위해 현재 날짜로 연월 설정
+        Long todoYear = (long) LocalDate.now().getYear();
+        Long todoMonth = (long) LocalDate.now().getMonthValue();
+        List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonth(member, todoYear, todoMonth);
         List<Memo> memoList = memoRepository.findAllByMember(member);
 
         // 투두 entity -> toDailyDto 변환
