@@ -45,7 +45,6 @@ public class WebSecurityConfig {
                 .and()
                 // 로그인 인증, 인가
                 .authorizeRequests()
-                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll() // pre-flight 요청 무시하기
                 .anyRequest().permitAll()
                 .and()
                 // JWT Filter 등록
