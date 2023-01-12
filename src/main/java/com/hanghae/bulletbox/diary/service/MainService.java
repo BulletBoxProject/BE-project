@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,7 +44,7 @@ public class MainService {
         Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new IllegalArgumentException(NOT_FOUND_MEMBER_MSG.getMsg())
         );
-        
+
         // 카테고리 entity 대신 dto 사용
         List<CategoryDto> categoryDtoList = new ArrayList<>();
         List<Category> categoryList = categoryRepository.findAllByMember(member);
