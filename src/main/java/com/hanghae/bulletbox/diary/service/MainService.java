@@ -7,6 +7,7 @@ import com.hanghae.bulletbox.diary.dto.CalendarDto;
 import com.hanghae.bulletbox.diary.dto.DailyDto;
 import com.hanghae.bulletbox.diary.dto.ResponseChangeCalendarDto;
 import com.hanghae.bulletbox.diary.dto.ResponseMainDto;
+import com.hanghae.bulletbox.diary.dto.ResponseShowDailyByCategoryDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowDailyDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.member.repository.MemberRepository;
@@ -49,7 +50,6 @@ public class MainService {
         // 카테고리 entity 대신 dto 사용
         List<CategoryDto> categoryDtoList = new ArrayList<>();
         List<Category> categoryList = categoryRepository.findAllByMember(member);
-
         // ResponseMainDto 로 변환할 데이터 정제
         for (Category category : categoryList) {
             // 카테고리 entity -> toCategoryDto 변환
@@ -64,7 +64,6 @@ public class MainService {
         Long todoMonth = (long) LocalDate.now().getMonthValue();
         List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonth(member, todoYear, todoMonth);
         List<Memo> memoList = memoRepository.findAllByMember(member);
-
         // 투두 entity -> toDailyDto 변환
         for (Todo todo : todoList) {
             for (Memo memo : memoList) {
@@ -106,7 +105,6 @@ public class MainService {
 
         // 해당 연도, 월 가져와 todoList 담기
         List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonth(member, todoYear, todoMonth);
-
         // 메인 페이지 달력에서 일별 할 일의 개수를 세는 로직
         Map<Long, Long> countTodoPerDayMap = new HashMap<>();
         List<CalendarDto> calendarDtoList = new ArrayList<>();
@@ -142,7 +140,6 @@ public class MainService {
         Long todoDay = todoDto.getTodoDay();
         List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonthAndTodoDay(member, todoYear, todoMonth, todoDay);
         List<Memo> memoList = memoRepository.findAllByMember(member);
-
         List<DailyDto> dailyDtoList = new ArrayList<>();
         // 투두 entity -> toDailyDto 변환
         for (Todo todo : todoList) {
@@ -154,5 +151,30 @@ public class MainService {
         }
 
         return ResponseShowDailyDto.toResponseShowDailyDto(dailyDtoList);
+    }
+
+    public ResponseShowDailyByCategoryDto showDailyByCategory(TodoDto todoDto) {
+        Long memberId = todoDto.getMemberId();
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new IllegalArgumentException(NOT_FOUND_MEMBER_MSG.getMsg())
+        );
+
+        Long categoryId = todoDto.getCategoryId();
+        Long todoYear = todoDto.getTodoYear();
+        Long todoMonth = todoDto.getTodoMonth();
+        Long todoDay = todoDto.getTodoDay();
+        List<Todo> todoList = todoRepository.findAllByMemberAndCategoryIdAndTodoYearAndTodoMonthAndTodoDay(member, categoryId, todoYear, todoMonth, todoDay);
+        List<Memo> memoList = memoRepository.findAllByMember(member);
+        List<DailyDto> dailyDtoList = new ArrayList<>();
+        // 투두 entity -> toDailyDto 변환
+        for (Todo todo : todoList) {
+            for (Memo memo : memoList) {
+                if (memo.getTodo().equals(todo)) {
+                    dailyDtoList.add(DailyDto.toDailyDto(todo, memoList));
+                }
+            }
+        }
+
+        return ResponseShowDailyByCategoryDto.toResponseShowDailyByCategoryDto(dailyDtoList);
     }
 }
