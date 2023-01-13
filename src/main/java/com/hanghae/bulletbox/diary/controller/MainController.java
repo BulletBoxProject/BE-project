@@ -3,7 +3,7 @@ package com.hanghae.bulletbox.diary.controller;
 import com.hanghae.bulletbox.common.response.Response;
 import com.hanghae.bulletbox.common.security.UserDetailsImpl;
 import com.hanghae.bulletbox.diary.dto.ResponseChangeCalendarDto;
-import com.hanghae.bulletbox.diary.dto.ResponseMainDto;
+import com.hanghae.bulletbox.diary.dto.ResponseShowMainPageDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowDailyByCategoryDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowDailyDto;
 import com.hanghae.bulletbox.diary.service.MainService;
@@ -28,7 +28,8 @@ public class MainController {
     @GetMapping
     public Response showMainPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         Long memberId = userDetails.getMember().getMemberId();
-        ResponseMainDto responseMainDto = mainService.showMainPage(memberId);
+        TodoDto todoDto = TodoDto.toTodoDto(memberId);
+        ResponseShowMainPageDto responseMainDto = mainService.showMainPage(todoDto);
         return Response.success(200, "메인 페이지 조회를 성공했습니다.", responseMainDto);
     }
 
