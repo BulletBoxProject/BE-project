@@ -2,6 +2,7 @@ package com.hanghae.bulletbox.todo.dto;
 
 import com.hanghae.bulletbox.todo.TodoBullet;
 
+import com.hanghae.bulletbox.todo.entity.Todo;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -63,6 +64,12 @@ public class TodoDto {
                 .todoYear(todoYear)
                 .todoMonth(todoMonth)
                 .todoDay(todoDay)
+                .build();
+    }
+
+    public static TodoDto toTodoDto(Long memberId) {
+        return TodoDto.builder()
+                .memberId(memberId)
                 .build();
     }
 }
