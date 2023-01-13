@@ -1,6 +1,7 @@
 package com.hanghae.bulletbox.diary.service;
 
 import com.hanghae.bulletbox.category.dto.CategoryDto;
+import com.hanghae.bulletbox.category.dto.ResponseCategoryDto;
 import com.hanghae.bulletbox.category.entity.Category;
 import com.hanghae.bulletbox.category.repository.CategoryRepository;
 import com.hanghae.bulletbox.diary.dto.DailyDto;
@@ -66,6 +67,31 @@ public class DailyService {
         }
 
         return ResponseDailyDto.toResponseDailyDto(categoryDtoList, dailyDtoList, true);
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseCategoryDto showDailyByCategory(Long memberId,Long categoryId, Long todoYear, Long todoMonth, Long todoDay){
+
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new IllegalArgumentException(NOT_FOUND_MEMBER_MSG.getMsg())
+        );
+
+        List<DailyDto> dailyDtoList = new ArrayList<>();
+        todoYear = (long) LocalDate.now().getYear();
+        todoMonth = (long) LocalDate.now().getMonthValue();
+        todoDay = (long) LocalDate.now().getDayOfMonth();
+        List<Todo> todoList = todoRepository.findAllByCategoryIdAndTodoYearAndTodoMonthAndTodoDay(categoryId, todoYear, todoMonth, todoDay);
+
+        List<Memo> memoList = memoRepository.findAllByMember(member);
+        for (Todo todo : todoList) {
+            for (Memo memo : memoList) {
+                if (memo.getTodo().equals(todo)) {
+                    dailyDtoList.add(DailyDto.toDailyDto(todo, memoList));
+                }
+            }
+        }
+
+        return ResponseCategoryDto.toResponseCategoryDto(dailyDtoList);
     }
 
 }
