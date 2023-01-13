@@ -28,4 +28,11 @@ public class CategoryDto {
                 .categoryName(categoryName)
                 .build();
     }
+
+    public static CategoryDto toCategoryDto(Long categoryId, String categoryName, String categoryColor) {
+        return CategoryDto.builder()
+                .categoryId(categoryId)
+                .categoryName(categoryName)
+                .build();
+    }
 }
