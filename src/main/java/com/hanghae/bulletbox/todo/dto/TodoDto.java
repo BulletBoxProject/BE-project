@@ -71,4 +71,13 @@ public class TodoDto {
                 .memberId(memberId)
                 .build();
     }
+
+    public static TodoDto toTodoDto(Long memberId, Long todoYear, Long todoMonth) {
+        return TodoDto.builder()
+                .memberId(memberId)
+                .todoYear(todoYear)
+                .todoMonth(todoMonth)
+                .build();
+    }
+
 }

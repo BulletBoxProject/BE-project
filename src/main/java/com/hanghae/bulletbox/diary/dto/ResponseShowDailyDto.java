@@ -10,10 +10,10 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ResponseShowDailyDto {
 
-    private List<DailyDto> dailyDtoList;
+    private List<DailyDto> daily;
 
     private ResponseShowDailyDto(List<DailyDto> dailyDtoList) {
-        this.dailyDtoList = dailyDtoList;
+        this.daily = dailyDtoList;
     }
 
     public static ResponseShowDailyDto toResponseShowDailyDto(List<DailyDto> dailyDtoList) {
