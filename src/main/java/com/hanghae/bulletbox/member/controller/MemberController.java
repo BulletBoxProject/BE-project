@@ -14,7 +14,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
@@ -43,11 +42,11 @@ public class MemberController {
         return Response.success(201, "회원가입이 완료되었습니다.", null);
     }
     @PostMapping("/signup/email-validate")
-    public Response<?> mailConfirm(HttpSession httpSession, @RequestParam(value = "email", required = false) String email, MemberDto memberDto) throws Exception{
+    public Response<?> mailConfirm(HttpSession httpSession, @RequestBody MemberDto memberDto) throws Exception{
+        String email = memberDto.getEmail();
         String code = mailService.sendSimpleMessage(email, memberDto);
-        System.out.println("인증코드 : " + code);
         httpSession.setAttribute("code", code);
-        return Response.success(200, "이메일 인증 메일이 전송되었습니다.", code);
+        return Response.success(200, "이메일 인증 메일이 전송되었습니다.", null);
     }
 
     @PostMapping("/signup/verifyCode")
