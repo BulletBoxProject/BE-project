@@ -4,6 +4,7 @@ import com.hanghae.bulletbox.common.response.Response;
 import com.hanghae.bulletbox.common.security.UserDetailsImpl;
 import com.hanghae.bulletbox.diary.dto.ResponseChangeCalendarDto;
 import com.hanghae.bulletbox.diary.dto.ResponseMainDto;
+import com.hanghae.bulletbox.diary.dto.ResponseShowDailyByCategoryDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowDailyDto;
 import com.hanghae.bulletbox.diary.service.MainService;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
@@ -51,5 +52,18 @@ public class MainController {
         TodoDto todoDto = TodoDto.toTodoDto(memberId, todoYear, todoMonth, todoDay);
         ResponseShowDailyDto responseShowDailyDto = mainService.showDaily(todoDto);
         return Response.success(200, "데일리 로그 날짜 변경 조회를 성공했습니다.", responseShowDailyDto);
+    }
+
+    @GetMapping("/dailys/{categoryId}")
+    public Response showDailyByCategory(@PathVariable Long categoryId,
+                                        @RequestParam(value = "todoYear") Long todoYear,
+                                        @RequestParam(value = "todoMonth") Long todoMonth,
+                                        @RequestParam(value = "todoDay") Long todoDay,
+                                        @AuthenticationPrincipal UserDetailsImpl userDetails)
+    {
+        Long memberId = userDetails.getMember().getMemberId();
+        TodoDto todoDto = TodoDto.toTodoDto(memberId, categoryId, todoYear, todoMonth, todoDay);
+        ResponseShowDailyByCategoryDto responseShowDailyByCategoryDto = mainService.showDailyByCategory(todoDto);
+        return Response.success(200, "카테고리별 데일리 로그 조회를 성공했습니다.", responseShowDailyByCategoryDto);
     }
 }
