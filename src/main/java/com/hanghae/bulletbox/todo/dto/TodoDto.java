@@ -2,7 +2,6 @@ package com.hanghae.bulletbox.todo.dto;
 
 import com.hanghae.bulletbox.todo.TodoBullet;
 
-import com.hanghae.bulletbox.todo.entity.Todo;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
