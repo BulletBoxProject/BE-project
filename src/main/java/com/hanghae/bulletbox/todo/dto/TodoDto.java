@@ -65,4 +65,10 @@ public class TodoDto {
                 .todoDay(todoDay)
                 .build();
     }
+
+    public static TodoDto toTodoDto(Long memberId) {
+        return TodoDto.builder()
+                .memberId(memberId)
+                .build();
+    }
 }
