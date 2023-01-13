@@ -5,7 +5,7 @@ import com.hanghae.bulletbox.category.entity.Category;
 import com.hanghae.bulletbox.category.repository.CategoryRepository;
 import com.hanghae.bulletbox.diary.dto.CalendarDto;
 import com.hanghae.bulletbox.diary.dto.DailyDto;
-import com.hanghae.bulletbox.diary.dto.ResponseChangeCalendarDto;
+import com.hanghae.bulletbox.diary.dto.ResponseShowCalendarDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowMainPageDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowDailyByCategoryDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowDailyDto;
@@ -84,17 +84,17 @@ public class MainService {
         List<CalendarDto> calendarDtoList = new ArrayList<>();
 
         for (Todo todo : todoList) {
-            Long day = todo.getTodoDay(); // K 에 들어갈 값
-            Long count; // V 에 들어갈 값
+            Long day = todo.getTodoDay();
+            Long count;
+            boolean isContainsKeyOfDay = countTodoPerDayMap.containsKey(day);
 
             // Map 의 key 값에 day 가 존재하는 지에 따라 구분
-            if (countTodoPerDayMap.containsKey(day)) {
-                // Map key 값에 day 가 존재할 시, 해당 day 의 key 값의 value 를 불러와 +1
-                countTodoPerDayMap.put(day, countTodoPerDayMap.get(day) + 1L);
-            } else {
+            if (!isContainsKeyOfDay) {
                 // Map key 값에 day 가 없을 시, 새로운 K, V 추가
                 countTodoPerDayMap.put(day, 1L);
             }
+            // Map key 값에 day 가 존재할 시, 해당 day 의 key 값의 value 를 불러와 +1
+            countTodoPerDayMap.put(day, countTodoPerDayMap.get(day) + 1L);
 
             count = countTodoPerDayMap.get(day);
             calendarDtoList.add(CalendarDto.toCalendar(day, count));
@@ -103,13 +103,18 @@ public class MainService {
         return ResponseShowMainPageDto.toResponseShowMainPageDto(categoryDtoList, calendarDtoList ,dailyDtoList);
     }
 
-    public ResponseChangeCalendarDto changeCalendar(Long todoYear, Long todoMonth, Long memberId) {
+    public ResponseShowCalendarDto showCalendar(TodoDto todoDto) {
+
+        // 사용자 정보 조회
+        Long memberId = todoDto.getMemberId();
         Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new IllegalArgumentException(NOT_FOUND_MEMBER_MSG.getMsg())
         );
 
-        // 해당 연도, 월 가져와 todoList 담기
+        Long todoYear = todoDto.getTodoYear();
+        Long todoMonth = todoDto.getTodoMonth();
         List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonth(member, todoYear, todoMonth);
+
         // 메인 페이지 달력에서 일별 할 일의 개수를 세는 로직
         Map<Long, Long> countTodoPerDayMap = new HashMap<>();
         List<CalendarDto> calendarDtoList = new ArrayList<>();
@@ -131,10 +136,12 @@ public class MainService {
             calendarDtoList.add(CalendarDto.toCalendar(day, count));
         }
 
-        return ResponseChangeCalendarDto.toResponseChangeCalendarDto(calendarDtoList);
+        return ResponseShowCalendarDto.toResponseChangeCalendarDto(calendarDtoList);
     }
 
     public ResponseShowDailyDto showDaily(TodoDto todoDto) {
+
+        // 사용자 정보 조
         Long memberId = todoDto.getMemberId();
         Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new IllegalArgumentException(NOT_FOUND_MEMBER_MSG.getMsg())
@@ -146,7 +153,7 @@ public class MainService {
         List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonthAndTodoDay(member, todoYear, todoMonth, todoDay);
         List<Memo> memoList = memoRepository.findAllByMember(member);
         List<DailyDto> dailyDtoList = new ArrayList<>();
-        // 투두 entity -> toDailyDto 변환
+
         for (Todo todo : todoList) {
             for (Memo memo : memoList) {
                 if (memo.getTodo().equals(todo)) {
@@ -159,6 +166,8 @@ public class MainService {
     }
 
     public ResponseShowDailyByCategoryDto showDailyByCategory(TodoDto todoDto) {
+
+        // 사용자 정보 조회
         Long memberId = todoDto.getMemberId();
         Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new IllegalArgumentException(NOT_FOUND_MEMBER_MSG.getMsg())
@@ -171,7 +180,7 @@ public class MainService {
         List<Todo> todoList = todoRepository.findAllByMemberAndCategoryIdAndTodoYearAndTodoMonthAndTodoDay(member, categoryId, todoYear, todoMonth, todoDay);
         List<Memo> memoList = memoRepository.findAllByMember(member);
         List<DailyDto> dailyDtoList = new ArrayList<>();
-        // 투두 entity -> toDailyDto 변환
+
         for (Todo todo : todoList) {
             for (Memo memo : memoList) {
                 if (memo.getTodo().equals(todo)) {
