@@ -15,5 +15,4 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
 
     List<Todo> findAllByMemberAndCategoryIdAndTodoYearAndTodoMonthAndTodoDay(Member member, Long categoryId, Long todoYear, Long todoMonth, Long todoDay);
 
-    List<Todo> findAllByCategoryIdAndTodoYearAndTodoMonthAndTodoDay(Long categoryId, Long todoYear, Long todoMonth, Long todoDay);
 }
