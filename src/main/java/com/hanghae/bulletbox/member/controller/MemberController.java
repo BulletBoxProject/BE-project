@@ -49,7 +49,7 @@ public class MemberController {
         return Response.success(200, "이메일 인증 메일이 전송되었습니다.", null);
     }
 
-    @PostMapping("/signup/verifyCode")
+    @PostMapping("/signup/verifycode")
     public Response<?> verifyCode(HttpSession httpSession, @RequestBody VerifyCodeDto verifyCodeDto){
         boolean result=false;
         if(httpSession.getAttribute("code").equals(verifyCodeDto.getVerifyCode())){
