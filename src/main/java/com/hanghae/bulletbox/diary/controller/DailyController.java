@@ -4,6 +4,7 @@ import com.hanghae.bulletbox.category.dto.ResponseCategoryDto;
 import com.hanghae.bulletbox.common.response.Response;
 import com.hanghae.bulletbox.common.security.UserDetailsImpl;
 import com.hanghae.bulletbox.diary.dto.ResponseDailyDto;
+import com.hanghae.bulletbox.diary.dto.ResponseShowDailyDto;
 import com.hanghae.bulletbox.diary.service.DailyService;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 
@@ -23,12 +24,20 @@ public class DailyController {
     private final DailyService dailyService;
 
     @GetMapping
-    public Response showDailyPage(@AuthenticationPrincipal UserDetailsImpl userDetails){
+    public Response showDailyPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         Long memberId = userDetails.getMember().getMemberId();
         ResponseDailyDto responseDailyDto = dailyService.showDailyPage(memberId);
         return Response.success(200, "데일리 페이지 조회를 성공했습니다.", responseDailyDto);
     }
 
+    @GetMapping("/{todoYear}/{todoMonth}/{todoDay}")
+    public Response showDailyPageChangeDay(@PathVariable Long todoYear, @PathVariable Long todoMonth,
+                                           @PathVariable Long todoDay, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Long memberId = userDetails.getMember().getMemberId();
+        TodoDto todoDto = TodoDto.toTodoDto(memberId, todoYear, todoMonth, todoDay);
+        ResponseShowDailyDto responseShowDailyDto = dailyService.showDailyPageChangeDay(todoDto);
+        return Response.success(200, "데일리 로그 조회 날짜 변경을 성공했습니다.", responseShowDailyDto);
+    }
 
 
     @GetMapping("/{todoYear}/{todoMonth}/{todoDay}/{categoryId}")
