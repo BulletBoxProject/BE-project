@@ -49,7 +49,7 @@ public class MemberController {
 
     @PostMapping("/signup/verifycode")
     public Response<?> verifyCode(HttpSession httpSession, @RequestBody VerifyCodeDto verifyCodeDto){
-        if(httpSession.getAttribute("code").equals(verifyCodeDto.getVerifyCode())){
+        if((verifyCodeDto.getVerifyCode()).equals(httpSession.getAttribute("code"))){
         }else{
             throw new IllegalStateException(DIFFERENT_CODE_MSG.getMsg());
         }
