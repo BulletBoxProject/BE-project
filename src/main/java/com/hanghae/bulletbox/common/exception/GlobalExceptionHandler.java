@@ -25,4 +25,10 @@ public class GlobalExceptionHandler {
     public Response<?> handle(NoSuchElementException e){
         return Response.fail(BAD_REQUEST.value(), e.getMessage());
     }
+
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(IllegalStateException.class)
+    public Response<?> handle(IllegalStateException e){
+        return Response.fail(BAD_REQUEST.value(), e.getMessage(), false);
+    }
 }
