@@ -1,9 +1,9 @@
 package com.hanghae.bulletbox.common.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Builder;
 import lombok.Getter;
-
 
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -26,5 +26,9 @@ public class Response<T> {
 
     public static <T> Response<T> fail(int httpStatusCode, String errorMessage) {
         return new Response<>(httpStatusCode, errorMessage, null);
+    }
+
+    public static <T> Response<T> fail(int httpStatusCode, String errorMessage, T data){
+        return new Response<>(httpStatusCode, errorMessage, data);
     }
 }
