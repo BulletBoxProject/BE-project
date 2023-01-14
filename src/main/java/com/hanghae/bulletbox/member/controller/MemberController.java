@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import java.util.NoSuchElementException;
-
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.DIFFERENT_CODE_MSG;
 
 @RestController
@@ -51,13 +49,11 @@ public class MemberController {
 
     @PostMapping("/signup/verifycode")
     public Response<?> verifyCode(HttpSession httpSession, @RequestBody VerifyCodeDto verifyCodeDto){
-        boolean result=false;
         if(httpSession.getAttribute("code").equals(verifyCodeDto.getVerifyCode())){
-            result = true;
         }else{
-            throw new NoSuchElementException(DIFFERENT_CODE_MSG.getMsg());
+            throw new IllegalStateException(DIFFERENT_CODE_MSG.getMsg());
         }
-        return Response.success(200,"이메일 인증이 완료되었습니다.", result);
+        return Response.success(200,"이메일 인증이 완료되었습니다.", true);
     }
 
     @PostMapping("/login")
