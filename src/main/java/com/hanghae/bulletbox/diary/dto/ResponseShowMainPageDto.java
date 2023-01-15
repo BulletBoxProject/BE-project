@@ -2,6 +2,8 @@ package com.hanghae.bulletbox.diary.dto;
 
 import com.hanghae.bulletbox.category.dto.CategoryDto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,12 +11,18 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@Schema(description = "메인 페이지 응답 Dto")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ResponseShowMainPageDto {
 
+    @Schema(description = "카테고리 정보")
     private List<CategoryDto> categories;
+
+    @Schema(description = "달력 정보")
     private List<CalendarDto> calendar;
+
+    @Schema(description = "할 일 정보")
     private List<DailyDto> daily;
 
     @Builder(access = AccessLevel.PROTECTED)

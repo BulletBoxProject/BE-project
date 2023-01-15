@@ -8,6 +8,12 @@ import com.hanghae.bulletbox.diary.dto.ResponseShowDailyDto;
 import com.hanghae.bulletbox.diary.service.DailyService;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 
+import io.swagger.annotations.ApiResponse;
+
+import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,6 +22,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import springfox.documentation.annotations.ApiIgnore;
+
+@Tag(name = "Daily", description = "데일리 로그 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/dailys")
@@ -23,16 +32,28 @@ public class DailyController {
 
     private final DailyService dailyService;
 
+    @Operation(tags = {"Daily"}, summary = "데일리 로그 조회")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "데일리 페이지 조회를 성공했습니다."),
+            @ApiResponse(code = 400, message = "존재하지 않는 사용자입니다.")
+    })
     @GetMapping
-    public Response showDailyPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Response showDailyPage(@ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Long memberId = userDetails.getMember().getMemberId();
         ResponseDailyDto responseDailyDto = dailyService.showDailyPage(memberId);
         return Response.success(200, "데일리 페이지 조회를 성공했습니다.", responseDailyDto);
     }
 
+    @Operation(tags = {"Daily"}, summary = "데일리 로그 조회 날짜 변경")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "데일리 로그 조회 날짜 변경을 성공했습니다."),
+            @ApiResponse(code = 400, message = "존재하지 않는 사용자입니다.")
+    })
     @GetMapping("/{todoYear}/{todoMonth}/{todoDay}")
-    public Response showDailyPageChangeDay(@PathVariable Long todoYear, @PathVariable Long todoMonth,
-                                           @PathVariable Long todoDay, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Response showDailyPageChangeDay(@PathVariable Long todoYear,
+                                           @PathVariable Long todoMonth,
+                                           @PathVariable Long todoDay,
+                                           @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Long memberId = userDetails.getMember().getMemberId();
         TodoDto todoDto = TodoDto.toTodoDto(memberId, todoYear, todoMonth, todoDay);
         ResponseShowDailyDto responseShowDailyDto = dailyService.showDailyPageChangeDay(todoDto);
@@ -40,10 +61,15 @@ public class DailyController {
     }
 
 
+    @Operation(tags = {"Daily"}, summary = "카테고리별 데일리 로그 조회")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "카테고리별 데일리 로그 조회를 성공했습니다."),
+            @ApiResponse(code = 400, message = "존재하지 않는 사용자입니다.")
+    })
     @GetMapping("/{todoYear}/{todoMonth}/{todoDay}/{categoryId}")
     public Response showDailyByCategory(@PathVariable Long todoYear, @PathVariable Long todoMonth,
                                         @PathVariable Long todoDay, @PathVariable Long categoryId,
-                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                        @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         Long memberId = userDetails.getMember().getMemberId();
         TodoDto todoDto = TodoDto.toTodoDto(memberId, categoryId, todoYear, todoMonth, todoDay);
