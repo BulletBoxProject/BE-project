@@ -41,6 +41,8 @@ dependencies {
     //email
     implementation 'org.springframework.boot:spring-boot-starter-mail'
 
+    // Swagger
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
 }
 
 tasks.named('test') {
@@ -50,4 +52,8 @@ tasks.named('test') {
 
 jar {
     enabled = false
+}
+
+springBoot {
+    mainClass = "com.hanghae.bulletbox.BulletBoxApplication"
 }

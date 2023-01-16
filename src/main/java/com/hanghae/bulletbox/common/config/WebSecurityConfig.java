@@ -45,11 +45,11 @@ public class WebSecurityConfig {
                 .and()
                 // 로그인 인증, 인가
                 .authorizeRequests()
+                // swagger
                 .anyRequest().permitAll()
                 .and()
                 // JWT Filter 등록
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 
