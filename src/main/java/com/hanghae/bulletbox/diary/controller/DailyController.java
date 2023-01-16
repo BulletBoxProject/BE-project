@@ -9,7 +9,6 @@ import com.hanghae.bulletbox.diary.service.DailyService;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 
 import io.swagger.annotations.ApiResponse;
-
 import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
