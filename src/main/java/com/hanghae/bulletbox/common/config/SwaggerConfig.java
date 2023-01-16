@@ -36,8 +36,8 @@ public class SwaggerConfig {
                 .select() // ApiSelectorBuilder 클래스 반환
                 .apis(RequestHandlerSelectors.basePackage("com.hanghae.bulletbox")) // basePackage 경로의 controller Swagger 표시
                 .paths(PathSelectors.any()) // 해당 URL 요청만을 Swagger API 문서로 생성
-                .build()
                 // jwt 토큰 전역변수 설정
+                .build()
                 .securityContexts(Collections.singletonList(securityContext()))
                 .securitySchemes(Collections.singletonList(apiKey()));
     }
@@ -52,7 +52,7 @@ public class SwaggerConfig {
                 .build();
     }
 
-    public static final String SECURITY_SCHEMA_NAME = "JWT";
+    public static final String SECURITY_SCHEMA_NAME = "Authorization";
     public static final String AUTHORIZATION_SCOPE_GLOBAL = "global";
     public static final String AUTHORIZATION_SCOPE_GLOBAL_DESC = "accessEverything";
 
