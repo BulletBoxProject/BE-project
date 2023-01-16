@@ -7,18 +7,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
-@Schema(description = "공통 Response")
+@Schema(name = "Response", description = "공통 Response")
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Response<T> {
 
-    @Schema(description = "상태 코드", example = "200", type = "int")
+    @Schema(description = "상태 코드", nullable = false)
     private int httpStatusCode;
 
-    @Schema(description = "메시지", example = "msg...", type = "String")
+    @Schema(description = "메시지", nullable = false)
     private String msg;
 
-    @Schema(description = "데이터", example = "[data..]", type = "Object")
+    @Schema(description = "데이터", nullable = true)
     private T data;
 
     @Builder

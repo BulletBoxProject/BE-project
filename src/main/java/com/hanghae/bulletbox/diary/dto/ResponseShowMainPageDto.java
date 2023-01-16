@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Schema(description = "메인 페이지 응답 Dto")
+@Schema(name = "ResponseShowMainPageDto", description = "메인 페이지 응답 Dto")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ResponseShowMainPageDto {
