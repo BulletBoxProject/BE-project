@@ -1,4 +1,4 @@
-package com.hanghae.bulletbox.todo.entity;
+package com.hanghae.bulletbox.favorite.entity;
 
 import com.hanghae.bulletbox.member.entity.Member;
 
@@ -40,8 +40,7 @@ public class Favorite {
     @Column(nullable = true)
     private String favoriteContent;
 
-    @OneToMany
-    @JoinColumn(name = "FAVORITE_ID")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "FAVORITE")
     private List<FavoriteMemo> favoriteMemoList = new ArrayList<>();
 
     public Favorite(Member member, Long categoryId,

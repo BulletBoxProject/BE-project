@@ -1,4 +1,4 @@
-package com.hanghae.bulletbox.todo.entity;
+package com.hanghae.bulletbox.favorite.entity;
 
 import com.hanghae.bulletbox.member.entity.Member;
 
