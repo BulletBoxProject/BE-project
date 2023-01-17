@@ -3,6 +3,7 @@ package com.hanghae.bulletbox.category.controller;
 import com.hanghae.bulletbox.category.dto.CategoryDto;
 import com.hanghae.bulletbox.category.dto.RequestCreateCategoryDto;
 import com.hanghae.bulletbox.category.dto.RequestUpdateCategoryDto;
+import com.hanghae.bulletbox.category.dto.ResponseCreateCategoryDto;
 import com.hanghae.bulletbox.category.dto.ResponseDeleteCategoryDto;
 import com.hanghae.bulletbox.category.dto.ResponseShowCategoryDto;
 import com.hanghae.bulletbox.category.service.CategoryPageService;
@@ -43,7 +44,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "400", description = "존재하지 않는 사용자입니다.")
     })
     @GetMapping
-    public Response showCategory(@ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Response<> showCategory(@ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         Member member = userDetails.getMember();
         CategoryDto categoryDto = CategoryDto.toCategoryDto(member);
@@ -58,17 +59,17 @@ public class CategoryController {
             @ApiResponse(responseCode = "400", description = "이미 존재하는 카테고리입니다.")
     })
     @PostMapping()
-    public Response createCategory(@RequestBody RequestCreateCategoryDto requestCreateCategoryDto,
-                                   @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Response<ResponseCreateCategoryDto> createCategory(@RequestBody RequestCreateCategoryDto requestCreateCategoryDto,
+                                                              @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         Member member = userDetails.getMember();
         String categoryName = requestCreateCategoryDto.getCategoryName();
         String categoryColor = requestCreateCategoryDto.getCategoryColor();
 
         CategoryDto categoryDto = CategoryDto.toCategoryDto(categoryName, categoryColor, member);
-        categoryService.createCategory(categoryDto);
+        ResponseCreateCategoryDto responseCreateCategoryDto = categoryService.createCategory(categoryDto);
 
-        return Response.success(200, "카테고리 생성을 성공했습니다.", null);
+        return Response.success(200, "카테고리 생성을 성공했습니다.", responseCreateCategoryDto);
     }
 
     @Operation(tags = {"Category"}, summary = "카테고리 수정")
@@ -97,8 +98,8 @@ public class CategoryController {
             @ApiResponse(responseCode = "400", description = "존재하지 않는 카테고리입니다.")
     })
     @DeleteMapping("/{categoryId}")
-    public Response deleteCategory(@PathVariable Long categoryId,
-                                   @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Response<ResponseDeleteCategoryDto> deleteCategory(@PathVariable Long categoryId,
+                                                              @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         Member member = userDetails.getMember();
 
