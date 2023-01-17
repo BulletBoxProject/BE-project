@@ -44,7 +44,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "400", description = "존재하지 않는 사용자입니다.")
     })
     @GetMapping
-    public Response<> showCategory(@ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Response<ResponseShowCategoryDto> showCategory(@ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         Member member = userDetails.getMember();
         CategoryDto categoryDto = CategoryDto.toCategoryDto(member);
