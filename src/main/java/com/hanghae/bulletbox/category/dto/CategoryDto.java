@@ -1,5 +1,7 @@
 package com.hanghae.bulletbox.category.dto;
 
+import com.hanghae.bulletbox.member.entity.Member;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,16 +13,16 @@ public class CategoryDto {
 
     private Long categoryId;
 
-    private Long memberId;
+    private Member member;
 
     private String categoryName;
 
     private String categoryColor;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private CategoryDto(Long categoryId, Long memberId, String categoryName, String categoryColor) {
+    private CategoryDto(Long categoryId, Member member, String categoryName, String categoryColor) {
         this.categoryId = categoryId;
-        this.memberId = memberId;
+        this.member = member;
         this.categoryName = categoryName;
         this.categoryColor = categoryColor;
     }
@@ -36,12 +38,21 @@ public class CategoryDto {
         return CategoryDto.builder()
                 .categoryId(categoryId)
                 .categoryName(categoryName)
+                .categoryColor(categoryColor)
                 .build();
     }
 
-    public static CategoryDto toCategoryDto(Long memberId) {
+    public static CategoryDto toCategoryDto(Member member) {
         return CategoryDto.builder()
-                .memberId(memberId)
+                .member(member)
+                .build();
+    }
+
+    public static CategoryDto toCategoryDto(String categoryName, String categoryColor, Member member) {
+        return CategoryDto.builder()
+                .categoryName(categoryName)
+                .categoryColor(categoryColor)
+                .member(member)
                 .build();
     }
 }
