@@ -19,7 +19,10 @@ public enum ExceptionMessage {
     /*Jwt, Security */
     TOKEN_NOT_FOUND_MSG(401,"토큰이 존재하지 않습니다."),
 
-    INVALID_TOKEN_MSG(401,"토큰이 유효하지 않습니다.");
+    INVALID_TOKEN_MSG(401,"토큰이 유효하지 않습니다."),
+
+    // Category
+    DUPLICATE_CATEGORYNAME_MSG(400, "이미 존재하는 카테고리입니다.");
 
     private final int statusCode;
     private final String msg;
