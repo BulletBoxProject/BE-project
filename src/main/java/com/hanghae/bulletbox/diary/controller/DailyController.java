@@ -9,7 +9,6 @@ import com.hanghae.bulletbox.diary.dto.ResponseShowDailyDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowTodoCreatePageDto;
 import com.hanghae.bulletbox.diary.service.DailyService;
 import com.hanghae.bulletbox.diary.service.DailyTodoService;
-import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 
@@ -27,6 +26,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import springfox.documentation.annotations.ApiIgnore;
 
 @Tag(name = "Daily", description = "데일리 로그 API")
