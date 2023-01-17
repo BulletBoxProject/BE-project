@@ -50,4 +50,9 @@ public class Category extends TimeStamped {
                 .categoryColor(categoryColor)
                 .build();
     }
+
+    public void update(String categoryName, String categoryColor) {
+        this.categoryName = categoryName;
+        this.categoryColor = categoryColor;
+    }
 }
