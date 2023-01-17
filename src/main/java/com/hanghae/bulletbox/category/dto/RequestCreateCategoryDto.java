@@ -3,7 +3,6 @@ package com.hanghae.bulletbox.category.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,10 +16,4 @@ public class RequestCreateCategoryDto {
 
     @Schema(description = "카테고리 색상", example = "#000000", type = "String")
     private String categoryColor;
-
-    @Builder(access = AccessLevel.PRIVATE)
-    private RequestCreateCategoryDto(String categoryName, String categoryColor) {
-        this.categoryName = categoryName;
-        this.categoryColor = categoryColor;
-    }
 }
