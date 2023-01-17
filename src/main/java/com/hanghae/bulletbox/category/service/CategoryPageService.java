@@ -1,6 +1,7 @@
 package com.hanghae.bulletbox.category.service;
 
 import com.hanghae.bulletbox.category.dto.CategoryDto;
+import com.hanghae.bulletbox.category.dto.ResponseCreateCategoryDto;
 import com.hanghae.bulletbox.category.dto.ResponseDeleteCategoryDto;
 import com.hanghae.bulletbox.category.dto.ResponseShowCategoryDto;
 import com.hanghae.bulletbox.category.entity.Category;
@@ -49,7 +50,7 @@ public class CategoryPageService {
 
     // 카테고리 생성
     @Transactional(readOnly = false)
-    public void createCategory(CategoryDto categoryDto) {
+    public ResponseCreateCategoryDto createCategory(CategoryDto categoryDto) {
 
         // 카테고리 중복 검사
         Member member = categoryDto.getMember();
@@ -66,6 +67,10 @@ public class CategoryPageService {
         Category category = Category.toCategory(member, categoryName, categoryColor);
 
         categoryRepository.save(category);
+
+        Long categoryId = category.getCategoryId();
+
+        return ResponseCreateCategoryDto.toResponseCreateCategoryDto(categoryId, categoryName, categoryColor);
     }
 
     @Transactional(readOnly = false)
