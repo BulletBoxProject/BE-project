@@ -1,8 +1,7 @@
 package com.hanghae.bulletbox.category.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
+
 import com.hanghae.bulletbox.member.entity.Member;
 
 import lombok.AccessLevel;
