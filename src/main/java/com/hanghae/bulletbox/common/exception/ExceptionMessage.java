@@ -22,7 +22,9 @@ public enum ExceptionMessage {
     INVALID_TOKEN_MSG(401,"토큰이 유효하지 않습니다."),
 
     // Category
-    DUPLICATE_CATEGORYNAME_MSG(400, "이미 존재하는 카테고리입니다.");
+    DUPLICATE_CATEGORYNAME_MSG(400, "이미 존재하는 카테고리입니다."),
+
+    NOT_FOUND_CATEGORY_MSG(400, "존재하지 않는 카테고리입니다.");
 
     private final int statusCode;
     private final String msg;
