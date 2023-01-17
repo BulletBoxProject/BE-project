@@ -22,10 +22,9 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Favorite {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long FavoriteId;
+    private Long favoriteId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID", nullable = false)
@@ -40,7 +39,7 @@ public class Favorite {
     @Column(nullable = true)
     private String favoriteContent;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "FAVORITE")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "favorite")
     private List<FavoriteMemo> favoriteMemoList = new ArrayList<>();
 
     public Favorite(Member member, Long categoryId,
