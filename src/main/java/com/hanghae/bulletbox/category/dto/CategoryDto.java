@@ -11,13 +11,16 @@ public class CategoryDto {
 
     private Long categoryId;
 
+    private Long memberId;
+
     private String categoryName;
 
     private String categoryColor;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private CategoryDto(Long categoryId, String categoryName, String categoryColor) {
+    private CategoryDto(Long categoryId, Long memberId, String categoryName, String categoryColor) {
         this.categoryId = categoryId;
+        this.memberId = memberId;
         this.categoryName = categoryName;
         this.categoryColor = categoryColor;
     }
@@ -33,6 +36,12 @@ public class CategoryDto {
         return CategoryDto.builder()
                 .categoryId(categoryId)
                 .categoryName(categoryName)
+                .build();
+    }
+
+    public static CategoryDto toCategoryDto(Long memberId) {
+        return CategoryDto.builder()
+                .memberId(memberId)
                 .build();
     }
 }
