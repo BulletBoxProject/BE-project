@@ -4,6 +4,7 @@ import com.hanghae.bulletbox.common.entity.TimeStamped;
 import com.hanghae.bulletbox.member.entity.Member;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -35,9 +36,18 @@ public class Category extends TimeStamped {
     @Column(nullable = true)
     private String categoryColor;
 
-    public Category(Member member, String categoryName, String categoryColor) {
+    @Builder(access = AccessLevel.PRIVATE)
+    private Category(Member member, String categoryName, String categoryColor) {
         this.member = member;
         this.categoryName = categoryName;
         this.categoryColor = categoryColor;
+    }
+
+    public static Category toCategory(Member member, String categoryName, String categoryColor) {
+        return Category.builder()
+                .member(member)
+                .categoryName(categoryName)
+                .categoryColor(categoryColor)
+                .build();
     }
 }
