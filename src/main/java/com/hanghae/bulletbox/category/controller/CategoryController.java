@@ -3,6 +3,7 @@ package com.hanghae.bulletbox.category.controller;
 import com.hanghae.bulletbox.category.dto.CategoryDto;
 import com.hanghae.bulletbox.category.dto.RequestCreateCategoryDto;
 import com.hanghae.bulletbox.category.dto.RequestUpdateCategoryDto;
+import com.hanghae.bulletbox.category.dto.ResponseDeleteCategoryDto;
 import com.hanghae.bulletbox.category.dto.ResponseShowCategoryDto;
 import com.hanghae.bulletbox.category.service.CategoryPageService;
 import com.hanghae.bulletbox.common.response.Response;
@@ -17,6 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -87,5 +89,22 @@ public class CategoryController {
         categoryService.updateCategory(categoryDto);
 
         return Response.success(200, "카테고리 수정을 성공했습니다.", null);
+    }
+
+    @Operation(tags = {"Category"}, summary = "카테고리 삭제")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "카테고리 삭제를 성공했습니다."),
+            @ApiResponse(responseCode = "400", description = "존재하지 않는 카테고리입니다.")
+    })
+    @DeleteMapping("/{categoryId}")
+    public Response deleteCategory(@PathVariable Long categoryId,
+                                   @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        Member member = userDetails.getMember();
+
+        CategoryDto categoryDto = CategoryDto.toCategoryDto(member, categoryId);
+        ResponseDeleteCategoryDto responseDeleteCategoryDto = categoryService.deleteCategory(categoryDto);
+
+        return Response.success(200, "카테고리 삭제를 성공했습니다.", responseDeleteCategoryDto);
     }
 }
