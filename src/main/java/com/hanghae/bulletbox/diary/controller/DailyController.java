@@ -18,11 +18,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
 @Tag(name = "Daily", description = "데일리 로그 API")
@@ -53,9 +55,9 @@ public class DailyController {
     })
     @GetMapping("/{todoYear}/{todoMonth}/{todoDay}")
     public Response<ResponseShowDailyDto> showDailyPageChangeDay(@PathVariable Long todoYear,
-                                           @PathVariable Long todoMonth,
-                                           @PathVariable Long todoDay,
-                                           @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                                                 @PathVariable Long todoMonth,
+                                                                 @PathVariable Long todoDay,
+                                                                 @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Long memberId = userDetails.getMember().getMemberId();
         TodoDto todoDto = TodoDto.toTodoDto(memberId, todoYear, todoMonth, todoDay);
         ResponseShowDailyDto responseShowDailyDto = dailyService.showDailyPageChangeDay(todoDto);
@@ -69,9 +71,10 @@ public class DailyController {
             @ApiResponse(code = 400, message = "존재하지 않는 사용자입니다.")
     })
     @GetMapping("/{todoYear}/{todoMonth}/{todoDay}/{categoryId}")
-    public Response<ResponseCategoryDto> showDailyByCategory(@PathVariable Long todoYear, @PathVariable Long todoMonth,
-                                        @PathVariable Long todoDay, @PathVariable Long categoryId,
-                                        @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Response<ResponseCategoryDto> showDailyByCategory(@PathVariable Long todoYear,
+                                                             @PathVariable Long todoMonth,
+                                                             @PathVariable Long todoDay, @PathVariable Long categoryId,
+                                                             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         Long memberId = userDetails.getMember().getMemberId();
         TodoDto todoDto = TodoDto.toTodoDto(memberId, categoryId, todoYear, todoMonth, todoDay);
@@ -82,9 +85,9 @@ public class DailyController {
     // 할 일 추가 페이지 조회
     @GetMapping("/todo")
     public Response<ResponseShowTodoCreatePageDto> showTodoCreatePage(@RequestParam(value = "year") Long year,
-                                       @RequestParam(value = "month") Long month,
-                                       @RequestParam(value = "day") Long day,
-                                       @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                                                      @RequestParam(value = "month") Long month,
+                                                                      @RequestParam(value = "day") Long day,
+                                                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         Member member = userDetails.getMember();
         ResponseShowTodoCreatePageDto responseShowTodoCreatePageDto = dailyTodoService.showTodoCreatePage(member, year, month, day);
