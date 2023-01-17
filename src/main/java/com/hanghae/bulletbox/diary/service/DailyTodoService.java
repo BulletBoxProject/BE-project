@@ -2,6 +2,7 @@ package com.hanghae.bulletbox.diary.service;
 
 import com.hanghae.bulletbox.category.dto.CategoryDto;
 import com.hanghae.bulletbox.category.service.CategoryService;
+import com.hanghae.bulletbox.diary.dto.DailyTodoDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowTodoCreatePageDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,12 @@ public class DailyTodoService {
 
     // 데일리 로그 할 일 추가 페이지 조회
     @Transactional
-    public ResponseShowTodoCreatePageDto showTodoCreatePage(Member member, Long year, Long month, Long day) {
+    public ResponseShowTodoCreatePageDto showTodoCreatePage(DailyTodoDto dailyTodoDto) {
+        Member member = dailyTodoDto.getMember();
+        Long year = dailyTodoDto.getYear();
+        Long month = dailyTodoDto.getMonth();
+        Long day = dailyTodoDto.getDay();
+
         List<CategoryDto> categoryDtoList = categoryService.findAllCategory(member);
 
         return ResponseShowTodoCreatePageDto.toResponseShowTodoCreatePageDto(categoryDtoList, year, month, day);

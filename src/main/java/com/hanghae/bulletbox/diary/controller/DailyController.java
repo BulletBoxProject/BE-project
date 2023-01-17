@@ -3,11 +3,13 @@ package com.hanghae.bulletbox.diary.controller;
 import com.hanghae.bulletbox.category.dto.ResponseCategoryDto;
 import com.hanghae.bulletbox.common.response.Response;
 import com.hanghae.bulletbox.common.security.UserDetailsImpl;
+import com.hanghae.bulletbox.diary.dto.DailyTodoDto;
 import com.hanghae.bulletbox.diary.dto.ResponseDailyDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowDailyDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowTodoCreatePageDto;
 import com.hanghae.bulletbox.diary.service.DailyService;
 import com.hanghae.bulletbox.diary.service.DailyTodoService;
+import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 
@@ -90,7 +92,8 @@ public class DailyController {
                                                                       @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         Member member = userDetails.getMember();
-        ResponseShowTodoCreatePageDto responseShowTodoCreatePageDto = dailyTodoService.showTodoCreatePage(member, year, month, day);
+        DailyTodoDto dailyTodoDto = DailyTodoDto.toDailyTodoDto(member, year, month, day);
+        ResponseShowTodoCreatePageDto responseShowTodoCreatePageDto = dailyTodoService.showTodoCreatePage(dailyTodoDto);
 
         return Response.success(200, "할 일 추가 페이지 조회를 성공했습니다.", responseShowTodoCreatePageDto);
     }
