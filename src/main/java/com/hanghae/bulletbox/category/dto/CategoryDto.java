@@ -74,4 +74,11 @@ public class CategoryDto {
                 .categoryColor(categoryColor)
                 .build();
     }
+
+    public static CategoryDto toCategoryDto(Member member, Long categoryId) {
+        return CategoryDto.builder()
+                .member(member)
+                .categoryId(categoryId)
+                .build();
+    }
 }
