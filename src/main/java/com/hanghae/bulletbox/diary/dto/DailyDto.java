@@ -1,6 +1,6 @@
 package com.hanghae.bulletbox.diary.dto;
 
-import com.hanghae.bulletbox.todo.entity.Memo;
+import com.hanghae.bulletbox.todo.entity.TodoMemo;
 import com.hanghae.bulletbox.todo.entity.Todo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -38,9 +38,9 @@ public class DailyDto {
     private String time;
 
     @Schema(description = "할 일의 하위 메모")
-    private List<Memo> memos;
+    private List<TodoMemo> todoMemos;
 
-    private DailyDto(Long todoId, Long categoryId, String categoryColor, String todoBulletName, String todoBulletImgUrl, String todoContent, String time, List<Memo> memos) {
+    private DailyDto(Long todoId, Long categoryId, String categoryColor, String todoBulletName, String todoBulletImgUrl, String todoContent, String time, List<TodoMemo> todoMemos) {
         this.todoId = todoId;
         this.categoryId = categoryId;
         this.categoryColor = categoryColor;
@@ -48,10 +48,10 @@ public class DailyDto {
         this.todoBulletImgUrl = todoBulletImgUrl;
         this.todoContent = todoContent;
         this.time = time;
-        this.memos = memos;
+        this.todoMemos = todoMemos;
     }
 
-    public static DailyDto toDailyDto(Todo todo, List<Memo> memos) {
+    public static DailyDto toDailyDto(Todo todo, List<TodoMemo> todoMemos) {
         return new DailyDto(
                 todo.getTodoId(),
                 todo.getCategoryId(),
@@ -60,7 +60,7 @@ public class DailyDto {
                 todo.getTodoBullet().getImgUrl(),
                 todo.getTodoContent(),
                 todo.getTime(),
-                memos
+                todoMemos
         );
     }
 }
