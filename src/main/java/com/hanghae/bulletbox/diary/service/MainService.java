@@ -12,9 +12,9 @@ import com.hanghae.bulletbox.diary.dto.ResponseShowDailyDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.member.repository.MemberRepository;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
-import com.hanghae.bulletbox.todo.entity.Memo;
+import com.hanghae.bulletbox.todo.entity.TodoMemo;
 import com.hanghae.bulletbox.todo.entity.Todo;
-import com.hanghae.bulletbox.todo.repository.MemoRepository;
+import com.hanghae.bulletbox.todo.repository.TodoMemoRepository;
 import com.hanghae.bulletbox.todo.repository.TodoRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -40,7 +40,7 @@ public class MainService {
 
     private final TodoRepository todoRepository;
 
-    private final MemoRepository memoRepository;
+    private final TodoMemoRepository todoMemoRepository;
 
     @Transactional(readOnly = true)
     public ResponseShowMainPageDto showMainPage(TodoDto todoDto) {
@@ -68,12 +68,12 @@ public class MainService {
         Long todoYear = (long) LocalDate.now().getYear();
         Long todoMonth = (long) LocalDate.now().getMonthValue();
         List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonth(member, todoYear, todoMonth);
-        List<Memo> memoList = memoRepository.findAllByMember(member);
+        List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMember(member);
 
         for (Todo todo : todoList) {
-            for (Memo memo : memoList) {
-                if (memo.getTodo().equals(todo)) {
-                    dailyDtoList.add(DailyDto.toDailyDto(todo, memoList));
+            for (TodoMemo todoMemo : todoMemoList) {
+                if (todoMemo.getTodo().equals(todo)) {
+                    dailyDtoList.add(DailyDto.toDailyDto(todo, todoMemoList));
                 }
             }
         }
@@ -151,13 +151,13 @@ public class MainService {
         Long todoMonth = todoDto.getTodoMonth();
         Long todoDay = todoDto.getTodoDay();
         List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonthAndTodoDay(member, todoYear, todoMonth, todoDay);
-        List<Memo> memoList = memoRepository.findAllByMember(member);
+        List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMember(member);
         List<DailyDto> dailyDtoList = new ArrayList<>();
 
         for (Todo todo : todoList) {
-            for (Memo memo : memoList) {
-                if (memo.getTodo().equals(todo)) {
-                    dailyDtoList.add(DailyDto.toDailyDto(todo, memoList));
+            for (TodoMemo todoMemo : todoMemoList) {
+                if (todoMemo.getTodo().equals(todo)) {
+                    dailyDtoList.add(DailyDto.toDailyDto(todo, todoMemoList));
                 }
             }
         }
@@ -178,13 +178,13 @@ public class MainService {
         Long todoMonth = todoDto.getTodoMonth();
         Long todoDay = todoDto.getTodoDay();
         List<Todo> todoList = todoRepository.findAllByMemberAndCategoryIdAndTodoYearAndTodoMonthAndTodoDay(member, categoryId, todoYear, todoMonth, todoDay);
-        List<Memo> memoList = memoRepository.findAllByMember(member);
+        List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMember(member);
         List<DailyDto> dailyDtoList = new ArrayList<>();
 
         for (Todo todo : todoList) {
-            for (Memo memo : memoList) {
-                if (memo.getTodo().equals(todo)) {
-                    dailyDtoList.add(DailyDto.toDailyDto(todo, memoList));
+            for (TodoMemo todoMemo : todoMemoList) {
+                if (todoMemo.getTodo().equals(todo)) {
+                    dailyDtoList.add(DailyDto.toDailyDto(todo, todoMemoList));
                 }
             }
         }
