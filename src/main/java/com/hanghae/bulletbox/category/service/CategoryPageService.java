@@ -1,6 +1,7 @@
 package com.hanghae.bulletbox.category.service;
 
 import com.hanghae.bulletbox.category.dto.CategoryDto;
+import com.hanghae.bulletbox.category.dto.ResponseDeleteCategoryDto;
 import com.hanghae.bulletbox.category.dto.ResponseShowCategoryDto;
 import com.hanghae.bulletbox.category.entity.Category;
 import com.hanghae.bulletbox.category.repository.CategoryRepository;
@@ -83,5 +84,22 @@ public class CategoryPageService {
         String categoryColor = categoryDto.getCategoryColor();
 
         category.update(categoryName, categoryColor);
+    }
+
+    @Transactional
+    public ResponseDeleteCategoryDto deleteCategory(CategoryDto categoryDto) {
+
+        // 카테고리 존재 여부 확인
+        Member member = categoryDto.getMember();
+        Long categoryId = categoryDto.getCategoryId();
+
+        Category category = categoryRepository.findAllByMemberAndCategoryId(member, categoryId).orElseThrow(
+                () -> new IllegalArgumentException(NOT_FOUND_CATEGORY_MSG.getMsg())
+        );
+
+        // 카테고리 삭제
+        categoryRepository.delete(category);
+
+        return ResponseDeleteCategoryDto.toResponseDeleteCategoryDto(categoryId);
     }
 }
