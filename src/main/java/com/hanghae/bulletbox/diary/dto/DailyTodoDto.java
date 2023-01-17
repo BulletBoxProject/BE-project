@@ -2,7 +2,7 @@ package com.hanghae.bulletbox.diary.dto;
 
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.todo.dto.TodoMemoDto;
-import com.hanghae.bulletbox.todo.entity.TodoMemo;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

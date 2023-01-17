@@ -3,7 +3,6 @@ package com.hanghae.bulletbox.category.service;
 import com.hanghae.bulletbox.category.dto.CategoryDto;
 import com.hanghae.bulletbox.category.entity.Category;
 import com.hanghae.bulletbox.category.repository.CategoryRepository;
-
 import com.hanghae.bulletbox.member.entity.Member;
 
 import lombok.RequiredArgsConstructor;
