@@ -104,6 +104,7 @@ public class MainService {
         return ResponseShowMainPageDto.toResponseShowMainPageDto(categoryDtoList, calendarDtoList ,dailyDtoList);
     }
 
+    @Transactional(readOnly = true)
     public ResponseShowCalendarDto showCalendar(TodoDto todoDto) {
 
         // 사용자 정보 조회
@@ -140,9 +141,10 @@ public class MainService {
         return ResponseShowCalendarDto.toResponseChangeCalendarDto(calendarDtoList);
     }
 
+    @Transactional(readOnly = true)
     public ResponseShowDailyDto showDaily(TodoDto todoDto) {
 
-        // 사용자 정보 조
+        // 사용자 정보 조회
         Long memberId = todoDto.getMemberId();
         Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new IllegalArgumentException(NOT_FOUND_MEMBER_MSG.getMsg())
@@ -166,6 +168,7 @@ public class MainService {
         return ResponseShowDailyDto.toResponseShowDailyDto(dailyDtoList);
     }
 
+    @Transactional(readOnly = true)
     public ResponseShowDailyByCategoryDto showDailyByCategory(TodoDto todoDto) {
 
         // 사용자 정보 조회

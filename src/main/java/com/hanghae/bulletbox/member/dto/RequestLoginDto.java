@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RequestLoginDto {
 
-    @Schema(description = "이메일", example = "email@email.com", type = "String")
+    @Schema(description = "이메일", example = "abc@hello.world", type = "String")
     private String email;
 
     @Schema(description = "비밀번호", type = "String", example = "a!1234567", minLength = 8, maxLength = 25)
