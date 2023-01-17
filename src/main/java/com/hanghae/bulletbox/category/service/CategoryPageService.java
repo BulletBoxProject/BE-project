@@ -9,11 +9,13 @@ import com.hanghae.bulletbox.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.DUPLICATE_CATEGORYNAME_MSG;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_CATEGORY_MSG;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +24,7 @@ public class CategoryPageService {
     private final CategoryRepository categoryRepository;
 
     // 카테고리 목록 조회
+    @Transactional(readOnly = true)
     public ResponseShowCategoryDto showCategory(CategoryDto categoryDto) {
 
         // 사용자의 카테고리 가져오기
@@ -44,6 +47,7 @@ public class CategoryPageService {
     }
 
     // 카테고리 생성
+    @Transactional(readOnly = false)
     public void createCategory(CategoryDto categoryDto) {
 
         // 카테고리 중복 검사
@@ -61,5 +65,23 @@ public class CategoryPageService {
         Category category = Category.toCategory(member, categoryName, categoryColor);
 
         categoryRepository.save(category);
+    }
+
+    @Transactional(readOnly = false)
+    public void updateCategory(CategoryDto categoryDto) {
+
+        // 카테고리 유효성 검사
+        Member member = categoryDto.getMember();
+        Long categoryId = categoryDto.getCategoryId();
+
+        Category category = categoryRepository.findAllByMemberAndCategoryId(member, categoryId).orElseThrow(
+                () -> new IllegalArgumentException(NOT_FOUND_CATEGORY_MSG.getMsg())
+        );
+
+        // 카테고리 수정
+        String categoryName = categoryDto.getCategoryName();
+        String categoryColor = categoryDto.getCategoryColor();
+
+        category.update(categoryName, categoryColor);
     }
 }
