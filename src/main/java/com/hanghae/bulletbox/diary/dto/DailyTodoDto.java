@@ -15,13 +15,21 @@ import java.util.List;
 public class DailyTodoDto {
 
     private Member member;
+
     private String todoContent;
+
     private String todoBulletName;
+
     private String time;
+
     private Long categoryId;
+
     private Long year;
+
     private Long month;
+
     private Long day;
+
     private List<TodoMemoDto> memos;
 
     @Builder(access = AccessLevel.PRIVATE)

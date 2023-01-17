@@ -12,9 +12,13 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class ResponseShowTodoCreatePageDto {
+
     private List<CategoryDto> categories;
+
     private Long year;
+
     private Long month;
+
     private Long day;
 
     @Builder(access = AccessLevel.PRIVATE)
