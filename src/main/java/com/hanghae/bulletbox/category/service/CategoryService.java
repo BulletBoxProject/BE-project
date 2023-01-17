@@ -20,7 +20,7 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     // 멤버로 해당 멤버의 전체 카테고리 조회
-    @Transactional
+    @Transactional(readOnly = true)
     public List<CategoryDto> findAllCategory(Member member){
         List<CategoryDto> categoryDtoList = new ArrayList<>();
         List<Category> categoryList = categoryRepository.findAllByMember(member);
