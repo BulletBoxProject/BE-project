@@ -1,9 +1,11 @@
 package com.hanghae.bulletbox.todo.entity;
 
 import com.hanghae.bulletbox.common.entity.TimeStamped;
+import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.todo.TodoBullet;
 
+import com.hanghae.bulletbox.todo.dto.TodoDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -68,5 +70,32 @@ public class Todo extends TimeStamped {
         this.todoMonth = todoMonth;
         this.todoDay = todoDay;
         this.time = time;
+    }
+
+    //
+    public static Todo toTodo(TodoDto todoDto){
+        MemberDto memberDto = todoDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+
+        Long categoryId = todoDto.getCategoryId();
+        String categoryColor = todoDto.getCategoryColor();
+        TodoBullet todoBullet = todoDto.getTodoBullet();
+        String todoContent = todoDto.getTodoContent();
+        Long todoYear = todoDto.getTodoYear();
+        Long todoMonth = todoDto.getTodoMonth();
+        Long todoDay = todoDto.getTodoDay();
+        String time = todoDto.getTime();
+
+        return Todo.builder()
+                .member(member)
+                .categoryId(categoryId)
+                .categoryColor(categoryColor)
+                .todoBullet(todoBullet)
+                .todoContent(todoContent)
+                .todoYear(todoYear)
+                .todoMonth(todoMonth)
+                .todoDay(todoDay)
+                .time(time)
+                .build();
     }
 }
