@@ -1,6 +1,10 @@
 package com.hanghae.bulletbox.todo.dto;
 
+import com.hanghae.bulletbox.diary.dto.DailyTodoDto;
+import com.hanghae.bulletbox.member.dto.MemberDto;
+import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.todo.TodoBullet;
+import com.hanghae.bulletbox.todo.entity.Todo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -17,8 +21,8 @@ public class TodoDto {
     @Schema(description = "할 일 ID", example = "1", type = "Long")
     private Long todoId;
 
-    @Schema(description = "회원 ID", example = "1", type = "Long")
-    private Long memberId;
+    @Schema(description = "회원 DTO", example = "1", type = "MemberDto")
+    private MemberDto memberDto;
 
     @Schema(description = "카테고리 ID", example = "1", type = "Long")
     private Long categoryId;
@@ -45,9 +49,9 @@ public class TodoDto {
     private String time;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private TodoDto(Long todoId, Long memberId, Long categoryId, String categoryColor, TodoBullet todoBullet, String todoContent, Long todoYear, Long todoMonth, Long todoDay, String time) {
+    private TodoDto(Long todoId, MemberDto memberDto, Long categoryId, String categoryColor, TodoBullet todoBullet, String todoContent, Long todoYear, Long todoMonth, Long todoDay, String time) {
         this.todoId = todoId;
-        this.memberId = memberId;
+        this.memberDto = memberDto;
         this.categoryId = categoryId;
         this.categoryColor = categoryColor;
         this.todoBullet = todoBullet;
@@ -58,18 +62,47 @@ public class TodoDto {
         this.time = time;
     }
 
-    public static TodoDto toTodoDto(Long memberId, Long todoYear, Long todoMonth, Long todoDay) {
+    // Todo를 TodoDto로
+    public static TodoDto toTodoDto(Todo todo){
+        Member member = todo.getMember();
+        MemberDto memberDto = MemberDto.toMemberDto(member);
+
+        Long todoId = todo.getTodoId();
+        Long categoryId = todo.getCategoryId();
+        String categoryColor = todo.getCategoryColor();
+        TodoBullet todoBullet = todo.getTodoBullet();
+        String todoContent = todo.getTodoContent();
+        Long todoYear = todo.getTodoYear();
+        Long todoMonth = todo.getTodoMonth();
+        Long todoDay = todo.getTodoDay();
+        String time = todo.getTime();
+
         return TodoDto.builder()
-                .memberId(memberId)
+                .todoId(todoId)
+                .memberDto(memberDto)
+                .categoryId(categoryId)
+                .categoryColor(categoryColor)
+                .todoBullet(todoBullet)
+                .todoContent(todoContent)
+                .todoYear(todoYear)
+                .todoMonth(todoMonth)
+                .todoDay(todoDay)
+                .time(time)
+                .build();
+    }
+
+    public static TodoDto toTodoDto(MemberDto memberDto, Long todoYear, Long todoMonth, Long todoDay) {
+        return TodoDto.builder()
+                .memberDto(memberDto)
                 .todoYear(todoYear)
                 .todoMonth(todoMonth)
                 .todoDay(todoDay)
                 .build();
     }
 
-    public static TodoDto toTodoDto(Long memberId, Long categoryId, Long todoYear, Long todoMonth, Long todoDay) {
+    public static TodoDto toTodoDto(MemberDto memberDto, Long categoryId, Long todoYear, Long todoMonth, Long todoDay) {
         return TodoDto.builder()
-                .memberId(memberId)
+                .memberDto(memberDto)
                 .categoryId(categoryId)
                 .todoYear(todoYear)
                 .todoMonth(todoMonth)
@@ -77,15 +110,42 @@ public class TodoDto {
                 .build();
     }
 
-    public static TodoDto toTodoDto(Long memberId) {
+    public static TodoDto toTodoDto(MemberDto memberDto) {
         return TodoDto.builder()
-                .memberId(memberId)
+                .memberDto(memberDto)
                 .build();
     }
 
-    public static TodoDto toTodoDto(Long memberId, Long todoYear, Long todoMonth) {
+    // TodoBulletName에 해당하는 TodoBullet으로 변환해서 저장
+    public static TodoDto toTodoDto(DailyTodoDto dailyTodoDto){
+        String todoBulletName = dailyTodoDto.getTodoBulletName();
+        TodoBullet todoBullet = TodoBullet.valueOfName(todoBulletName);
+
+        MemberDto memberDto = dailyTodoDto.getMemberDto();
+        String todoContent = dailyTodoDto.getTodoContent();
+        Long year = dailyTodoDto.getYear();
+        Long month = dailyTodoDto.getMonth();
+        Long day = dailyTodoDto.getDay();
+        String time = dailyTodoDto.getTime();
+        Long categoryId = dailyTodoDto.getCategoryId();
+        String categoryColor = dailyTodoDto.getCategoryColor();
+
         return TodoDto.builder()
-                .memberId(memberId)
+                .memberDto(memberDto)
+                .todoBullet(todoBullet)
+                .todoContent(todoContent)
+                .todoYear(year)
+                .todoMonth(month)
+                .todoDay(day)
+                .time(time)
+                .categoryId(categoryId)
+                .categoryColor(categoryColor)
+                .build();
+    }
+
+    public static TodoDto toTodoDto(MemberDto memberDto, Long todoYear, Long todoMonth) {
+        return TodoDto.builder()
+                .memberDto(memberDto)
                 .todoYear(todoYear)
                 .todoMonth(todoMonth)
                 .build();

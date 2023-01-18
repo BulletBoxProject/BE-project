@@ -1,8 +1,10 @@
 package com.hanghae.bulletbox.todo.entity;
 
 import com.hanghae.bulletbox.common.entity.TimeStamped;
+import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.todo.TodoBullet;
+import com.hanghae.bulletbox.todo.dto.TodoDto;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -58,7 +60,8 @@ public class Todo extends TimeStamped {
     private String time;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private Todo(Member member, Long categoryId, String categoryColor, TodoBullet todoBullet, String todoContent, Long todoYear, Long todoMonth, Long todoDay, String time) {
+    private Todo(Long todoId, Member member, Long categoryId, String categoryColor, TodoBullet todoBullet, String todoContent, Long todoYear, Long todoMonth, Long todoDay, String time) {
+        this.todoId = todoId;
         this.member = member;
         this.categoryId = categoryId;
         this.categoryColor = categoryColor;
@@ -68,5 +71,34 @@ public class Todo extends TimeStamped {
         this.todoMonth = todoMonth;
         this.todoDay = todoDay;
         this.time = time;
+    }
+
+    // TodoDto를 Todo로 변환
+    public static Todo toTodo(TodoDto todoDto){
+        MemberDto memberDto = todoDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+
+        Long todoId = todoDto.getTodoId();
+        Long categoryId = todoDto.getCategoryId();
+        String categoryColor = todoDto.getCategoryColor();
+        TodoBullet todoBullet = todoDto.getTodoBullet();
+        String todoContent = todoDto.getTodoContent();
+        Long todoYear = todoDto.getTodoYear();
+        Long todoMonth = todoDto.getTodoMonth();
+        Long todoDay = todoDto.getTodoDay();
+        String time = todoDto.getTime();
+
+        return Todo.builder()
+                .todoId(todoId)
+                .member(member)
+                .categoryId(categoryId)
+                .categoryColor(categoryColor)
+                .todoBullet(todoBullet)
+                .todoContent(todoContent)
+                .todoYear(todoYear)
+                .todoMonth(todoMonth)
+                .todoDay(todoDay)
+                .time(time)
+                .build();
     }
 }

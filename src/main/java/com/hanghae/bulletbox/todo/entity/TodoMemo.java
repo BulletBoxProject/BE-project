@@ -1,7 +1,10 @@
 package com.hanghae.bulletbox.todo.entity;
 
 import com.hanghae.bulletbox.common.entity.TimeStamped;
+import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
+import com.hanghae.bulletbox.todo.dto.TodoDto;
+import com.hanghae.bulletbox.todo.dto.TodoMemoDto;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -34,20 +37,36 @@ public class TodoMemo extends TimeStamped {
     private Todo todo;
 
     @Column(nullable = true)
-    private String memoContent;
+    private String todoMemoContent;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private TodoMemo(Member member, Todo todo, String memoContent) {
+    private TodoMemo(Member member, Todo todo, String todoMemoContent) {
         this.member = member;
         this.todo = todo;
-        this.memoContent = memoContent;
+        this.todoMemoContent = todoMemoContent;
     }
 
-    public static TodoMemo todoMemo(Member member, Todo todo, String memoContent){
+    public static TodoMemo toTodoMemo(Member member, Todo todo, String todoMemoContent){
         return TodoMemo.builder()
                 .member(member)
                 .todo(todo)
-                .memoContent(memoContent)
+                .todoMemoContent(todoMemoContent)
+                .build();
+    }
+
+    // TodoMemoDto를 TodoMemo로 변환
+    public static TodoMemo toTodoMemo(TodoMemoDto todoMemoDto){
+        TodoDto todoDto = todoMemoDto.getTodoDto();
+        MemberDto memberDto = todoMemoDto.getMemberDto();
+        String todoMemoContent = todoMemoDto.getTodoMemoContent();
+
+        Todo todo = Todo.toTodo(todoDto);
+        Member member = Member.toMember(memberDto);
+
+        return TodoMemo.builder()
+                .member(member)
+                .todo(todo)
+                .todoMemoContent(todoMemoContent)
                 .build();
     }
 

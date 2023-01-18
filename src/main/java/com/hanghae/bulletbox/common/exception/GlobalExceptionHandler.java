@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
     @ResponseStatus(NOT_FOUND)
     @ExceptionHandler(NoSuchElementException.class)
     public Response<?> handle(NoSuchElementException e){
-        return Response.fail(BAD_REQUEST.value(), e.getMessage());
+        return Response.fail(NOT_FOUND.value(), e.getMessage());
     }
 
     @ResponseStatus(BAD_REQUEST)

@@ -9,6 +9,7 @@ import com.hanghae.bulletbox.diary.dto.ResponseShowCalendarDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowMainPageDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowDailyByCategoryDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowDailyDto;
+import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.member.repository.MemberRepository;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
@@ -29,8 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_MEMBER_MSG;
-
 @Service
 @RequiredArgsConstructor
 public class MainService {
@@ -45,12 +44,8 @@ public class MainService {
 
     @Transactional(readOnly = true)
     public ResponseShowMainPageDto showMainPage(TodoDto todoDto) {
-
-        // 사용자 유효성 검사
-        Long memberId = todoDto.getMemberId();
-        Member member = memberRepository.findById(memberId).orElseThrow(
-                () -> new IllegalArgumentException(NOT_FOUND_MEMBER_MSG.getMsg())
-        );
+        MemberDto memberDto = todoDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
 
         // category 정보 가져오기
         List<CategoryDto> categoryDtoList = new ArrayList<>();
@@ -107,11 +102,8 @@ public class MainService {
     @Transactional(readOnly = true)
     public ResponseShowCalendarDto showCalendar(TodoDto todoDto) {
 
-        // 사용자 정보 조회
-        Long memberId = todoDto.getMemberId();
-        Member member = memberRepository.findById(memberId).orElseThrow(
-                () -> new IllegalArgumentException(NOT_FOUND_MEMBER_MSG.getMsg())
-        );
+        MemberDto memberDto = todoDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
 
         Long todoYear = todoDto.getTodoYear();
         Long todoMonth = todoDto.getTodoMonth();
@@ -144,11 +136,8 @@ public class MainService {
     @Transactional(readOnly = true)
     public ResponseShowDailyDto showDaily(TodoDto todoDto) {
 
-        // 사용자 정보 조회
-        Long memberId = todoDto.getMemberId();
-        Member member = memberRepository.findById(memberId).orElseThrow(
-                () -> new IllegalArgumentException(NOT_FOUND_MEMBER_MSG.getMsg())
-        );
+        MemberDto memberDto = todoDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
 
         Long todoYear = todoDto.getTodoYear();
         Long todoMonth = todoDto.getTodoMonth();
@@ -171,11 +160,8 @@ public class MainService {
     @Transactional(readOnly = true)
     public ResponseShowDailyByCategoryDto showDailyByCategory(TodoDto todoDto) {
 
-        // 사용자 정보 조회
-        Long memberId = todoDto.getMemberId();
-        Member member = memberRepository.findById(memberId).orElseThrow(
-                () -> new IllegalArgumentException(NOT_FOUND_MEMBER_MSG.getMsg())
-        );
+        MemberDto memberDto = todoDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
 
         Long categoryId = todoDto.getCategoryId();
         Long todoYear = todoDto.getTodoYear();

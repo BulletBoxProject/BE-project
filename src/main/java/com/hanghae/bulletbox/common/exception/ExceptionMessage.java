@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum ExceptionMessage {
     EXCEPTION_MESSAGE_SAMPLE(401,"예외 내용을 적어주세요"),
 
-    NOT_FOUND_MEMBER_MSG(400, "존재하지 않는 사용자입니다."),
+    NOT_FOUND_MEMBER_MSG(404, "존재하지 않는 사용자입니다."),
 
     DUPLICATE_EMAIL_MSG(400, "이미 가입한 이메일입니다."),
 
@@ -21,7 +21,10 @@ public enum ExceptionMessage {
 
     INVALID_TOKEN_MSG(401,"토큰이 유효하지 않습니다."),
 
-    // Category
+    // Todo관련련
+    BULLET_NOT_FOUND_MSG(404, "불렛이 존재하지 않습니다."),
+
+   // Category
     DUPLICATE_CATEGORYNAME_MSG(400, "이미 존재하는 카테고리입니다."),
 
     NOT_FOUND_CATEGORY_MSG(400, "존재하지 않는 카테고리입니다.");

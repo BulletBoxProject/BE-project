@@ -7,6 +7,7 @@ import com.hanghae.bulletbox.category.repository.CategoryRepository;
 import com.hanghae.bulletbox.diary.dto.DailyDto;
 import com.hanghae.bulletbox.diary.dto.ResponseDailyDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowDailyDto;
+import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.member.repository.MemberRepository;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
@@ -72,10 +73,9 @@ public class DailyService {
     }
 
     public ResponseShowDailyDto showDailyPageChangeDay(TodoDto todoDto) {
-        Long memberId = todoDto.getMemberId();
-        Member member = memberRepository.findById(memberId).orElseThrow(
-                () -> new IllegalArgumentException(NOT_FOUND_MEMBER_MSG.getMsg())
-        );
+        MemberDto memberDto = todoDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+
         List<DailyDto> dailyDtoList = new ArrayList<>();
         Long todoYear = todoDto.getTodoYear();
         Long todoMonth = todoDto.getTodoMonth();
@@ -94,11 +94,8 @@ public class DailyService {
     }
 
     public ResponseCategoryDto showDailyByCategory(TodoDto todoDto){
-
-        Long memberId = todoDto.getMemberId();
-        Member member = memberRepository.findById(memberId).orElseThrow(
-                () -> new IllegalArgumentException(NOT_FOUND_MEMBER_MSG.getMsg())
-        );
+        MemberDto memberDto = todoDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
 
         List<DailyDto> dailyDtoList = new ArrayList<>();
         Long categoryId = todoDto.getCategoryId();

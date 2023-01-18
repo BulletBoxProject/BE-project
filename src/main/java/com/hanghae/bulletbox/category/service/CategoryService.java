@@ -3,6 +3,7 @@ package com.hanghae.bulletbox.category.service;
 import com.hanghae.bulletbox.category.dto.CategoryDto;
 import com.hanghae.bulletbox.category.entity.Category;
 import com.hanghae.bulletbox.category.repository.CategoryRepository;
+import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,9 @@ public class CategoryService {
 
     // 멤버로 해당 멤버의 전체 카테고리 조회
     @Transactional(readOnly = true)
-    public List<CategoryDto> findAllCategory(Member member){
+    public List<CategoryDto> findAllCategory(MemberDto memberDto){
+        Member member = Member.toMember(memberDto);
+
         List<CategoryDto> categoryDtoList = new ArrayList<>();
         List<Category> categoryList = categoryRepository.findAllByMember(member);
 
