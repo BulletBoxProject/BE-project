@@ -7,6 +7,7 @@ import com.hanghae.bulletbox.diary.dto.ResponseShowMainPageDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowDailyByCategoryDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowDailyDto;
 import com.hanghae.bulletbox.diary.service.MainService;
+import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,9 +38,9 @@ public class MainController {
                 @ApiResponse(responseCode = "400", description = "존재하지 않는 사용자입니다.")
     })
     @GetMapping
-    public Response showMainPage(@ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        Long memberId = userDetails.getMember().getMemberId();
-        TodoDto todoDto = TodoDto.toTodoDto(memberId);
+    public Response<ResponseShowMainPageDto> showMainPage(@ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        MemberDto memberDto = MemberDto.toMemberDto(userDetails);
+        TodoDto todoDto = TodoDto.toTodoDto(memberDto);
         ResponseShowMainPageDto responseMainDto = mainService.showMainPage(todoDto);
         return Response.success(200, "메인 페이지 조회를 성공했습니다.", responseMainDto);
     }
@@ -49,12 +50,12 @@ public class MainController {
             @ApiResponse(responseCode = "400", description = "존재하지 않는 사용자입니다.")
     })
     @GetMapping("/calendars")
-    public Response showCalendar(@RequestParam(value = "year") Long year,
-                                 @RequestParam(value = "month") Long month,
-                                 @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails)
+    public Response<ResponseShowCalendarDto> showCalendar(@RequestParam(value = "year") Long year,
+                                                          @RequestParam(value = "month") Long month,
+                                                          @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails)
     {
-        Long memberId = userDetails.getMember().getMemberId();
-        TodoDto todoDto = TodoDto.toTodoDto(memberId, year, month);
+        MemberDto memberDto = MemberDto.toMemberDto(userDetails);
+        TodoDto todoDto = TodoDto.toTodoDto(memberDto, year, month);
         ResponseShowCalendarDto responseChangeCalendarDto = mainService.showCalendar(todoDto);
         return Response.success(200, "메인 페이지 달력 조회 날짜 변경을 성공했습니다.", responseChangeCalendarDto);
     }
@@ -64,12 +65,13 @@ public class MainController {
             @ApiResponse(responseCode = "400", description = "존재하지 않는 사용자입니다.")
     })
     @GetMapping("/dailys")
-    public Response showDaily(@RequestParam(value = "year") Long year,
-                              @RequestParam(value = "month") Long month,
-                              @RequestParam(value = "day") Long day,
-                              @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        Long memberId = userDetails.getMember().getMemberId();
-        TodoDto todoDto = TodoDto.toTodoDto(memberId, year, month, day);
+    public Response<ResponseShowDailyDto> showDaily(@RequestParam(value = "year") Long year,
+                                                    @RequestParam(value = "month") Long month,
+                                                    @RequestParam(value = "day") Long day,
+                                                    @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        MemberDto memberDto = MemberDto.toMemberDto(userDetails);
+        TodoDto todoDto = TodoDto.toTodoDto(memberDto, year, month, day);
         ResponseShowDailyDto responseShowDailyDto = mainService.showDaily(todoDto);
         return Response.success(200, "데일리 로그 날짜 변경 조회를 성공했습니다.", responseShowDailyDto);
     }
@@ -79,13 +81,14 @@ public class MainController {
             @ApiResponse(responseCode = "400", description = "존재하지 않는 사용자입니다.")
     })
     @GetMapping("/dailys/{categoryId}")
-    public Response showDailyByCategory(@PathVariable Long categoryId,
-                                        @RequestParam(value = "year") Long year,
-                                        @RequestParam(value = "month") Long month,
-                                        @RequestParam(value = "day") Long day,
-                                        @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        Long memberId = userDetails.getMember().getMemberId();
-        TodoDto todoDto = TodoDto.toTodoDto(memberId, categoryId, year, month, day);
+    public Response<ResponseShowDailyByCategoryDto> showDailyByCategory(@PathVariable Long categoryId,
+                                                                        @RequestParam(value = "year") Long year,
+                                                                        @RequestParam(value = "month") Long month,
+                                                                        @RequestParam(value = "day") Long day,
+                                                                        @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        MemberDto memberDto = MemberDto.toMemberDto(userDetails);
+        TodoDto todoDto = TodoDto.toTodoDto(memberDto, categoryId, year, month, day);
         ResponseShowDailyByCategoryDto responseShowDailyByCategoryDto = mainService.showDailyByCategory(todoDto);
         return Response.success(200, "카테고리별 데일리 로그 조회를 성공했습니다.", responseShowDailyByCategoryDto);
     }
