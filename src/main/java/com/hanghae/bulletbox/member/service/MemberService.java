@@ -43,7 +43,7 @@ public class MemberService {
 
         checkDuplicatedEmail(email);
 
-        Member member = Member.toMember(memberDto.getEmail(), memberDto.getNickname(), encodedPassword, null);
+        Member member = Member.toMember(memberDto.getEmail(), memberDto.getNickname(), encodedPassword);
         memberRepository.save(member);
     }
 

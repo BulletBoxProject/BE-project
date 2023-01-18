@@ -14,7 +14,6 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberDto {
 
-
     @Schema(description = "이메일", example = "email@email.com", type = "String")
     @NotNull
     private String email;
@@ -42,7 +41,6 @@ public class MemberDto {
                 .nickname(nickname)
                 .password(password)
                 .build();
-
     }
 
     public static MemberDto toMemberDto(RequestLoginDto requestLoginDto) {

@@ -41,14 +41,11 @@ public class TodoDto {
     @Schema(description = "할 일의 일", example = "20", type = "Long")
     private Long todoDay;
 
-    @Schema(description = "할 일의 요일", example = "화", type = "String")
-    private String dayOfTheWeek;
-
     @Schema(description = "할 일에 기록된 시간", example = "14:00", type = "String")
     private String time;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private TodoDto(Long todoId, Long memberId, Long categoryId, String categoryColor, TodoBullet todoBullet, String todoContent, Long todoYear, Long todoMonth, Long todoDay, String dayOfTheWeek, String time) {
+    private TodoDto(Long todoId, Long memberId, Long categoryId, String categoryColor, TodoBullet todoBullet, String todoContent, Long todoYear, Long todoMonth, Long todoDay, String time) {
         this.todoId = todoId;
         this.memberId = memberId;
         this.categoryId = categoryId;
@@ -58,7 +55,6 @@ public class TodoDto {
         this.todoYear = todoYear;
         this.todoMonth = todoMonth;
         this.todoDay = todoDay;
-        this.dayOfTheWeek = dayOfTheWeek;
         this.time = time;
     }
 
