@@ -4,8 +4,8 @@ import com.hanghae.bulletbox.common.entity.TimeStamped;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.todo.TodoBullet;
-
 import com.hanghae.bulletbox.todo.dto.TodoDto;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -73,7 +73,7 @@ public class Todo extends TimeStamped {
         this.time = time;
     }
 
-    //
+    // TodoDto를 Todo로 변환
     public static Todo toTodo(TodoDto todoDto){
         MemberDto memberDto = todoDto.getMemberDto();
         Member member = Member.toMember(memberDto);

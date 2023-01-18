@@ -3,9 +3,9 @@ package com.hanghae.bulletbox.todo.entity;
 import com.hanghae.bulletbox.common.entity.TimeStamped;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
-
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 import com.hanghae.bulletbox.todo.dto.TodoMemoDto;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

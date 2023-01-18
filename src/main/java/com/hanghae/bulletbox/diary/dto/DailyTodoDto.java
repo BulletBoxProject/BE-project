@@ -67,6 +67,7 @@ public class DailyTodoDto {
         Long year = requestCreateTodoDto.getYear();
         Long month = requestCreateTodoDto.getMonth();
         Long day = requestCreateTodoDto.getDay();
+        List<TodoMemoDto> memos = requestCreateTodoDto.getMemos();
 
         return DailyTodoDto.builder()
                 .memberDto(memberDto)
@@ -78,6 +79,7 @@ public class DailyTodoDto {
                 .year(year)
                 .month(month)
                 .day(day)
+                .memos(memos)
                 .build();
     }
 }

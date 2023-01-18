@@ -2,6 +2,7 @@ package com.hanghae.bulletbox.member.dto;
 
 import com.hanghae.bulletbox.common.security.UserDetailsImpl;
 import com.hanghae.bulletbox.member.entity.Member;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import lombok.AccessLevel;

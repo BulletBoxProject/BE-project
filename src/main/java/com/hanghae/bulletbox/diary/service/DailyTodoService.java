@@ -5,13 +5,12 @@ import com.hanghae.bulletbox.category.service.CategoryService;
 import com.hanghae.bulletbox.diary.dto.DailyTodoDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowTodoCreatePageDto;
 import com.hanghae.bulletbox.member.dto.MemberDto;
-import com.hanghae.bulletbox.member.entity.Member;
 
-import com.hanghae.bulletbox.todo.TodoBullet;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 import com.hanghae.bulletbox.todo.dto.TodoMemoDto;
 import com.hanghae.bulletbox.todo.service.TodoMemoService;
 import com.hanghae.bulletbox.todo.service.TodoService;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -47,7 +46,7 @@ public class DailyTodoService {
     @Transactional
     public void createTodo(DailyTodoDto dailyTodoDto) {
 
-        // 할 일 저장 후 할 일 id값 받기
+        // 할 일 저장 후 저장된 todo를 기반으로 todoDto 받기
         TodoDto todoDto = TodoDto.toTodoDto(dailyTodoDto);
 
         todoDto = todoService.saveTodo(todoDto);

@@ -4,8 +4,8 @@ import com.hanghae.bulletbox.diary.dto.DailyTodoDto;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.todo.TodoBullet;
-
 import com.hanghae.bulletbox.todo.entity.Todo;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import lombok.AccessLevel;
@@ -120,6 +120,7 @@ public class TodoDto {
     public static TodoDto toTodoDto(DailyTodoDto dailyTodoDto){
         String todoBulletName = dailyTodoDto.getTodoBulletName();
         TodoBullet todoBullet = TodoBullet.valueOfName(todoBulletName);
+
         MemberDto memberDto = dailyTodoDto.getMemberDto();
         String todoContent = dailyTodoDto.getTodoContent();
         Long year = dailyTodoDto.getYear();

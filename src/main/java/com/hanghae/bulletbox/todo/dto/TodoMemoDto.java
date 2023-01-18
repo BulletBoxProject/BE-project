@@ -1,10 +1,12 @@
 package com.hanghae.bulletbox.todo.dto;
 
 import com.hanghae.bulletbox.member.dto.MemberDto;
-import com.hanghae.bulletbox.member.entity.Member;
-import com.hanghae.bulletbox.todo.entity.Todo;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
