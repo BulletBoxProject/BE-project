@@ -5,6 +5,7 @@ import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.todo.TodoBullet;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -54,12 +55,10 @@ public class Todo extends TimeStamped {
     private Long todoDay;
 
     @Column(nullable = true)
-    private String dayOfTheWeek;
-
-    @Column(nullable = true)
     private String time;
 
-    public Todo(Member member, Long categoryId, String categoryColor, TodoBullet todoBullet, String todoContent, Long todoYear, Long todoMonth, Long todoDay, String dayOfTheWeek, String time) {
+    @Builder(access = AccessLevel.PRIVATE)
+    private Todo(Member member, Long categoryId, String categoryColor, TodoBullet todoBullet, String todoContent, Long todoYear, Long todoMonth, Long todoDay, String time) {
         this.member = member;
         this.categoryId = categoryId;
         this.categoryColor = categoryColor;
@@ -68,7 +67,6 @@ public class Todo extends TimeStamped {
         this.todoYear = todoYear;
         this.todoMonth = todoMonth;
         this.todoDay = todoDay;
-        this.dayOfTheWeek = dayOfTheWeek;
         this.time = time;
     }
 }
