@@ -2,6 +2,8 @@ package com.hanghae.bulletbox.todo;
 
 import lombok.Getter;
 
+import java.util.Arrays;
+
 @Getter
 public enum TodoBullet {
     TODO("할 일", "img_url"),
@@ -18,5 +20,12 @@ public enum TodoBullet {
     TodoBullet(String name, String imgUrl) {
         this.name = name;
         this.imgUrl = imgUrl;
+    }
+
+    public static TodoBullet valueOfName(String name){
+        return Arrays.stream(values())
+                .filter(value -> value.name.equals(name))
+                .findAny()
+                .orElse(null);
     }
 }
