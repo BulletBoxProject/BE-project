@@ -60,7 +60,8 @@ public class Todo extends TimeStamped {
     private String time;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private Todo(Member member, Long categoryId, String categoryColor, TodoBullet todoBullet, String todoContent, Long todoYear, Long todoMonth, Long todoDay, String time) {
+    private Todo(Long todoId, Member member, Long categoryId, String categoryColor, TodoBullet todoBullet, String todoContent, Long todoYear, Long todoMonth, Long todoDay, String time) {
+        this.todoId = todoId;
         this.member = member;
         this.categoryId = categoryId;
         this.categoryColor = categoryColor;
@@ -77,6 +78,7 @@ public class Todo extends TimeStamped {
         MemberDto memberDto = todoDto.getMemberDto();
         Member member = Member.toMember(memberDto);
 
+        Long todoId = todoDto.getTodoId();
         Long categoryId = todoDto.getCategoryId();
         String categoryColor = todoDto.getCategoryColor();
         TodoBullet todoBullet = todoDto.getTodoBullet();
@@ -87,6 +89,7 @@ public class Todo extends TimeStamped {
         String time = todoDto.getTime();
 
         return Todo.builder()
+                .todoId(todoId)
                 .member(member)
                 .categoryId(categoryId)
                 .categoryColor(categoryColor)
