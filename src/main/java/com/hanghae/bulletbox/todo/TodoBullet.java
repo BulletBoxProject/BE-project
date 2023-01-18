@@ -3,6 +3,9 @@ package com.hanghae.bulletbox.todo;
 import lombok.Getter;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
+
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.BULLET_NOT_FOUND_MSG;
 
 @Getter
 public enum TodoBullet {
@@ -26,6 +29,6 @@ public enum TodoBullet {
         return Arrays.stream(values())
                 .filter(value -> value.name.equals(name))
                 .findAny()
-                .orElse(null);
+                .orElseThrow(() -> new NoSuchElementException(BULLET_NOT_FOUND_MSG.getMsg()));
     }
 }
