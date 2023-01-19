@@ -1,5 +1,6 @@
 package com.hanghae.bulletbox.todo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hanghae.bulletbox.common.entity.TimeStamped;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
@@ -30,6 +31,7 @@ public class Todo extends TimeStamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long todoId;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID", nullable = false)
     private Member member;
