@@ -3,6 +3,7 @@ package com.hanghae.bulletbox.diary.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,11 +17,14 @@ public class ResponseShowCalendarDto {
     @Schema(description = "매인 페이지 달력의 정보")
     private List<CalendarDto> calendar;
 
+    @Builder(access = AccessLevel.PRIVATE)
     private ResponseShowCalendarDto(List<CalendarDto> calendarDtoList) {
         this.calendar = calendarDtoList;
     }
 
     public static ResponseShowCalendarDto toResponseChangeCalendarDto(List<CalendarDto> calendarDtoList) {
-        return new ResponseShowCalendarDto(calendarDtoList);
+        return ResponseShowCalendarDto.builder()
+                .calendarDtoList(calendarDtoList)
+                .build();
     }
 }
