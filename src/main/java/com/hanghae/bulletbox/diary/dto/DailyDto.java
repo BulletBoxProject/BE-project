@@ -6,6 +6,7 @@ import com.hanghae.bulletbox.todo.entity.Todo;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -40,6 +41,7 @@ public class DailyDto {
     @Schema(description = "할 일의 하위 메모")
     private List<TodoMemo> todoMemos;
 
+    @Builder(access = AccessLevel.PRIVATE)
     private DailyDto(Long todoId, Long categoryId, String categoryColor, String todoBulletName, String todoBulletImgUrl, String todoContent, String time, List<TodoMemo> todoMemos) {
         this.todoId = todoId;
         this.categoryId = categoryId;
