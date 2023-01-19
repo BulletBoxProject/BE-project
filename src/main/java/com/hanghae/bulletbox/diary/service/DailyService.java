@@ -60,11 +60,12 @@ public class DailyService {
         Long todoDay = (long) LocalDate.now().getDayOfMonth();
         List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonthAndTodoDay(member, todoYear, todoMonth, todoDay);
 
-        List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMember(member);
         for (Todo todo : todoList) {
+            List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMemberAndTodo(member, todo);
             for (TodoMemo todoMemo : todoMemoList) {
                 if (todoMemo.getTodo().equals(todo)) {
                     dailyDtoList.add(DailyDto.toDailyDto(todo, todoMemoList));
+                    break;
                 }
             }
         }
@@ -81,15 +82,17 @@ public class DailyService {
         Long todoMonth = todoDto.getTodoMonth();
         Long todoDay = todoDto.getTodoDay();
         List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonthAndTodoDay(member, todoYear, todoMonth, todoDay);
-        List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMember(member);
 
         for (Todo todo : todoList) {
+            List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMemberAndTodo(member, todo);
             for (TodoMemo todoMemo : todoMemoList) {
                 if (todoMemo.getTodo().equals(todo)) {
                     dailyDtoList.add(DailyDto.toDailyDto(todo, todoMemoList));
+                    break;
                 }
             }
         }
+
         return ResponseShowDailyDto.toResponseShowDailyDto(dailyDtoList);
     }
 
@@ -104,11 +107,12 @@ public class DailyService {
         Long todoDay = todoDto.getTodoDay();
         List<Todo> todoList = todoRepository.findAllByMemberAndCategoryIdAndTodoYearAndTodoMonthAndTodoDay(member, categoryId, todoYear, todoMonth, todoDay);
 
-        List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMember(member);
         for (Todo todo : todoList) {
+            List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMemberAndTodo(member, todo);
             for (TodoMemo todoMemo : todoMemoList) {
                 if (todoMemo.getTodo().equals(todo)) {
                     dailyDtoList.add(DailyDto.toDailyDto(todo, todoMemoList));
+                    break;
                 }
             }
         }

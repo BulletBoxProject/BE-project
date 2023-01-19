@@ -7,11 +7,9 @@ import com.hanghae.bulletbox.diary.dto.CalendarDto;
 import com.hanghae.bulletbox.diary.dto.DailyDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowCalendarDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowMainPageDto;
-import com.hanghae.bulletbox.diary.dto.ResponseShowDailyByCategoryDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowDailyDto;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
-import com.hanghae.bulletbox.member.repository.MemberRepository;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 import com.hanghae.bulletbox.todo.entity.TodoMemo;
 import com.hanghae.bulletbox.todo.entity.Todo;
@@ -33,8 +31,6 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class MainService {
-
-    private final MemberRepository memberRepository;
 
     private final CategoryRepository categoryRepository;
 
@@ -63,13 +59,15 @@ public class MainService {
         // 메인 페이지 조회 시, 현재 연도, 월의 달력을 보여주기 위해 현재 날짜로 연월 설정
         Long todoYear = (long) LocalDate.now().getYear();
         Long todoMonth = (long) LocalDate.now().getMonthValue();
-        List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonth(member, todoYear, todoMonth);
-        List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMember(member);
+        Long todoDay = (long) LocalDate.now().getDayOfMonth();
+        List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonthAndTodoDay(member, todoYear, todoMonth, todoDay);
 
         for (Todo todo : todoList) {
+            List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMemberAndTodo(member, todo);
             for (TodoMemo todoMemo : todoMemoList) {
                 if (todoMemo.getTodo().equals(todo)) {
                     dailyDtoList.add(DailyDto.toDailyDto(todo, todoMemoList));
+                    break;
                 }
             }
         }
@@ -88,9 +86,10 @@ public class MainService {
             if (!isContainsKeyOfDay) {
                 // Map key 값에 day 가 없을 시, 새로운 K, V 추가
                 countTodoPerDayMap.put(day, 1L);
+            } else {
+                // Map key 값에 day 가 존재할 시, 해당 day 의 key 값의 value 를 불러와 +1
+                countTodoPerDayMap.put(day, countTodoPerDayMap.get(day) + 1L);
             }
-            // Map key 값에 day 가 존재할 시, 해당 day 의 key 값의 value 를 불러와 +1
-            countTodoPerDayMap.put(day, countTodoPerDayMap.get(day) + 1L);
 
             count = countTodoPerDayMap.get(day);
             calendarDtoList.add(CalendarDto.toCalendar(day, count));
@@ -122,9 +121,10 @@ public class MainService {
             if (!isContainsKeyOfDay) {
                 // Map key 값에 day 가 없을 시, 새로운 K, V 추가
                 countTodoPerDayMap.put(day, 1L);
+            } else {
+                // Map key 값에 day 가 존재할 시, 해당 day 의 key 값의 value 를 불러와 +1
+                countTodoPerDayMap.put(day, countTodoPerDayMap.get(day) + 1L);
             }
-            // Map key 값에 day 가 존재할 시, 해당 day 의 key 값의 value 를 불러와 +1
-            countTodoPerDayMap.put(day, countTodoPerDayMap.get(day) + 1L);
 
             count = countTodoPerDayMap.get(day);
             calendarDtoList.add(CalendarDto.toCalendar(day, count));
@@ -133,6 +133,7 @@ public class MainService {
         return ResponseShowCalendarDto.toResponseChangeCalendarDto(calendarDtoList);
     }
 
+    // 메인 페이지 내 데일리 로그 조회
     @Transactional(readOnly = true)
     public ResponseShowDailyDto showDaily(TodoDto todoDto) {
 
@@ -143,42 +144,18 @@ public class MainService {
         Long todoMonth = todoDto.getTodoMonth();
         Long todoDay = todoDto.getTodoDay();
         List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonthAndTodoDay(member, todoYear, todoMonth, todoDay);
-        List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMember(member);
         List<DailyDto> dailyDtoList = new ArrayList<>();
 
         for (Todo todo : todoList) {
+            List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMemberAndTodo(member, todo);
             for (TodoMemo todoMemo : todoMemoList) {
                 if (todoMemo.getTodo().equals(todo)) {
                     dailyDtoList.add(DailyDto.toDailyDto(todo, todoMemoList));
+                    break;
                 }
             }
         }
 
         return ResponseShowDailyDto.toResponseShowDailyDto(dailyDtoList);
-    }
-
-    @Transactional(readOnly = true)
-    public ResponseShowDailyByCategoryDto showDailyByCategory(TodoDto todoDto) {
-
-        MemberDto memberDto = todoDto.getMemberDto();
-        Member member = Member.toMember(memberDto);
-
-        Long categoryId = todoDto.getCategoryId();
-        Long todoYear = todoDto.getTodoYear();
-        Long todoMonth = todoDto.getTodoMonth();
-        Long todoDay = todoDto.getTodoDay();
-        List<Todo> todoList = todoRepository.findAllByMemberAndCategoryIdAndTodoYearAndTodoMonthAndTodoDay(member, categoryId, todoYear, todoMonth, todoDay);
-        List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMember(member);
-        List<DailyDto> dailyDtoList = new ArrayList<>();
-
-        for (Todo todo : todoList) {
-            for (TodoMemo todoMemo : todoMemoList) {
-                if (todoMemo.getTodo().equals(todo)) {
-                    dailyDtoList.add(DailyDto.toDailyDto(todo, todoMemoList));
-                }
-            }
-        }
-
-        return ResponseShowDailyByCategoryDto.toResponseShowDailyByCategoryDto(dailyDtoList);
     }
 }
