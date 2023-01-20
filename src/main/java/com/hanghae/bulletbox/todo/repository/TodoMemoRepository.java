@@ -13,4 +13,7 @@ public interface TodoMemoRepository extends JpaRepository<TodoMemo, Long> {
     List<TodoMemo> findAllByMember(Member member);
 
     List<TodoMemo> findAllByMemberAndTodo(Member member, Todo todo);
+
+    void deleteAllByTodoAndMember(Todo todo, Member member);
+
 }
