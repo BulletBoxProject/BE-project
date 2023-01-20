@@ -21,8 +21,10 @@ public enum ExceptionMessage {
 
     INVALID_TOKEN_MSG(401,"토큰이 유효하지 않습니다."),
 
-    // Todo관련련
+    // Todo관련
     BULLET_NOT_FOUND_MSG(404, "불렛이 존재하지 않습니다."),
+
+    TODO_NOT_FOUND_MSG(404, "할 일이 존재하지 않습니다."),
 
    // Category
     DUPLICATE_CATEGORYNAME_MSG(400, "이미 존재하는 카테고리입니다."),
