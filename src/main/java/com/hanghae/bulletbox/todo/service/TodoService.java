@@ -46,6 +46,10 @@ public class TodoService {
         Long categoryId = todo.getCategoryId();
 
         checkMemberIsNotNull(member);
+
+        if(categoryId == null){
+            return;
+        }
         checkMemberHasCategoryId(categoryId, member);
     }
 
