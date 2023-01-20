@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_MEMBER_MSG;
 
 @RequiredArgsConstructor
 @Service
@@ -61,5 +64,22 @@ public class DailyTodoService {
 
             todoMemoService.saveTodoMemo(todoMemoDto);
         }
+    }
+
+    // 할 일 삭제하기
+    @Transactional
+    public void deleteTodo(MemberDto memberDto, Long todoId) {
+
+        TodoDto todoDto = todoService.findByTodoId(todoId);
+
+        if(!todoDto.getMemberDto().equals(memberDto)){
+            throw new NoSuchElementException(NOT_FOUND_MEMBER_MSG.getMsg());
+        }
+
+        // 지우려는 할 일의 하위 메모 찾아서 삭제하기
+        todoMemoService.deleteTodoMemosOfTodo(todoDto);
+
+        // 할 일 삭제하기
+        todoService.deleteTodo(todoDto);
     }
 }
