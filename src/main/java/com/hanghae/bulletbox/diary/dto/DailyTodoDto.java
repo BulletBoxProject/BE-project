@@ -1,7 +1,6 @@
 package com.hanghae.bulletbox.diary.dto;
 
 import com.hanghae.bulletbox.member.dto.MemberDto;
-import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.todo.dto.TodoMemoDto;
 
 import lombok.AccessLevel;
@@ -16,6 +15,8 @@ import java.util.List;
 public class DailyTodoDto {
 
     private MemberDto memberDto;
+
+    private Long todoId;
 
     private String todoContent;
 
@@ -36,8 +37,9 @@ public class DailyTodoDto {
     private List<TodoMemoDto> memos;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private DailyTodoDto(MemberDto memberDto, String todoContent, String todoBulletName, String time, Long categoryId, String categoryColor, Long year, Long month, Long day, List<TodoMemoDto> memos) {
+    private DailyTodoDto(MemberDto memberDto, Long todoId, String todoContent, String todoBulletName, String time, Long categoryId, String categoryColor, Long year, Long month, Long day, List<TodoMemoDto> memos) {
         this.memberDto = memberDto;
+        this.todoId = todoId;
         this.todoContent = todoContent;
         this.todoBulletName = todoBulletName;
         this.time = time;

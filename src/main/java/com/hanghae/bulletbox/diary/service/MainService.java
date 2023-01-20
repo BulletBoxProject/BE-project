@@ -49,8 +49,9 @@ public class MainService {
 
             Long categoryId = category.getCategoryId();
             String categoryName = category.getCategoryName();
+            String categoryColor = category.getCategoryColor();
 
-            categoryDtoList.add(CategoryDto.toCategoryDto(categoryId, categoryName));
+            categoryDtoList.add(CategoryDto.toCategoryDto(categoryId, categoryName, categoryColor));
         }
 
         // daily 정보 가져오기

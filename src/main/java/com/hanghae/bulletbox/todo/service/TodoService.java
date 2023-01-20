@@ -1,6 +1,7 @@
 package com.hanghae.bulletbox.todo.service;
 
 import com.hanghae.bulletbox.category.repository.CategoryRepository;
+import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 import com.hanghae.bulletbox.todo.entity.Todo;
@@ -12,9 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
-import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_CATEGORY_MSG;
-import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_MEMBER_MSG;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.*;
 
 
 @RequiredArgsConstructor
@@ -63,5 +64,32 @@ public class TodoService {
         todoRepository.save(todo);
 
         return TodoDto.toTodoDto(todo);
+    }
+
+    // todoId로 할 일 찾기
+    @Transactional(readOnly = true)
+    public TodoDto findByTodoId(Long todoId) {
+        Todo todo = todoRepository.findById(todoId)
+                .orElseThrow(() -> new NoSuchElementException(TODO_NOT_FOUND_MSG.getMsg()));
+        
+        TodoDto todoDto = TodoDto.toTodoDto(todo);
+        
+        return todoDto;
+    }
+
+    // 할 일 삭제하기
+    @Transactional
+    public void deleteTodo(TodoDto todoDto) {
+        Long todoId = todoDto.getTodoId();
+        MemberDto memberDto = todoDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+
+        checkMemberIsNotNull(member);
+
+        if(todoId == null){
+            throw new NoSuchElementException(TODO_NOT_FOUND_MSG.getMsg());
+        }
+
+        todoRepository.deleteById(todoId);
     }
 }
