@@ -1,6 +1,8 @@
 package com.hanghae.bulletbox.todo.service;
 
+import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
+import com.hanghae.bulletbox.todo.dto.TodoDto;
 import com.hanghae.bulletbox.todo.dto.TodoMemoDto;
 import com.hanghae.bulletbox.todo.entity.Todo;
 import com.hanghae.bulletbox.todo.entity.TodoMemo;
@@ -40,7 +42,6 @@ public class TodoMemoService {
                 .orElseThrow(() -> new NoSuchElementException(TODO_NOT_FOUND_MSG.getMsg()));
     }
 
-
     // 할 일 메모 생성
     @Transactional
     public void saveTodoMemo(TodoMemoDto todoMemoDto){
@@ -59,4 +60,15 @@ public class TodoMemoService {
         todoMemoRepository.save(todoMemo);
     }
 
+    // 할 일의 하위 메모들 삭제.
+    public void deleteTodoMemosOfTodo(TodoDto todoDto) {
+        MemberDto memberDto = todoDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+        Todo todo = Todo.toTodo(todoDto);
+
+        checkMemberIsNotNull(member);
+        checkMemberHasTodoId(member, todo);
+
+        todoMemoRepository.deleteAllByTodoAndMember(todo, member);
+    }
 }
