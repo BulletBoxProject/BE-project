@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,24 +73,29 @@ public class MainService {
 
         // calendar 정보 가져오기
         // 메인 페이지 달력에서 일별 할 일의 개수를 세는 로직
+        todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonth(member, todoYear, todoMonth);
+
         Map<Long, Long> countTodoPerDayMap = new HashMap<>();
         List<CalendarDto> calendarDtoList = new ArrayList<>();
 
         for (Todo todo : todoList) {
             Long day = todo.getTodoDay();
-            Long count;
             boolean isContainsKeyOfDay = countTodoPerDayMap.containsKey(day);
 
             // Map 의 key 값에 day 가 존재하는 지에 따라 구분
-            if (!isContainsKeyOfDay) {
+            if (isContainsKeyOfDay) {
+                // Map key 값에 day 가 존재할 시, 해당 day 의 key 값의 value 를 불러와 +1
+                countTodoPerDayMap.replace(day, countTodoPerDayMap.get(day), countTodoPerDayMap.get(day) + 1L);
+            } else {
                 // Map key 값에 day 가 없을 시, 새로운 K, V 추가
                 countTodoPerDayMap.put(day, 1L);
-            } else {
-                // Map key 값에 day 가 존재할 시, 해당 day 의 key 값의 value 를 불러와 +1
-                countTodoPerDayMap.put(day, countTodoPerDayMap.get(day) + 1L);
             }
+        }
 
-            count = countTodoPerDayMap.get(day);
+        // Map k, v 뽑아서 dto 변환 후, 응답 dtoList 추가
+        for (Map.Entry<Long, Long> val : countTodoPerDayMap.entrySet()) {
+            Long day = val.getKey();
+            Long count = val.getValue();
             calendarDtoList.add(CalendarDto.toCalendar(day, count));
         }
 
@@ -114,19 +118,22 @@ public class MainService {
 
         for (Todo todo : todoList) {
             Long day = todo.getTodoDay();
-            Long count;
             boolean isContainsKeyOfDay = countTodoPerDayMap.containsKey(day);
 
             // Map 의 key 값에 day 가 존재하는 지에 따라 구분
-            if (!isContainsKeyOfDay) {
+            if (isContainsKeyOfDay) {
+                // Map key 값에 day 가 존재할 시, 해당 day 의 key 값의 value 를 불러와 +1
+                countTodoPerDayMap.replace(day, countTodoPerDayMap.get(day), countTodoPerDayMap.get(day) + 1L);
+            } else {
                 // Map key 값에 day 가 없을 시, 새로운 K, V 추가
                 countTodoPerDayMap.put(day, 1L);
-            } else {
-                // Map key 값에 day 가 존재할 시, 해당 day 의 key 값의 value 를 불러와 +1
-                countTodoPerDayMap.put(day, countTodoPerDayMap.get(day) + 1L);
             }
+        }
 
-            count = countTodoPerDayMap.get(day);
+        // Map k, v 뽑아서 dto 변환 후, 응답 dtoList 추가
+        for (Map.Entry<Long, Long> val : countTodoPerDayMap.entrySet()) {
+            Long day = val.getKey();
+            Long count = val.getValue();
             calendarDtoList.add(CalendarDto.toCalendar(day, count));
         }
 
