@@ -1,5 +1,6 @@
 package com.hanghae.bulletbox.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Getter;
@@ -20,11 +21,13 @@ import java.time.LocalDateTime;
 public class TimeStamped {
 
     @JsonIgnore
+    @JsonFormat(timezone = "Asia/Seoul")
     @CreatedDate
     @Column(name = "CREATED_AT", nullable = false)
     private LocalDateTime createdAt;
 
     @JsonIgnore
+    @JsonFormat(timezone = "Asia/Seoul")
     @LastModifiedDate
     @Column(name = "MODIFIED_AT", nullable = false)
     private LocalDateTime modifiedAt;
