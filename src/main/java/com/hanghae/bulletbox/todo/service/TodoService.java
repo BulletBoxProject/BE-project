@@ -22,6 +22,7 @@ import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_
 public class TodoService {
 
     private final TodoRepository todoRepository;
+
     private final CategoryRepository categoryRepository;
 
     // 자신의 카테고리 중 카테고리 id가 있는지 조회
