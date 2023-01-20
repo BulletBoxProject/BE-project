@@ -33,7 +33,7 @@ public class TodoService {
     }
 
     // Member가 빈 값인지 확인
-    private void checkMemberIsNotEmpty(Member member){
+    private void checkMemberIsNotNull(Member member){
         if(member == null){
             throw new NoSuchElementException(NOT_FOUND_MEMBER_MSG.getMsg());
         }
@@ -44,7 +44,7 @@ public class TodoService {
         Member member = todo.getMember();
         Long categoryId = todo.getCategoryId();
 
-        checkMemberIsNotEmpty(member);
+        checkMemberIsNotNull(member);
         checkMemberHasCategoryId(categoryId, member);
     }
 
