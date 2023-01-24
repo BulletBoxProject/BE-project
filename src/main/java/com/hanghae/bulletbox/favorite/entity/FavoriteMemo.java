@@ -1,8 +1,12 @@
 package com.hanghae.bulletbox.favorite.entity;
 
+import com.hanghae.bulletbox.favorite.dto.FavoriteDto;
+import com.hanghae.bulletbox.favorite.dto.FavoriteMemoDto;
+import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,9 +38,26 @@ public class FavoriteMemo {
     @Column(nullable = false)
     private String favoriteMemoContent;
 
-    public FavoriteMemo(Member member, Favorite favorite, String favoriteMemoContent) {
+    @Builder(access = AccessLevel.PRIVATE)
+    private FavoriteMemo(Member member, Favorite favorite, String favoriteMemoContent) {
         this.member = member;
         this.favorite = favorite;
         this.favoriteMemoContent = favoriteMemoContent;
+    }
+
+    public static FavoriteMemo toFavoriteMemo(FavoriteMemoDto favoriteMemoDto) {
+        FavoriteDto favoriteDto = favoriteMemoDto.getFavoriteDto();
+        Favorite favorite = Favorite.toFavorite(favoriteDto);
+
+        MemberDto memberDto = favoriteDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+
+        String favoriteMemoContent = favoriteMemoDto.getFavoriteMemoContent();
+
+        return FavoriteMemo.builder()
+                .favorite(favorite)
+                .member(member)
+                .favoriteMemoContent(favoriteMemoContent)
+                .build();
     }
 }
