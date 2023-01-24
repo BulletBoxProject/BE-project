@@ -22,4 +22,11 @@ public class ResponseTodoUpdatePageDto {
         this.categories = categories;
         this.todo = todo;
     }
+
+    public static ResponseTodoUpdatePageDto toResponseTodoUpdatePageDto(List<CategoryDto> categories, DailyTodoDto dailyTodoDto){
+        return ResponseTodoUpdatePageDto.builder()
+                .categories(categories)
+                .todo(dailyTodoDto)
+                .build();
+    }
 }
