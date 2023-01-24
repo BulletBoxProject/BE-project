@@ -15,10 +15,10 @@ public class ResponseTodoUpdatePageDto {
 
     private List<CategoryDto> categories;
 
-    private TodoDto todo;
+    private DailyTodoDto todo;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private ResponseTodoUpdatePageDto(List<CategoryDto> categories, TodoDto todo) {
+    private ResponseTodoUpdatePageDto(List<CategoryDto> categories, DailyTodoDto todo) {
         this.categories = categories;
         this.todo = todo;
     }

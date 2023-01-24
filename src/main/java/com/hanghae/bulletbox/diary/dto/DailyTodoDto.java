@@ -1,5 +1,6 @@
 package com.hanghae.bulletbox.diary.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.todo.dto.TodoMemoDto;
 
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @NoArgsConstructor
 public class DailyTodoDto {
