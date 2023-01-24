@@ -1,7 +1,7 @@
 package com.hanghae.bulletbox.diary.dto;
 
 import com.hanghae.bulletbox.category.dto.CategoryDto;
-import com.hanghae.bulletbox.todo.dto.TodoDto;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
