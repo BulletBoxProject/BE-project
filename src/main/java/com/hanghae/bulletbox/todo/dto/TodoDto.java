@@ -1,5 +1,6 @@
 package com.hanghae.bulletbox.todo.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hanghae.bulletbox.diary.dto.DailyTodoDto;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
@@ -14,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Schema(description = "할 일(Todo) Dto")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TodoDto {
@@ -33,6 +35,12 @@ public class TodoDto {
     @Schema(description = "Bullet 종류", example = "Todo", type = "Enum")
     private TodoBullet todoBullet;
 
+    @Schema(description = "Bullet 이름", example = "할 일", type = "String")
+    private String todoBulletName;
+
+    @Schema(description = "Bullet 이미지 주소", example = "~~", type = "String")
+    private String todoBulletImgUrl;
+
     @Schema(description = "할 일 내용", example = "할 일 내용", type = "String")
     private String todoContent;
 
@@ -49,12 +57,14 @@ public class TodoDto {
     private String time;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private TodoDto(Long todoId, MemberDto memberDto, Long categoryId, String categoryColor, TodoBullet todoBullet, String todoContent, Long todoYear, Long todoMonth, Long todoDay, String time) {
+    private TodoDto(Long todoId, MemberDto memberDto, Long categoryId, String categoryColor, TodoBullet todoBullet, String todoBulletName, String todoBulletImgUrl, String todoContent, Long todoYear, Long todoMonth, Long todoDay, String time) {
         this.todoId = todoId;
         this.memberDto = memberDto;
         this.categoryId = categoryId;
         this.categoryColor = categoryColor;
         this.todoBullet = todoBullet;
+        this.todoBulletName = todoBulletName;
+        this.todoBulletImgUrl = todoBulletImgUrl;
         this.todoContent = todoContent;
         this.todoYear = todoYear;
         this.todoMonth = todoMonth;
