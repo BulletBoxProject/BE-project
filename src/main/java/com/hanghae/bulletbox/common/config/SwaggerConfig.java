@@ -3,6 +3,7 @@ package com.hanghae.bulletbox.common.config;
 import com.fasterxml.classmate.TypeResolver;
 
 import com.hanghae.bulletbox.common.response.Response;
+import com.hanghae.bulletbox.common.security.UserDetailsImpl;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,7 @@ public class SwaggerConfig {
                 .additionalModels(
                         typeResolver.resolve(Response.class)
                 )
+                .ignoredParameterTypes(UserDetailsImpl.class)
                 .useDefaultResponseMessages(false)
                 .apiInfo(getApiInfo()) // Swagger UI 노출할 정보
                 .select() // ApiSelectorBuilder 클래스 반환
