@@ -4,6 +4,7 @@ import com.hanghae.bulletbox.category.dto.CategoryDto;
 import com.hanghae.bulletbox.category.service.CategoryService;
 import com.hanghae.bulletbox.diary.dto.DailyTodoDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowTodoCreatePageDto;
+import com.hanghae.bulletbox.diary.dto.ResponseTodoUpdatePageDto;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 
 import com.hanghae.bulletbox.todo.dto.TodoDto;
@@ -81,5 +82,25 @@ public class DailyTodoService {
 
         // 할 일 삭제하기
         todoService.deleteTodo(todoDto);
+    }
+
+    // 할 일 수정 페이지 조회하기
+    @Transactional(readOnly = true)
+    public ResponseTodoUpdatePageDto showTodoUpdatePage(Long todoId, MemberDto memberDto) {
+        // 카테고리 조회하기
+        List<CategoryDto> categoryDtoList = categoryService.findAllCategory(memberDto);
+
+        // 할 일 조회해서 받기
+        TodoDto todoDto = todoService.findByTodoId(todoId);
+
+        // 메모 조회해서 받기
+        List<TodoMemoDto> todoMemoDtoList = todoMemoService.findAllMemoByTodo(todoDto);
+
+        // 할 일, 메모 합쳐서 반환하기
+        DailyTodoDto dailyTodoDto = DailyTodoDto.toDailyTodoDto(todoDto, todoMemoDtoList);
+
+        ResponseTodoUpdatePageDto responseTodoUpdatePageDto = ResponseTodoUpdatePageDto.toResponseTodoUpdatePageDto(categoryDtoList, dailyTodoDto);
+
+        return responseTodoUpdatePageDto;
     }
 }
