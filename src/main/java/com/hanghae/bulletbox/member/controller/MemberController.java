@@ -24,9 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import static com.hanghae.bulletbox.common.exception.ExceptionMessage.DIFFERENT_CODE_MSG;
 
 @Tag(name = "Member", description = "회원 API")
 @RestController
@@ -44,7 +41,7 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "이미 가입된 이메일입니다.")
     })
     @PostMapping("/signup")
-    public Response<?> signup(@Validated @RequestBody RequestSignupDto requestSignupDto){
+    public Response<RequestSignupDto> signup(@Validated @RequestBody RequestSignupDto requestSignupDto) {
 
         MemberDto memberDto = MemberDto.toMemberDto(requestSignupDto);
         memberService.signup(memberDto);
@@ -57,10 +54,9 @@ public class MemberController {
             @ApiResponse(responseCode = "200", description = "이메일 인증 메일이 전송되었습니다.")
     })
     @PostMapping("/signup/email-validate")
-    public Response<?> mailConfirm(@ApiIgnore HttpSession httpSession, @RequestBody MemberDto memberDto) throws Exception{
+    public Response<MemberDto> mailConfirm(@ApiIgnore @RequestBody MemberDto memberDto) throws Exception {
         String email = memberDto.getEmail();
-        String code = mailService.sendSimpleMessage(email, memberDto);
-        httpSession.setAttribute("code", code);
+        mailService.sendSimpleMessage(email);
         return Response.success(200, "이메일 인증 메일이 전송되었습니다.", null);
     }
 
@@ -70,12 +66,11 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "인증 번호가 일치하지 않습니다.")
     })
     @PostMapping("/signup/verifycode")
-    public Response<?> verifyCode(@ApiIgnore HttpSession httpSession, @RequestBody VerifyCodeDto verifyCodeDto){
-        if((verifyCodeDto.getVerifyCode()).equals(httpSession.getAttribute("code"))){
-        }else{
-            throw new IllegalStateException(DIFFERENT_CODE_MSG.getMsg());
-        }
-        return Response.success(200,"이메일 인증이 완료되었습니다.", true);
+    public Response<?> verifyCode(@ApiIgnore @RequestBody VerifyCodeDto verifyCodeDto, MemberDto memberDto) {
+        String email = memberDto.getEmail();
+        String code = verifyCodeDto.getVerifyCode();
+        mailService.verifyCode(email, code);
+        return Response.success(200, "이메일 인증이 완료되었습니다.", true);
     }
 
     @Operation(tags = {"Member"}, summary = "로그인")
@@ -85,11 +80,9 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "이메일 또는 비밀번호가 일치하지 않습니다.")
     })
     @PostMapping("/login")
-    public Response<?> login(@RequestBody RequestLoginDto requestLoginDto, HttpServletResponse httpServletResponse){
-
+    public Response<RequestLoginDto> login(@RequestBody RequestLoginDto requestLoginDto, HttpServletResponse httpServletResponse) {
         MemberDto memberDto = MemberDto.toMemberDto(requestLoginDto);
         memberService.login(memberDto, httpServletResponse);
-
         return Response.success(200, "로그인이 완료되었습니다.", null);
     }
 }

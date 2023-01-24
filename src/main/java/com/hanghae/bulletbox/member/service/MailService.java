@@ -1,6 +1,6 @@
 package com.hanghae.bulletbox.member.service;
 
-import com.hanghae.bulletbox.member.dto.MemberDto;
+import com.hanghae.bulletbox.common.redis.RedisUtil;
 import com.hanghae.bulletbox.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -18,7 +19,9 @@ import java.io.UnsupportedEncodingException;
 
 import java.util.Random;
 
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.DIFFERENT_CODE_MSG;
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.DUPLICATE_EMAIL_MSG;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.FAILED_TO_SEND_MAIL;
 
 @Service
 @RequiredArgsConstructor
@@ -27,13 +30,12 @@ public class MailService {
     private final JavaMailSender javaMailSender;
 
     private final MemberRepository memberRepository;
+
+    private final RedisUtil redisUtil;
+
     private String authNum;
 
-    private void checkDuplicatedEmail(String email){
-        memberRepository.findByEmail(email).ifPresent(
-                m -> {throw new IllegalArgumentException(DUPLICATE_EMAIL_MSG.getMsg());
-                });
-    }
+
     public MimeMessage createMessage(String to)throws MessagingException, UnsupportedEncodingException{
 
         MimeMessage message = javaMailSender.createMimeMessage();
@@ -61,13 +63,13 @@ public class MailService {
 
     public String createCode(){
         Random random = new Random();
-        StringBuffer key = new StringBuffer();
+        StringBuilder key = new StringBuilder();
 
         for(int i = 0; i< 8; i++){
             int index = random.nextInt(3);
 
             switch (index) {
-                case 0 -> key.append((char) ((int) random.nextInt(26) + 97));
+                case 0 -> key.append((char) (int) random.nextInt(26) + 97);
                 case 1 -> key.append((char) (int) random.nextInt(26) + 65);
                 case 2 -> key.append(random.nextInt(9));
             }
@@ -75,23 +77,36 @@ public class MailService {
         return authNum = key.toString();
     }
 
-    public String sendSimpleMessage(String sendEmail, MemberDto memberDto) throws Exception{
+    public void sendSimpleMessage(String email) throws Exception{
 
-        String email = memberDto.getEmail();
+        if(memberRepository.findByEmail(email).isPresent()){
+            throw new IllegalArgumentException(DUPLICATE_EMAIL_MSG.getMsg());
+        }
 
-        checkDuplicatedEmail(email);
+        String authCode = redisUtil.getData(email);
+        if (authCode != null) {
+            redisUtil.deleteData(email);
+        }
 
         authNum = createCode();
 
-        MimeMessage message = createMessage(sendEmail);
+        MimeMessage message = createMessage(email);
         try{
             javaMailSender.send(message);
-        }catch (MailException es){
-            es.printStackTrace();
-            throw new IllegalArgumentException();
+        }catch (MailException e){
+            e.printStackTrace();
+            throw new IllegalArgumentException(FAILED_TO_SEND_MAIL.getMsg());
         }
 
-        return authNum;
+        redisUtil.setDataExpire(email, authNum, 5 * 60 * 1000L);
+    }
+
+    @Transactional
+    public void verifyCode(String email, String code) {
+        String authCode = redisUtil.getData(email);
+        if (!authCode.equals(code)) {
+            throw new IllegalStateException(DIFFERENT_CODE_MSG.getMsg());
+        }
     }
 
 }
