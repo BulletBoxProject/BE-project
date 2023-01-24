@@ -16,6 +16,8 @@ public enum ExceptionMessage {
 
     DIFFERENT_CODE_MSG(400, "인증번호가 일치하지 않습니다."),
 
+    FAILED_TO_SEND_MAIL(400, "메일 발송에 실패하였습니다."),
+
     /*Jwt, Security */
     TOKEN_NOT_FOUND_MSG(401,"토큰이 존재하지 않습니다."),
 
