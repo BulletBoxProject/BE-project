@@ -1,8 +1,11 @@
 package com.hanghae.bulletbox.favorite.entity;
 
+import com.hanghae.bulletbox.favorite.dto.FavoriteDto;
+import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,10 +17,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -38,16 +37,39 @@ public class Favorite {
     private String categoryColor;
 
     @Column(nullable = true)
+    private String categoryName;
+
+    @Column(nullable = true)
     private String favoriteContent;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "favorite")
-    private List<FavoriteMemo> favoriteMemoList = new ArrayList<>();
-
-    public Favorite(Member member, Long categoryId,
-                    String categoryColor, String favoriteContent) {
+    @Builder(access = AccessLevel.PRIVATE)
+    public Favorite(Long favoriteId, Member member, Long categoryId, String categoryColor, String categoryName, String favoriteContent) {
+        this.favoriteId = favoriteId;
         this.member = member;
         this.categoryId = categoryId;
         this.categoryColor = categoryColor;
+        this.categoryName = categoryName;
         this.favoriteContent = favoriteContent;
+    }
+
+
+    public static Favorite toFavorite(FavoriteDto favoriteDto) {
+        MemberDto memberDto = favoriteDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+
+        Long favoriteId = favoriteDto.getFavoriteId();
+        String favoriteContent = favoriteDto.getFavoriteContent();
+        Long categoryId = favoriteDto.getCategoryId();
+        String categoryName = favoriteDto.getCategoryName();
+        String categoryColor = favoriteDto.getCategoryColor();
+
+        return Favorite.builder()
+                .member(member)
+                .favoriteId(favoriteId)
+                .favoriteContent(favoriteContent)
+                .categoryId(categoryId)
+                .categoryName(categoryName)
+                .categoryColor(categoryColor)
+                .build();
     }
 }

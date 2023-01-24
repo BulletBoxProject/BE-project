@@ -1,0 +1,63 @@
+package com.hanghae.bulletbox.favorite.service;
+
+import com.hanghae.bulletbox.favorite.dto.FavoriteMemoDto;
+import com.hanghae.bulletbox.favorite.entity.Favorite;
+import com.hanghae.bulletbox.favorite.entity.FavoriteMemo;
+import com.hanghae.bulletbox.favorite.repository.FavoriteMemoRepository;
+import com.hanghae.bulletbox.favorite.repository.FavoriteRepository;
+import com.hanghae.bulletbox.member.entity.Member;
+
+import lombok.RequiredArgsConstructor;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.NoSuchElementException;
+
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.FAVORITE_NOT_FOUND_MSG;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_MEMBER_MSG;
+
+@Service
+@RequiredArgsConstructor
+public class FavoriteMemoService {
+
+    private final FavoriteRepository favoriteRepository;
+
+    private final FavoriteMemoRepository favoriteMemoRepository;
+
+    // Member null 체크
+    private void checkMemberIsNotNull(Member member){
+        if(member == null){
+            throw new NoSuchElementException(NOT_FOUND_MEMBER_MSG.getMsg());
+        }
+    }
+
+    // favorite 유효성 검사(member 매칭 유무)
+    @Transactional(readOnly = true)
+    protected void checkMemberHasFavoriteId(Member member, Favorite favorite){
+        Long favoriteId = favorite.getFavoriteId();
+        favoriteRepository.findByFavoriteIdAndMember(favoriteId, member)
+                .orElseThrow(() -> new NoSuchElementException(FAVORITE_NOT_FOUND_MSG.getMsg()));
+    }
+
+    // 자주 쓰는 할 일의 메모 생성
+    @Transactional
+    public FavoriteMemoDto saveFavoriteMemo(FavoriteMemoDto favoriteMemoDto) {
+
+        FavoriteMemo favoriteMemo = FavoriteMemo.toFavoriteMemo(favoriteMemoDto);
+        Member member = favoriteMemo.getMember();
+        Favorite favorite = favoriteMemo.getFavorite();
+        String favoriteMemoContent = favoriteMemo.getFavoriteMemoContent();
+
+        if (favoriteMemoContent == null) {
+            return null;
+        }
+
+        checkMemberIsNotNull(member);
+        checkMemberHasFavoriteId(member, favorite);
+
+        favoriteMemoRepository.save(favoriteMemo);
+
+        return FavoriteMemoDto.toFavoriteMemoDto(favoriteMemo);
+    }
+}
