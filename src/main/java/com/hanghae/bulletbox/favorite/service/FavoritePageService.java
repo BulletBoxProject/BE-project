@@ -9,6 +9,7 @@ import com.hanghae.bulletbox.member.dto.MemberDto;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,7 @@ public class FavoritePageService {
     private final FavoriteMemoService favoriteMemoService;
 
     // 자주 쓰는 할 일 생성
+    @Transactional
     public ResponseCreateFavoriteTodoDto createFavoriteTodo(FavoritePageDto favoritePageDto) {
 
         FavoriteDto favoriteDto = FavoriteDto.toFavoriteDto(favoritePageDto);
