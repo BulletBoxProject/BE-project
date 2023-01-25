@@ -8,6 +8,7 @@ import com.hanghae.bulletbox.diary.dto.RequestCreateTodoDto;
 import com.hanghae.bulletbox.diary.dto.ResponseDailyDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowDailyDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowTodoCreatePageDto;
+import com.hanghae.bulletbox.diary.dto.ResponseTodoUpdatePageDto;
 import com.hanghae.bulletbox.diary.service.DailyService;
 import com.hanghae.bulletbox.diary.service.DailyTodoService;
 import com.hanghae.bulletbox.member.dto.MemberDto;
@@ -119,6 +120,7 @@ public class DailyController {
         return Response.success(201, "할 일을 생성하였습니다.", null);
     }
 
+    // 할 일 삭제하기
     @DeleteMapping("/todo/{todoId}")
     public Response<?> deleteTodo(@PathVariable Long todoId,
                                   @AuthenticationPrincipal UserDetailsImpl userDetails){
@@ -128,5 +130,18 @@ public class DailyController {
         dailyTodoService.deleteTodo(memberDto, todoId);
 
         return Response.success(200, "할 일을 삭제하였습니다.", null);
+    }
+
+    // 할 일 수정 페이지 조회하기
+    @GetMapping("/todo/{todoId}")
+    public Response<ResponseTodoUpdatePageDto> showTodoUpdatePage(@PathVariable Long todoId,
+                                                                  @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        MemberDto memberDto = MemberDto.toMemberDto(userDetails);
+
+        ResponseTodoUpdatePageDto responseTodoUpdatePageDto = dailyTodoService.showTodoUpdatePage(todoId, memberDto);
+
+        return Response.success(200, "할 일 수정 페이지를 조회하였습니다.", responseTodoUpdatePageDto);
+
     }
 }

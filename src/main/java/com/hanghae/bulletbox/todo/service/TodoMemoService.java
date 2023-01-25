@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_MEMBER_MSG;
@@ -42,6 +44,25 @@ public class TodoMemoService {
                 .orElseThrow(() -> new NoSuchElementException(TODO_NOT_FOUND_MSG.getMsg()));
     }
 
+    // todo로 메모 찾기
+    @Transactional(readOnly = true)
+    public List<TodoMemoDto> findAllMemoByTodo(TodoDto todoDto){
+        Todo todo = Todo.toTodo(todoDto);
+        MemberDto memberDto = todoDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+
+        List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMemberAndTodo(member, todo);
+
+        List<TodoMemoDto> todoMemoDtoList = new ArrayList<>();
+
+        for(TodoMemo todoMemo : todoMemoList){
+            TodoMemoDto todoMemoDto = TodoMemoDto.toTodoMemoDto(todoMemo);
+            todoMemoDtoList.add(todoMemoDto);
+        }
+
+        return todoMemoDtoList;
+    }
+
     // 할 일 메모 생성
     @Transactional
     public void saveTodoMemo(TodoMemoDto todoMemoDto){
@@ -60,7 +81,7 @@ public class TodoMemoService {
         todoMemoRepository.save(todoMemo);
     }
 
-    // 할 일의 하위 메모들 삭제.
+    // 할 일의 하위 메모들 삭제
     public void deleteTodoMemosOfTodo(TodoDto todoDto) {
         MemberDto memberDto = todoDto.getMemberDto();
         Member member = Member.toMember(memberDto);

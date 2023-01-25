@@ -1,5 +1,7 @@
 package com.hanghae.bulletbox.todo.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import com.hanghae.bulletbox.diary.dto.DailyTodoDto;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
@@ -14,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Schema(description = "할 일(Todo) Dto")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TodoDto {
