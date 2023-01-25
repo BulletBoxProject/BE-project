@@ -2,6 +2,7 @@ package com.hanghae.bulletbox.favorite.service;
 
 import com.hanghae.bulletbox.category.repository.CategoryRepository;
 import com.hanghae.bulletbox.favorite.dto.FavoriteDto;
+import com.hanghae.bulletbox.favorite.dto.FavoritePageDto;
 import com.hanghae.bulletbox.favorite.entity.Favorite;
 import com.hanghae.bulletbox.favorite.repository.FavoriteRepository;
 import com.hanghae.bulletbox.member.dto.MemberDto;
@@ -82,5 +83,35 @@ public class FavoriteService {
         }
 
         return favoriteDtoList;
+    }
+
+    // member, favorite 기준으로 favoriteTodo 조회하기
+    @Transactional(readOnly = true)
+    public List<FavoriteDto> findAllByMemberAndFavorite(FavoritePageDto favoritePageDto) {
+
+        MemberDto memberDto = favoritePageDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+
+        Long favoriteId = favoritePageDto.getFavoriteId();
+
+        List<Favorite> favoriteList = favoriteRepository.findAllByMemberAndFavoriteId(member, favoriteId);
+        List<FavoriteDto> favoriteDtoList = new ArrayList<>();
+
+        for (Favorite favorite : favoriteList) {
+            // Entity -> Dto 변환
+            favoriteDtoList.add(FavoriteDto.toFavoriteDto(favorite));
+        }
+
+        return favoriteDtoList;
+    }
+
+    // 자주 쓰는 할 일 삭제
+    public void deleteFavoriteTodo(FavoritePageDto favoritePageDto) {
+
+        FavoriteDto favoriteDto = FavoriteDto.toFavoriteDto(favoritePageDto);
+        Favorite favorite = Favorite.toFavorite(favoriteDto);
+        Long favoriteId = favorite.getFavoriteId();
+
+        favoriteRepository.deleteById(favoriteId);
     }
 }
