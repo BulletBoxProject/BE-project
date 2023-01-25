@@ -106,6 +106,7 @@ public class FavoriteService {
     }
 
     // 자주 쓰는 할 일 삭제
+    @Transactional
     public void deleteFavoriteTodo(FavoritePageDto favoritePageDto) {
 
         FavoriteDto favoriteDto = FavoriteDto.toFavoriteDto(favoritePageDto);

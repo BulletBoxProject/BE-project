@@ -87,7 +87,8 @@ public class FavoriteMemoService {
         return favoriteMemoDtoList;
     }
 
-    // member, favorite 기준으로 FavoriteMemo 조회하기
+    // member, favorite 기준으로 FavoriteMemo 조회
+    @Transactional(readOnly = true)
     public List<FavoriteMemoDto> findAllByMemberAndFavorite(FavoritePageDto favoritePageDto) {
 
         MemberDto memberDto = favoritePageDto.getMemberDto();
