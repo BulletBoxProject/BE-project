@@ -1,5 +1,6 @@
 package com.hanghae.bulletbox.favorite.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import com.hanghae.bulletbox.favorite.entity.Favorite;
@@ -23,8 +24,10 @@ public class FavoriteMemoDto {
 
     private String FavoriteMemoContent;
 
+    @JsonIgnore
     private MemberDto memberDto;
 
+    @JsonIgnore
     private FavoriteDto favoriteDto;
 
     @Builder(access = AccessLevel.PRIVATE)
@@ -57,6 +60,24 @@ public class FavoriteMemoDto {
         return FavoriteMemoDto.builder()
                 .favoriteMemoId(favoriteMemoId)
                 .favoriteMemoContent(favoriteMemoContent)
+                .build();
+    }
+
+    public static FavoriteMemoDto toFavoriteMemoDto(FavoriteDto responseFavoriteDto, Long favoriteMemoId, String favoriteMemoContent) {
+        return FavoriteMemoDto.builder()
+                .favoriteDto(responseFavoriteDto)
+                .favoriteMemoId(favoriteMemoId)
+                .favoriteMemoContent(favoriteMemoContent)
+                .build();
+    }
+
+    public static FavoriteMemoDto toFavoriteMemoDto(Long favoriteMemoId, String favoriteMemoContent, Favorite favorite) {
+        FavoriteDto favoriteDto = FavoriteDto.toFavoriteDto(favorite);
+
+        return FavoriteMemoDto.builder()
+                .favoriteMemoId(favoriteMemoId)
+                .favoriteMemoContent(favoriteMemoContent)
+                .favoriteDto(favoriteDto)
                 .build();
     }
 }

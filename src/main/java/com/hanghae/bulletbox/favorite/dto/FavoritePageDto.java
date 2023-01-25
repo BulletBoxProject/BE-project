@@ -56,4 +56,10 @@ public class FavoritePageDto {
                 .build();
 
     }
+
+    public static FavoritePageDto toFavoritePageDto(MemberDto memberDto) {
+        return FavoritePageDto.builder()
+                .memberDto(memberDto)
+                .build();
+    }
 }
