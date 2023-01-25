@@ -4,6 +4,7 @@ import com.hanghae.bulletbox.category.repository.CategoryRepository;
 import com.hanghae.bulletbox.favorite.dto.FavoriteDto;
 import com.hanghae.bulletbox.favorite.entity.Favorite;
 import com.hanghae.bulletbox.favorite.repository.FavoriteRepository;
+import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_CATEGORY_MSG;
@@ -63,5 +66,21 @@ public class FavoriteService {
         favoriteRepository.save(favorite);
 
         return FavoriteDto.toFavoriteDto(favorite);
+    }
+
+    @Transactional(readOnly = true)
+    public List<FavoriteDto> findAllByMember(MemberDto memberDto) {
+
+        Member member = Member.toMember(memberDto);
+
+        List<Favorite> favoriteList = favoriteRepository.findAllByMember(member);
+        List<FavoriteDto> favoriteDtoList = new ArrayList<>();
+
+        for (Favorite favorite : favoriteList) {
+            // Entity -> Dto 변환
+            favoriteDtoList.add(FavoriteDto.toFavoriteDto(favorite));
+        }
+
+        return favoriteDtoList;
     }
 }
