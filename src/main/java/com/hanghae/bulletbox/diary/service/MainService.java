@@ -156,12 +156,8 @@ public class MainService {
 
         for (Todo todo : todoList) {
             List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMemberAndTodo(member, todo);
-            for (TodoMemo todoMemo : todoMemoList) {
-                if (todoMemo.getTodo().equals(todo)) {
-                    dailyDtoList.add(DailyDto.toDailyDto(todo, todoMemoList));
-                    break;
-                }
-            }
+
+            dailyDtoList.add(DailyDto.toDailyDto(todo, todoMemoList));
         }
 
         return ResponseShowDailyDto.toResponseShowDailyDto(dailyDtoList);
