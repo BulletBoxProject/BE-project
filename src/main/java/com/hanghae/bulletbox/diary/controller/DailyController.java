@@ -126,9 +126,7 @@ public class DailyController {
                                   @AuthenticationPrincipal UserDetailsImpl userDetails){
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
-        System.out.println("========================================");
-        System.out.println("아이디: " + memberDto.getMemberId());
-        System.out.println("========================================");
+
         dailyTodoService.deleteTodo(memberDto, todoId);
 
         return Response.success(200, "할 일을 삭제하였습니다.", null);
