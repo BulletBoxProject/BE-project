@@ -11,4 +11,6 @@ import java.util.List;
 public interface FavoriteMemoRepository extends JpaRepository<FavoriteMemo, Long> {
 
     List<FavoriteMemo> findAllByMemberAndFavorite(Member member, Favorite favorite);
+
+    void deleteAllByMemberAndFavorite(Member member, Favorite favorite);
 }
