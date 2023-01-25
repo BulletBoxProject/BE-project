@@ -4,6 +4,7 @@ import com.hanghae.bulletbox.favorite.dto.FavoriteDto;
 import com.hanghae.bulletbox.favorite.dto.FavoriteMemoDto;
 import com.hanghae.bulletbox.favorite.dto.FavoritePageDto;
 import com.hanghae.bulletbox.favorite.dto.ResponseCreateFavoriteTodoDto;
+import com.hanghae.bulletbox.favorite.dto.ResponseShowFavoriteTodoPageDto;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 
 import lombok.RequiredArgsConstructor;
@@ -51,5 +52,20 @@ public class FavoritePageService {
         String favoriteContent = favoriteDto.getFavoriteContent();
 
         return ResponseCreateFavoriteTodoDto.toResponseCreateFavoriteTodoDto(favoriteId, favoriteContent, responseFavoriteMemoDtoList);
+    }
+
+    // 자주 쓰는 할 일 조회
+    @Transactional(readOnly = true)
+    public ResponseShowFavoriteTodoPageDto showFavoriteTodoPage(FavoritePageDto favoritePageDto) {
+
+        MemberDto memberDto = favoritePageDto.getMemberDto();
+
+        List<FavoriteDto> favoriteDtoList = favoriteService.findAllByMember(memberDto);
+        for (FavoriteDto favoriteDto : favoriteDtoList) {
+            List<FavoriteMemoDto> favoriteMemoDtoList = favoriteMemoService.findAllByMemberAndFavorite(memberDto, favoriteDto);
+            favoriteDto.setFavoriteMemos(favoriteMemoDtoList);
+        }
+
+        return ResponseShowFavoriteTodoPageDto.toResponseShowFavoriteTodoPageDto(favoriteDtoList);
     }
 }
