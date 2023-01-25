@@ -51,7 +51,7 @@ public class DailyService {
 
         for (Category category : categoryList) {
 
-            categoryDtoList.add(CategoryDto.toCategoryDto(category.getCategoryId(), category.getCategoryName(), null));
+            categoryDtoList.add(CategoryDto.toCategoryDto(category.getCategoryId(), category.getCategoryName(), category.getCategoryColor()));
         }
 
         List<DailyDto> dailyDtoList = new ArrayList<>();
