@@ -62,12 +62,8 @@ public class DailyService {
 
         for (Todo todo : todoList) {
             List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMemberAndTodo(member, todo);
-            for (TodoMemo todoMemo : todoMemoList) {
-                if (todoMemo.getTodo().equals(todo)) {
-                    dailyDtoList.add(DailyDto.toDailyDto(todo, todoMemoList));
-                    break;
-                }
-            }
+
+            dailyDtoList.add(DailyDto.toDailyDto(todo, todoMemoList));
         }
 
         return ResponseDailyDto.toResponseDailyDto(categoryDtoList, dailyDtoList, true);
@@ -85,12 +81,8 @@ public class DailyService {
 
         for (Todo todo : todoList) {
             List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMemberAndTodo(member, todo);
-            for (TodoMemo todoMemo : todoMemoList) {
-                if (todoMemo.getTodo().equals(todo)) {
-                    dailyDtoList.add(DailyDto.toDailyDto(todo, todoMemoList));
-                    break;
-                }
-            }
+
+            dailyDtoList.add(DailyDto.toDailyDto(todo, todoMemoList));
         }
 
         return ResponseShowDailyDto.toResponseShowDailyDto(dailyDtoList);
@@ -109,12 +101,8 @@ public class DailyService {
 
         for (Todo todo : todoList) {
             List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMemberAndTodo(member, todo);
-            for (TodoMemo todoMemo : todoMemoList) {
-                if (todoMemo.getTodo().equals(todo)) {
-                    dailyDtoList.add(DailyDto.toDailyDto(todo, todoMemoList));
-                    break;
-                }
-            }
+
+            dailyDtoList.add(DailyDto.toDailyDto(todo, todoMemoList));
         }
 
         return ResponseCategoryDto.toResponseCategoryDto(dailyDtoList);
