@@ -68,8 +68,9 @@ public class TodoService {
 
     // todoId로 할 일 찾기
     @Transactional(readOnly = true)
-    public TodoDto findByTodoId(Long todoId) {
-        Todo todo = todoRepository.findById(todoId)
+    public TodoDto findByTodoIdAndMember(Long todoId, MemberDto memberDto) {
+        Member member = Member.toMember(memberDto);
+        Todo todo = todoRepository.findByTodoIdAndMember(todoId, member)
                 .orElseThrow(() -> new NoSuchElementException(TODO_NOT_FOUND_MSG.getMsg()));
         
         TodoDto todoDto = TodoDto.toTodoDto(todo);

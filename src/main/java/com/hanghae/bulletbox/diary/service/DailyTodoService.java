@@ -70,11 +70,7 @@ public class DailyTodoService {
     @Transactional
     public void deleteTodo(MemberDto memberDto, Long todoId) {
 
-        TodoDto todoDto = todoService.findByTodoId(todoId);
-
-        if(!todoDto.getMemberDto().equals(memberDto)){
-            throw new NoSuchElementException(NOT_FOUND_MEMBER_MSG.getMsg());
-        }
+        TodoDto todoDto = todoService.findByTodoIdAndMember(todoId, memberDto);
 
         // 지우려는 할 일의 하위 메모 찾아서 삭제하기
         todoMemoService.deleteTodoMemosOfTodo(todoDto);
@@ -90,7 +86,7 @@ public class DailyTodoService {
         List<CategoryDto> categoryDtoList = categoryService.findAllCategory(memberDto);
 
         // 할 일 조회해서 받기
-        TodoDto todoDto = todoService.findByTodoId(todoId);
+        TodoDto todoDto = todoService.findByTodoIdAndMember(todoId,memberDto);
 
         // 메모 조회해서 받기
         List<TodoMemoDto> todoMemoDtoList = todoMemoService.findAllMemoByTodo(todoDto);
