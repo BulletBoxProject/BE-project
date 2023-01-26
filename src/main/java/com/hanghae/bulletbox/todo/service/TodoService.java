@@ -68,10 +68,18 @@ public class TodoService {
 
     // todoId로 할 일 찾기
     @Transactional(readOnly = true)
-    public TodoDto findByTodoIdAndMember(Long todoId, MemberDto memberDto) {
-        Member member = Member.toMember(memberDto);
+    protected Todo findByTodoIdAndMember(Long todoId, Member member){
         Todo todo = todoRepository.findByTodoIdAndMember(todoId, member)
                 .orElseThrow(() -> new NoSuchElementException(TODO_NOT_FOUND_MSG.getMsg()));
+
+        return todo;
+    }
+
+    // todoId로 할 일 찾아서 반환하기
+    @Transactional(readOnly = true)
+    public TodoDto findDtoByTodoIdAndMember(Long todoId, MemberDto memberDto) {
+        Member member = Member.toMember(memberDto);
+        Todo todo = findByTodoIdAndMember(todoId, member);
         
         TodoDto todoDto = TodoDto.toTodoDto(todo);
         
@@ -92,5 +100,21 @@ public class TodoService {
         }
 
         todoRepository.deleteById(todoId);
+    }
+
+    // 할 일 업데이트하기
+    @Transactional
+    public void updateTodo(TodoDto todoDto) {
+        MemberDto memberDto = todoDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+
+        // 바꿀 내용을 더티 체킹으로 DB에 반영
+        Long todoId = todoDto.getTodoId();
+
+        Todo todo = findByTodoIdAndMember(todoId, member);
+
+        checkTodoIsSafe(todo);
+
+        todo.updateAll(todoDto);
     }
 }
