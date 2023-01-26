@@ -74,4 +74,8 @@ public class TodoMemo extends TimeStamped {
                 .build();
     }
 
+    // TodoMemo의 내용을 todoMemoDto의 내용으로 수정
+    public void updateContent(TodoMemoDto todoMemoDto) {
+        todoMemoContent = todoMemoDto.getTodoMemoContent();
+    }
 }
