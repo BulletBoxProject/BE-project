@@ -18,7 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static com.hanghae.bulletbox.common.exception.ExceptionMessage.*;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_MEMBER_MSG;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.TODO_MEMO_NOT_FOUND_MSG;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.TODO_NOT_FOUND_MSG;
 
 @RequiredArgsConstructor
 @Service
