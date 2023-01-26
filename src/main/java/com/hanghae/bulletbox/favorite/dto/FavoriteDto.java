@@ -74,6 +74,7 @@ public class FavoriteDto {
         MemberDto memberDto = favoritePageDto.getMemberDto();
         Long favoriteId = favoritePageDto.getFavoriteId();
         String favoriteContent = favoritePageDto.getFavoriteContent();
+        List<FavoriteMemoDto> favoriteMemos = favoritePageDto.getFavoriteMemos();
         Long categoryId = favoritePageDto.getCategoryId();
         String categoryName = favoritePageDto.getCategoryName();
         String categoryColor = favoritePageDto.getCategoryColor();
@@ -82,6 +83,7 @@ public class FavoriteDto {
                 .memberDto(memberDto)
                 .favoriteId(favoriteId)
                 .favoriteContent(favoriteContent)
+                .favoriteMemos(favoriteMemos)
                 .categoryId(categoryId)
                 .categoryName(categoryName)
                 .categoryColor(categoryColor)

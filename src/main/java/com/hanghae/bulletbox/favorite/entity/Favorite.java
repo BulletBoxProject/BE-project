@@ -72,4 +72,15 @@ public class Favorite {
                 .categoryColor(categoryColor)
                 .build();
     }
+
+    public void update(FavoriteDto favoriteDto) {
+        MemberDto memberDto = favoriteDto.getMemberDto();
+
+        member = Member.toMember(memberDto);
+        favoriteId = favoriteDto.getFavoriteId();
+        favoriteContent = favoriteDto.getFavoriteContent();
+        categoryId = favoriteDto.getCategoryId();
+        categoryName = favoriteDto.getCategoryName();
+        categoryColor = favoriteDto.getCategoryColor();
+    }
 }

@@ -69,4 +69,23 @@ public class FavoritePageDto {
                 .favoriteId(favoriteId)
                 .build();
     }
+
+    public static FavoritePageDto toFavoritePageDto(Long favoriteId, RequestUpdateFavoriteTodoDto requestUpdateFavoriteTodoDto, MemberDto memberDto) {
+
+        String favoriteContent = requestUpdateFavoriteTodoDto.getFavoriteContent();
+        List<FavoriteMemoDto> favoriteMemos = requestUpdateFavoriteTodoDto.getFavoriteMemos();
+        Long categoryId = requestUpdateFavoriteTodoDto.getCategoryId();
+        String categoryName = requestUpdateFavoriteTodoDto.getCategoryName();
+        String categoryColor = requestUpdateFavoriteTodoDto.getCategoryColor();
+
+        return FavoritePageDto.builder()
+                .memberDto(memberDto)
+                .favoriteId(favoriteId)
+                .favoriteContent(favoriteContent)
+                .favoriteMemos(favoriteMemos)
+                .categoryId(categoryId)
+                .categoryName(categoryName)
+                .categoryColor(categoryColor)
+                .build();
+    }
 }
