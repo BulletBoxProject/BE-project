@@ -5,6 +5,7 @@ import com.hanghae.bulletbox.common.response.Response;
 import com.hanghae.bulletbox.common.security.UserDetailsImpl;
 import com.hanghae.bulletbox.diary.dto.DailyTodoDto;
 import com.hanghae.bulletbox.diary.dto.RequestCreateTodoDto;
+import com.hanghae.bulletbox.diary.dto.RequestUpdateTodoDto;
 import com.hanghae.bulletbox.diary.dto.ResponseDailyDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowDailyDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowTodoCreatePageDto;
@@ -23,15 +24,7 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -143,5 +136,19 @@ public class DailyController {
 
         return Response.success(200, "할 일 수정 페이지를 조회하였습니다.", responseTodoUpdatePageDto);
 
+    }
+
+    // 할 일 수정하기
+    @PutMapping("/todo")
+    public Response<?> updateTodo(@RequestBody RequestUpdateTodoDto requestUpdateTodoDto,
+                                  @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        MemberDto memberDto = MemberDto.toMemberDto(userDetails);
+
+        DailyTodoDto dailyTodoDto = DailyTodoDto.toDailyTodoDto(requestUpdateTodoDto, memberDto);
+
+        dailyTodoService.updateTodo(dailyTodoDto);
+
+        return Response.success(200, "할 일이 수정되었습니다.", null);
     }
 }
