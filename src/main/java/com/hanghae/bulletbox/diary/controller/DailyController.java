@@ -3,13 +3,7 @@ package com.hanghae.bulletbox.diary.controller;
 import com.hanghae.bulletbox.category.dto.ResponseCategoryDto;
 import com.hanghae.bulletbox.common.response.Response;
 import com.hanghae.bulletbox.common.security.UserDetailsImpl;
-import com.hanghae.bulletbox.diary.dto.DailyTodoDto;
-import com.hanghae.bulletbox.diary.dto.RequestCreateTodoDto;
-import com.hanghae.bulletbox.diary.dto.RequestUpdateTodoDto;
-import com.hanghae.bulletbox.diary.dto.ResponseDailyDto;
-import com.hanghae.bulletbox.diary.dto.ResponseShowDailyDto;
-import com.hanghae.bulletbox.diary.dto.ResponseShowTodoCreatePageDto;
-import com.hanghae.bulletbox.diary.dto.ResponseTodoUpdatePageDto;
+import com.hanghae.bulletbox.diary.dto.*;
 import com.hanghae.bulletbox.diary.service.DailyService;
 import com.hanghae.bulletbox.diary.service.DailyTodoService;
 import com.hanghae.bulletbox.member.dto.MemberDto;
@@ -158,5 +152,25 @@ public class DailyController {
         dailyTodoService.updateTodo(dailyTodoDto);
 
         return Response.success(200, "할 일이 수정되었습니다.", null);
+    }
+
+    // 루틴 불러오기
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/favorites")
+    public Response<?> loadFavorite(@RequestBody RequestLoadFavoriteDto requestLoadFavoriteDto,
+                                    @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        MemberDto memberDto = MemberDto.toMemberDto(userDetails);
+        Long year = requestLoadFavoriteDto.getYear();
+        Long month = requestLoadFavoriteDto.getMonth();
+        Long day = requestLoadFavoriteDto.getDay();
+        Long favoriteId = requestLoadFavoriteDto.getFavoriteId();
+
+        DailyTodoDto dailyTodoDto = DailyTodoDto.toDailyTodoDto(memberDto, year, month, day);
+
+        dailyTodoService.loadFavorite(favoriteId, dailyTodoDto);
+
+        return Response.success(201, "루틴을 오늘의 할 일에 담았습니다.", null);
+
     }
 }
