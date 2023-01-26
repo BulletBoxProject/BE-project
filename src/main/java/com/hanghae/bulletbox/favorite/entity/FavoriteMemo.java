@@ -60,4 +60,16 @@ public class FavoriteMemo {
                 .favoriteMemoContent(favoriteMemoContent)
                 .build();
     }
+
+    public void update(FavoriteMemoDto favoriteMemoDto) {
+
+        MemberDto memberDto = favoriteMemoDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+        Long favoriteMemoId = favoriteMemoDto.getFavoriteMemoId();
+        String favoriteMemoContent = favoriteMemoDto.getFavoriteMemoContent();
+
+        this.member = member;
+        this.favoriteMemoId = favoriteMemoId;
+        this.favoriteMemoContent = favoriteMemoContent;
+    }
 }
