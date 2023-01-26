@@ -23,7 +23,7 @@ public class FavoritePageService {
 
     private final FavoriteMemoService favoriteMemoService;
 
-    // 자주 쓰는 할 일 생성
+    // 루틴 생성
     @Transactional
     public ResponseCreateFavoriteTodoDto createFavoriteTodo(FavoritePageDto favoritePageDto) {
 
@@ -38,7 +38,7 @@ public class FavoritePageService {
             favoriteMemoDto.setMemberDto(memberDto);
             favoriteMemoDto.setFavoriteDto(favoriteDto);
 
-            // 자주 쓰는 할 일의 메모 저장
+            // 루틴의 메모 저장
             favoriteMemoDto = favoriteMemoService.saveFavoriteMemo(favoriteMemoDto);
 
             String favoriteMemoContent = favoriteMemoDto.getFavoriteMemoContent();
@@ -54,7 +54,7 @@ public class FavoritePageService {
         return ResponseCreateFavoriteTodoDto.toResponseCreateFavoriteTodoDto(favoriteId, favoriteContent, responseFavoriteMemoDtoList);
     }
 
-    // 자주 쓰는 할 일 조회
+    // 루틴 조회
     @Transactional(readOnly = true)
     public ResponseShowFavoriteTodoPageDto showFavoriteTodoPage(FavoritePageDto favoritePageDto) {
 
@@ -69,7 +69,7 @@ public class FavoritePageService {
         return ResponseShowFavoriteTodoPageDto.toResponseShowFavoriteTodoPageDto(favoriteDtoList);
     }
 
-    // 자주 쓰는 할 일 삭제
+    // 루틴 삭제
     @Transactional
     public void deleteFavoriteTodo(FavoritePageDto favoritePageDto) {
 
@@ -93,30 +93,30 @@ public class FavoritePageService {
         favoriteService.deleteFavoriteTodo(toFavoriteDto);
     }
 
-    // 자주 쓰는 할 일 수정
+    // 루틴 수정
     @Transactional
     public void updateFavoriteTodo(FavoritePageDto favoritePageDto) {
 
-        // 자주 쓰는 할 일 업데이트 진행
+        // 루틴 업데이트 진행
         FavoriteDto favoriteDto = FavoriteDto.toFavoriteDto(favoritePageDto);
         favoriteService.updateFavorite(favoriteDto);
 
         MemberDto memberDto = favoritePageDto.getMemberDto();
 
-        // 자주 쓰는 할 일의 메모 업데이트 진행
+        // 루틴의 메모 업데이트 진행
         List<FavoriteMemoDto> updateMemoList = favoritePageDto.getFavoriteMemos();
         for (FavoriteMemoDto favoriteMemoDto : updateMemoList) {
             Long favoriteMemoId = favoriteMemoDto.getFavoriteMemoId();
             String favoriteMemoContent = favoriteMemoDto.getFavoriteMemoContent();
 
-            // 삭제된 자주 쓰는 할 일의 메모일 경우, favoriteMemoContent == null -> favoriteMemoId를 통해 해당 favoriteMemo 삭제
+            // 루틴의 메모가 삭제됐을 경우, favoriteMemoContent == null -> favoriteMemoId를 통해 해당 favoriteMemo 삭제
             if (favoriteMemoContent == null) {
                 favoriteMemoService.deleteFavoriteMemoById(favoriteMemoId);
 
                 continue;
             }
 
-            // 추가된 자주 쓰는 할 일의 메모일 경우, favoriteMemoId == null -> 해당 id 값을 가지고 새로 생성
+            // 루틴의 메모가 추가됐을 경우, favoriteMemoId == null -> 해당 id 값을 가지고 새로 생성
             if (favoriteMemoId == null) {
                 favoriteMemoDto.setFavoriteDto(favoriteDto);
                 favoriteMemoDto.setMemberDto(memberDto);
@@ -128,7 +128,7 @@ public class FavoritePageService {
                 continue;
             }
 
-            // 기존에 수정된 자주 쓰는 할 일의 메모일 경우, update 진행
+            // 기존 루틴의 메모가 수정됐을 경우, update 진행
             favoriteMemoDto.setMemberDto(memberDto);
             favoriteMemoDto.setFavoriteDto(favoriteDto);
             favoriteMemoService.updateFavoriteMemo(favoriteMemoDto);

@@ -56,7 +56,7 @@ public class FavoriteService {
         checkMemberHasCategoryId(categoryId, member);
     }
 
-    // 자주 쓰는 할 일 생성
+    // 루틴 생성
     @Transactional
     public FavoriteDto saveFavoriteTodo(FavoriteDto favoriteDto) {
 
