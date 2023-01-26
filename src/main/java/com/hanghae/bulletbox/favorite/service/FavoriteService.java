@@ -2,7 +2,6 @@ package com.hanghae.bulletbox.favorite.service;
 
 import com.hanghae.bulletbox.category.repository.CategoryRepository;
 import com.hanghae.bulletbox.favorite.dto.FavoriteDto;
-import com.hanghae.bulletbox.favorite.dto.FavoritePageDto;
 import com.hanghae.bulletbox.favorite.entity.Favorite;
 import com.hanghae.bulletbox.favorite.repository.FavoriteRepository;
 import com.hanghae.bulletbox.member.dto.MemberDto;
@@ -18,6 +17,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_CATEGORY_MSG;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_FAVORITE_MSG;
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_MEMBER_MSG;
 
 @Service
@@ -85,14 +85,12 @@ public class FavoriteService {
         return favoriteDtoList;
     }
 
-    // member, favorite 기준으로 favoriteTodo 조회하기
+    // member, favoriteId 기준으로 FavoriteTodo 가져오기
     @Transactional(readOnly = true)
-    public List<FavoriteDto> findAllByMemberAndFavorite(FavoritePageDto favoritePageDto) {
+    public List<FavoriteDto> findAllByMemberAndFavoriteId(MemberDto memberDto, FavoriteDto favoriteDto) {
 
-        MemberDto memberDto = favoritePageDto.getMemberDto();
         Member member = Member.toMember(memberDto);
-
-        Long favoriteId = favoritePageDto.getFavoriteId();
+        Long favoriteId = favoriteDto.getFavoriteId();
 
         List<Favorite> favoriteList = favoriteRepository.findAllByMemberAndFavoriteId(member, favoriteId);
         List<FavoriteDto> favoriteDtoList = new ArrayList<>();
@@ -105,14 +103,35 @@ public class FavoriteService {
         return favoriteDtoList;
     }
 
-    // 자주 쓰는 할 일 삭제
+    // 루틴 삭제
     @Transactional
-    public void deleteFavoriteTodo(FavoritePageDto favoritePageDto) {
+    public void deleteFavoriteTodo(FavoriteDto favoriteDto) {
 
-        FavoriteDto favoriteDto = FavoriteDto.toFavoriteDto(favoritePageDto);
         Favorite favorite = Favorite.toFavorite(favoriteDto);
         Long favoriteId = favorite.getFavoriteId();
 
         favoriteRepository.deleteById(favoriteId);
+    }
+
+    // 루틴 업데이트 (For dirty checking)
+    @Transactional
+    public void updateFavorite(FavoriteDto favoriteDto) {
+
+        Long favoriteId = favoriteDto.getFavoriteId();
+        MemberDto memberDto = favoriteDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+
+        Favorite favorite = findFavoriteByIdAndMember(favoriteId, member);
+
+        checkFavoriteTodoIsSafe(favorite);
+
+        favorite.update(favoriteDto);
+    }
+
+    // favoriteId, member 를 기준으로 루틴 조회
+    private Favorite findFavoriteByIdAndMember(Long favoriteId, Member member) {
+        return favoriteRepository.findAllByFavoriteIdAndMember(favoriteId, member).orElseThrow(
+                () -> new NoSuchElementException(NOT_FOUND_FAVORITE_MSG.getMsg())
+        );
     }
 }

@@ -2,7 +2,6 @@ package com.hanghae.bulletbox.favorite.service;
 
 import com.hanghae.bulletbox.favorite.dto.FavoriteDto;
 import com.hanghae.bulletbox.favorite.dto.FavoriteMemoDto;
-import com.hanghae.bulletbox.favorite.dto.FavoritePageDto;
 import com.hanghae.bulletbox.favorite.entity.Favorite;
 import com.hanghae.bulletbox.favorite.entity.FavoriteMemo;
 import com.hanghae.bulletbox.favorite.repository.FavoriteMemoRepository;
@@ -19,7 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import static com.hanghae.bulletbox.common.exception.ExceptionMessage.FAVORITE_NOT_FOUND_MSG;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_FAVORITEMEMO_MSG;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_FAVORITE_MSG;
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_MEMBER_MSG;
 
 @Service
@@ -42,10 +42,10 @@ public class FavoriteMemoService {
     protected void checkMemberHasFavoriteId(Member member, Favorite favorite){
         Long favoriteId = favorite.getFavoriteId();
         favoriteRepository.findByFavoriteIdAndMember(favoriteId, member)
-                .orElseThrow(() -> new NoSuchElementException(FAVORITE_NOT_FOUND_MSG.getMsg()));
+                .orElseThrow(() -> new NoSuchElementException(NOT_FOUND_FAVORITE_MSG.getMsg()));
     }
 
-    // 자주 쓰는 할 일의 메모 생성
+    // 루틴의 메모 생성
     @Transactional
     public FavoriteMemoDto saveFavoriteMemo(FavoriteMemoDto favoriteMemoDto) {
 
@@ -67,7 +67,7 @@ public class FavoriteMemoService {
     }
 
 
-    // member, favorite 기준으로 자주 쓰는 할 일의 메모 찾기
+    // member, favorite 기준으로 루틴의 메모 찾기
     @Transactional(readOnly = true)
     public List<FavoriteMemoDto> findAllByMemberAndFavorite(MemberDto memberDto, FavoriteDto favoriteDto) {
 
@@ -87,37 +87,50 @@ public class FavoriteMemoService {
         return favoriteMemoDtoList;
     }
 
-    // member, favorite 기준으로 FavoriteMemo 조회
-    @Transactional(readOnly = true)
-    public List<FavoriteMemoDto> findAllByMemberAndFavorite(FavoritePageDto favoritePageDto) {
-
-        MemberDto memberDto = favoritePageDto.getMemberDto();
-        Member member = Member.toMember(memberDto);
-
-        FavoriteDto favoriteDto = FavoriteDto.toFavoriteDto(favoritePageDto);
-        Favorite favorite = Favorite.toFavorite(favoriteDto);
-
-        List<FavoriteMemo> favoriteMemoList = favoriteMemoRepository.findAllByMemberAndFavorite(member, favorite);
-        List<FavoriteMemoDto> favoriteMemoDtoList = new ArrayList<>();
-
-        for (FavoriteMemo favoriteMemo : favoriteMemoList) {
-            // Entity -> Dto 변환
-            favoriteMemoDtoList.add(FavoriteMemoDto.toFavoriteMemoDto(favoriteMemo));
-        }
-
-        return favoriteMemoDtoList;
-    }
-
-    // FavoriteTodoMemo 삭제
+    // 루틴 삭제
     @Transactional
-    public void deleteAllByFavoriteMemo(FavoritePageDto favoritePageDto) {
+    public void deleteAllByFavoriteMemo(FavoriteDto favoriteDto) {
 
-        FavoriteDto favoriteDto = FavoriteDto.toFavoriteDto(favoritePageDto);
         Favorite favorite = Favorite.toFavorite(favoriteDto);
 
-        MemberDto memberDto = favoritePageDto.getMemberDto();
+        MemberDto memberDto = favoriteDto.getMemberDto();
         Member member = Member.toMember(memberDto);
 
         favoriteMemoRepository.deleteAllByMemberAndFavorite(member, favorite);
     }
+
+    // 루틴 삭제(By Id)
+    @Transactional
+    public void deleteFavoriteMemoById(Long favoriteMemoId) {
+
+        favoriteMemoRepository.deleteById(favoriteMemoId);
+    }
+
+    // 루틴의 메모 업데이트 (For dirty checking)
+    @Transactional
+    public void updateFavoriteMemo(FavoriteMemoDto favoriteMemoDto) {
+
+        Long favoriteMemoId = favoriteMemoDto.getFavoriteMemoId();
+        MemberDto memberDto = favoriteMemoDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+
+        String favoriteMemoContent = favoriteMemoDto.getFavoriteMemoContent();
+
+        FavoriteMemo favoriteMemo = findFavoriteMemoByIdAndMember(favoriteMemoId, member);
+
+        // Dto의 메모 내용과 엔티티의 메모 내용이 같을 경우, 수정이 진행되지 않았기 때문에 해당 메서드를 진행할 이유가 없음. => return;
+        if (favoriteMemo.getFavoriteMemoContent().equals(favoriteMemoContent)) {
+            return;
+        }
+
+        favoriteMemo.update(favoriteMemoDto);
+    }
+
+    // member, favoriteIdMemo 를 기준으로 루틴의 메모 조회
+    protected FavoriteMemo findFavoriteMemoByIdAndMember(Long favoriteMemoId, Member member) {
+        return favoriteMemoRepository.findByFavoriteMemoIdAndMember(favoriteMemoId, member).orElseThrow(
+                () -> new NoSuchElementException(NOT_FOUND_FAVORITEMEMO_MSG.getMsg())
+        );
+    }
+
 }
