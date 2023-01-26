@@ -28,6 +28,9 @@ public enum ExceptionMessage {
 
     TODO_NOT_FOUND_MSG(404, "할 일이 존재하지 않습니다."),
 
+    // TodoMemo 관련
+    TODO_MEMO_NOT_FOUND_MSG(404, "메모가 존재하지 않습니다"),
+
    // Category
     DUPLICATE_CATEGORYNAME_MSG(400, "이미 존재하는 카테고리입니다."),
 

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_MEMBER_MSG;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.TODO_MEMO_NOT_FOUND_MSG;
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.TODO_NOT_FOUND_MSG;
 
 @RequiredArgsConstructor
@@ -42,6 +43,15 @@ public class TodoMemoService {
         Long todoId = todo.getTodoId();
         todoRepository.findByTodoIdAndMember(todoId, member)
                 .orElseThrow(() -> new NoSuchElementException(TODO_NOT_FOUND_MSG.getMsg()));
+    }
+
+    // memoId로 메모 찾기
+    @Transactional(readOnly = true)
+    protected TodoMemo findTodoMemoById(Long todoMemoId){
+        TodoMemo todoMemo = todoMemoRepository.findById(todoMemoId)
+                .orElseThrow(() -> new NoSuchElementException(TODO_MEMO_NOT_FOUND_MSG.getMsg()));
+
+        return todoMemo;
     }
 
     // todo로 메모 찾기
@@ -82,6 +92,7 @@ public class TodoMemoService {
     }
 
     // 할 일의 하위 메모들 삭제
+    @Transactional
     public void deleteTodoMemosOfTodo(TodoDto todoDto) {
         MemberDto memberDto = todoDto.getMemberDto();
         Member member = Member.toMember(memberDto);
@@ -91,5 +102,27 @@ public class TodoMemoService {
         checkMemberHasTodoId(member, todo);
 
         todoMemoRepository.deleteAllByTodoAndMember(todo, member);
+    }
+
+    // 메모 id로 메모 삭제
+    @Transactional
+    public void deleteTodoMemoById(Long todoMemoId) {
+        todoMemoRepository.deleteById(todoMemoId);
+    }
+
+    // todoMemo 수정
+    @Transactional
+    public void updateTodoMemo(TodoMemoDto todoMemoDto) {
+        Long todoMemoId = todoMemoDto.getTodoMemoId();
+        String todoMemoContent = todoMemoDto.getTodoMemoContent();
+
+        TodoMemo todoMemo = findTodoMemoById(todoMemoId);
+
+        // 수정된 내용이 없으면 update를 쿼리를 날리지 않도록 함
+        if(todoMemo.getTodoMemoContent().equals(todoMemoDto.getTodoMemoContent())){
+            return;
+        }
+
+        todoMemo.updateContent(todoMemoDto);
     }
 }

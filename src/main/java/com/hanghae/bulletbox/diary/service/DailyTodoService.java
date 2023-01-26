@@ -17,9 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-
-import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_MEMBER_MSG;
 
 @RequiredArgsConstructor
 @Service
@@ -70,7 +67,7 @@ public class DailyTodoService {
     @Transactional
     public void deleteTodo(MemberDto memberDto, Long todoId) {
 
-        TodoDto todoDto = todoService.findByTodoIdAndMember(todoId, memberDto);
+        TodoDto todoDto = todoService.findDtoByTodoIdAndMember(todoId, memberDto);
 
         // 지우려는 할 일의 하위 메모 찾아서 삭제하기
         todoMemoService.deleteTodoMemosOfTodo(todoDto);
@@ -86,7 +83,7 @@ public class DailyTodoService {
         List<CategoryDto> categoryDtoList = categoryService.findAllCategory(memberDto);
 
         // 할 일 조회해서 받기
-        TodoDto todoDto = todoService.findByTodoIdAndMember(todoId,memberDto);
+        TodoDto todoDto = todoService.findDtoByTodoIdAndMember(todoId,memberDto);
 
         // 메모 조회해서 받기
         List<TodoMemoDto> todoMemoDtoList = todoMemoService.findAllMemoByTodo(todoDto);
@@ -97,5 +94,40 @@ public class DailyTodoService {
         ResponseTodoUpdatePageDto responseTodoUpdatePageDto = ResponseTodoUpdatePageDto.toResponseTodoUpdatePageDto(categoryDtoList, dailyTodoDto);
 
         return responseTodoUpdatePageDto;
+    }
+
+    // 할 일 수정하기
+    @Transactional
+    public void updateTodo(DailyTodoDto dailyTodoDto) {
+        // 할 일 업데이트 하기
+        TodoDto todoDto = TodoDto.toTodoDto(dailyTodoDto);
+
+        todoService.updateTodo(todoDto);
+
+        // 메모 업데이트 하기 (아이디가 있을 경우 업데이트, 있었는데 없을 경우 삭제, 원래 없는 경우는 추가)
+        List<TodoMemoDto> memos = dailyTodoDto.getMemos();
+        MemberDto memberDto = dailyTodoDto.getMemberDto();
+
+        for(TodoMemoDto todoMemoDto : memos){
+            Long todoMemoId = todoMemoDto.getTodoMemoId();
+            String todoMemoContent = todoMemoDto.getTodoMemoContent();
+
+            // 있었는데 없어진 메모 삭제
+            if(todoMemoContent == null){
+                todoMemoService.deleteTodoMemoById(todoMemoId);
+                continue;
+            }
+
+            // 새로 생긴 메모 생성
+            if(todoMemoId == null){
+                todoMemoDto.setTodoDto(todoDto);
+                todoMemoDto.setMemberDto(memberDto);
+                todoMemoService.saveTodoMemo(todoMemoDto);
+                continue;
+            }
+
+            // 기존에 있던 메모 업데이트
+            todoMemoService.updateTodoMemo(todoMemoDto);
+        }
     }
 }
