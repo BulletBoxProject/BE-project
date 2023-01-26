@@ -34,7 +34,10 @@ public enum ExceptionMessage {
     NOT_FOUND_CATEGORY_MSG(400, "존재하지 않는 카테고리입니다."),
 
     // Favorite
-    FAVORITE_NOT_FOUND_MSG(404, "자주 쓰는 할 일이 존재하지 않습니다.");
+    NOT_FOUND_FAVORITE_MSG(404, "루틴이 존재하지 않습니다."),
+
+    // FavoriteMemo
+    NOT_FOUND_FAVORITEMEMO_MSG(404, "루틴의 메모가 존재하지 않습니다.");
 
     private final int statusCode;
     private final String msg;
