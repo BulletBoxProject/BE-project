@@ -125,6 +125,7 @@ public class TodoDto {
         TodoBullet todoBullet = TodoBullet.valueOfName(todoBulletName);
 
         MemberDto memberDto = dailyTodoDto.getMemberDto();
+        Long todoId = dailyTodoDto.getTodoId();
         String todoContent = dailyTodoDto.getTodoContent();
         Long year = dailyTodoDto.getYear();
         Long month = dailyTodoDto.getMonth();
@@ -135,6 +136,7 @@ public class TodoDto {
 
         return TodoDto.builder()
                 .memberDto(memberDto)
+                .todoId(todoId)
                 .todoBullet(todoBullet)
                 .todoContent(todoContent)
                 .todoYear(year)
