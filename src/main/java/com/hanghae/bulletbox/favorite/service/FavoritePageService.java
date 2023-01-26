@@ -69,23 +69,69 @@ public class FavoritePageService {
         return ResponseShowFavoriteTodoPageDto.toResponseShowFavoriteTodoPageDto(favoriteDtoList);
     }
 
+    // 자주 쓰는 할 일 삭제
     @Transactional
     public void deleteFavoriteTodo(FavoritePageDto favoritePageDto) {
 
+        MemberDto memberDto = favoritePageDto.getMemberDto();
+        FavoriteDto toFavoriteDto = FavoriteDto.toFavoriteDto(favoritePageDto);
+
         // 먼저 member, favoriteId를 기준으로 할 일 불러와야 함.
-        List<FavoriteDto> favoriteDtoList = favoriteService.findAllByMemberAndFavorite(favoritePageDto);
+        List<FavoriteDto> favoriteDtoList = favoriteService.findAllByMemberAndFavoriteId(memberDto, toFavoriteDto);
 
         for (FavoriteDto favoriteDto : favoriteDtoList) {
 
-            List<FavoriteMemoDto> favoriteMemoDtoList = favoriteMemoService.findAllByMemberAndFavorite(favoritePageDto);
+            List<FavoriteMemoDto> favoriteMemoDtoList = favoriteMemoService.findAllByMemberAndFavorite(memberDto, favoriteDto);
             favoriteDto.setFavoriteMemos(favoriteMemoDtoList);
 
             if (!favoriteDto.getFavoriteMemos().isEmpty()) {
-                favoriteMemoService.deleteAllByFavoriteMemo(favoritePageDto);
+                favoriteMemoService.deleteAllByFavoriteMemo(favoriteDto);
                 break;
             }
         }
 
-        favoriteService.deleteFavoriteTodo(favoritePageDto);
+        favoriteService.deleteFavoriteTodo(toFavoriteDto);
+    }
+
+    // 자주 쓰는 할 일 수정
+    @Transactional
+    public void updateFavoriteTodo(FavoritePageDto favoritePageDto) {
+
+        // 자주 쓰는 할 일 업데이트 진행
+        FavoriteDto favoriteDto = FavoriteDto.toFavoriteDto(favoritePageDto);
+        favoriteService.updateFavorite(favoriteDto);
+
+        MemberDto memberDto = favoritePageDto.getMemberDto();
+
+        // 자주 쓰는 할 일의 메모 업데이트 진행
+        List<FavoriteMemoDto> updateMemoList = favoritePageDto.getFavoriteMemos();
+        for (FavoriteMemoDto favoriteMemoDto : updateMemoList) {
+            Long favoriteMemoId = favoriteMemoDto.getFavoriteMemoId();
+            String favoriteMemoContent = favoriteMemoDto.getFavoriteMemoContent();
+
+            // 삭제된 자주 쓰는 할 일의 메모일 경우, favoriteMemoContent == null -> favoriteMemoId를 통해 해당 favoriteMemo 삭제
+            if (favoriteMemoContent == null) {
+                favoriteMemoService.deleteFavoriteMemoById(favoriteMemoId);
+
+                continue;
+            }
+
+            // 추가된 자주 쓰는 할 일의 메모일 경우, favoriteMemoId == null -> 해당 id 값을 가지고 새로 생성
+            if (favoriteMemoId == null) {
+                favoriteMemoDto.setFavoriteDto(favoriteDto);
+                favoriteMemoDto.setMemberDto(memberDto);
+                favoriteMemoDto.setFavoriteMemoContent(favoriteMemoContent);
+
+                // 메모 저장
+                favoriteMemoService.saveFavoriteMemo(favoriteMemoDto);
+
+                continue;
+            }
+
+            // 기존에 수정된 자주 쓰는 할 일의 메모일 경우, update 진행
+            favoriteMemoDto.setMemberDto(memberDto);
+            favoriteMemoDto.setFavoriteDto(favoriteDto);
+            favoriteMemoService.updateFavoriteMemo(favoriteMemoDto);
+        }
     }
 }
