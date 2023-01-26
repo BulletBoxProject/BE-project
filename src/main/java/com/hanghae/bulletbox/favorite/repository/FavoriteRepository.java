@@ -15,4 +15,6 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
     List<Favorite> findAllByMember(Member member);
 
     List<Favorite> findAllByMemberAndFavoriteId(Member member, Long favoriteId);
+
+    Optional<Favorite> findAllByFavoriteIdAndMember(Long favoriteId, Member member);
 }
