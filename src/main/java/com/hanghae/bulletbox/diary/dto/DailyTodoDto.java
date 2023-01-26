@@ -119,4 +119,31 @@ public class DailyTodoDto {
                 .memos(memos)
                 .build();
     }
+
+    public static DailyTodoDto toDailyTodoDto(RequestUpdateTodoDto requestUpdateTodoDto, MemberDto memberDto) {
+        Long todoId = requestUpdateTodoDto.getTodoId();
+        String todoContent = requestUpdateTodoDto.getTodoContent();
+        String todoBulletName = requestUpdateTodoDto.getTodoBulletName();
+        String time = requestUpdateTodoDto.getTime();
+        Long categoryId = requestUpdateTodoDto.getCategoryId();
+        String categoryColor = requestUpdateTodoDto.getCategoryColor();
+        Long year = requestUpdateTodoDto.getYear();
+        Long month = requestUpdateTodoDto.getMonth();
+        Long day = requestUpdateTodoDto.getDay();
+        List<TodoMemoDto> memos = requestUpdateTodoDto.getMemos();
+
+        return DailyTodoDto.builder()
+                .memberDto(memberDto)
+                .todoId(todoId)
+                .todoContent(todoContent)
+                .todoBulletName(todoBulletName)
+                .time(time)
+                .categoryId(categoryId)
+                .categoryColor(categoryColor)
+                .year(year)
+                .month(month)
+                .day(day)
+                .memos(memos)
+                .build();
+    }
 }
