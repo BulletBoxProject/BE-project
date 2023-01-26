@@ -72,6 +72,7 @@ public class FavoriteDto {
 
     public static FavoriteDto toFavoriteDto(FavoritePageDto favoritePageDto) {
         MemberDto memberDto = favoritePageDto.getMemberDto();
+        Long favoriteId = favoritePageDto.getFavoriteId();
         String favoriteContent = favoritePageDto.getFavoriteContent();
         Long categoryId = favoritePageDto.getCategoryId();
         String categoryName = favoritePageDto.getCategoryName();
@@ -79,6 +80,7 @@ public class FavoriteDto {
 
         return FavoriteDto.builder()
                 .memberDto(memberDto)
+                .favoriteId(favoriteId)
                 .favoriteContent(favoriteContent)
                 .categoryId(categoryId)
                 .categoryName(categoryName)

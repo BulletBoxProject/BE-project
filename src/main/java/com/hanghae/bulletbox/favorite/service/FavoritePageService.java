@@ -68,4 +68,24 @@ public class FavoritePageService {
 
         return ResponseShowFavoriteTodoPageDto.toResponseShowFavoriteTodoPageDto(favoriteDtoList);
     }
+
+    @Transactional
+    public void deleteFavoriteTodo(FavoritePageDto favoritePageDto) {
+
+        // 먼저 member, favoriteId를 기준으로 할 일 불러와야 함.
+        List<FavoriteDto> favoriteDtoList = favoriteService.findAllByMemberAndFavorite(favoritePageDto);
+
+        for (FavoriteDto favoriteDto : favoriteDtoList) {
+
+            List<FavoriteMemoDto> favoriteMemoDtoList = favoriteMemoService.findAllByMemberAndFavorite(favoritePageDto);
+            favoriteDto.setFavoriteMemos(favoriteMemoDtoList);
+
+            if (!favoriteDto.getFavoriteMemos().isEmpty()) {
+                favoriteMemoService.deleteAllByFavoriteMemo(favoritePageDto);
+                break;
+            }
+        }
+
+        favoriteService.deleteFavoriteTodo(favoritePageDto);
+    }
 }

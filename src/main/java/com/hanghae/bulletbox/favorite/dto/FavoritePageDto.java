@@ -62,4 +62,11 @@ public class FavoritePageDto {
                 .memberDto(memberDto)
                 .build();
     }
+
+    public static FavoritePageDto toFavoritePageDto(MemberDto memberDto, Long favoriteId) {
+        return FavoritePageDto.builder()
+                .memberDto(memberDto)
+                .favoriteId(favoriteId)
+                .build();
+    }
 }

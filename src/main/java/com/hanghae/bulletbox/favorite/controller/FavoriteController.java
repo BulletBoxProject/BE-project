@@ -12,7 +12,9 @@ import com.hanghae.bulletbox.member.dto.MemberDto;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,5 +48,17 @@ public class FavoriteController {
         ResponseShowFavoriteTodoPageDto responseShowFavoriteTodoPageDto = favoritePageService.showFavoriteTodoPage(favoritePageDto);
 
         return Response.success(200, "자주 쓰는 할 일 페이지 조회를 성공했습니다.", responseShowFavoriteTodoPageDto);
+    }
+
+    @DeleteMapping("/{favoriteId}")
+    public Response<?> deleteFavoriteTodo(@PathVariable Long favoriteId,
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        MemberDto memberDto = MemberDto.toMemberDto(userDetails);
+        FavoritePageDto favoritePageDto = FavoritePageDto.toFavoritePageDto(memberDto, favoriteId);
+
+        favoritePageService.deleteFavoriteTodo(favoritePageDto);
+
+        return Response.success(200, "자주 쓰는 할 일 삭제를 성공했습니다.", null);
     }
 }
