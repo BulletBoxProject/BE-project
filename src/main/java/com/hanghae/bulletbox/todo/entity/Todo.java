@@ -76,6 +76,19 @@ public class Todo extends TimeStamped {
         this.time = time;
     }
 
+    public void updateAll(TodoDto todoDto){
+        MemberDto memberDto = todoDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+
+        categoryId = todoDto.getCategoryId();
+        categoryColor = todoDto.getCategoryColor();
+        todoBullet = todoDto.getTodoBullet();
+        todoContent = todoDto.getTodoContent();
+        todoYear = todoDto.getTodoYear();
+        todoMonth = getTodoMonth();
+        todoDay = getTodoDay();
+    }
+
     // TodoDto를 Todo로 변환
     public static Todo toTodo(TodoDto todoDto){
         MemberDto memberDto = todoDto.getMemberDto();

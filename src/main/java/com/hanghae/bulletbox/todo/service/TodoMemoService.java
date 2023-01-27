@@ -14,9 +14,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_MEMBER_MSG;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.TODO_MEMO_NOT_FOUND_MSG;
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.TODO_NOT_FOUND_MSG;
 
 @RequiredArgsConstructor
@@ -42,6 +45,34 @@ public class TodoMemoService {
                 .orElseThrow(() -> new NoSuchElementException(TODO_NOT_FOUND_MSG.getMsg()));
     }
 
+    // memoId로 메모 찾기
+    @Transactional(readOnly = true)
+    protected TodoMemo findTodoMemoById(Long todoMemoId){
+        TodoMemo todoMemo = todoMemoRepository.findById(todoMemoId)
+                .orElseThrow(() -> new NoSuchElementException(TODO_MEMO_NOT_FOUND_MSG.getMsg()));
+
+        return todoMemo;
+    }
+
+    // todo로 메모 찾기
+    @Transactional(readOnly = true)
+    public List<TodoMemoDto> findAllMemoByTodo(TodoDto todoDto){
+        Todo todo = Todo.toTodo(todoDto);
+        MemberDto memberDto = todoDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+
+        List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMemberAndTodo(member, todo);
+
+        List<TodoMemoDto> todoMemoDtoList = new ArrayList<>();
+
+        for(TodoMemo todoMemo : todoMemoList){
+            TodoMemoDto todoMemoDto = TodoMemoDto.toTodoMemoDto(todoMemo);
+            todoMemoDtoList.add(todoMemoDto);
+        }
+
+        return todoMemoDtoList;
+    }
+
     // 할 일 메모 생성
     @Transactional
     public void saveTodoMemo(TodoMemoDto todoMemoDto){
@@ -60,7 +91,8 @@ public class TodoMemoService {
         todoMemoRepository.save(todoMemo);
     }
 
-    // 할 일의 하위 메모들 삭제.
+    // 할 일의 하위 메모들 삭제
+    @Transactional
     public void deleteTodoMemosOfTodo(TodoDto todoDto) {
         MemberDto memberDto = todoDto.getMemberDto();
         Member member = Member.toMember(memberDto);
@@ -70,5 +102,27 @@ public class TodoMemoService {
         checkMemberHasTodoId(member, todo);
 
         todoMemoRepository.deleteAllByTodoAndMember(todo, member);
+    }
+
+    // 메모 id로 메모 삭제
+    @Transactional
+    public void deleteTodoMemoById(Long todoMemoId) {
+        todoMemoRepository.deleteById(todoMemoId);
+    }
+
+    // todoMemo 수정
+    @Transactional
+    public void updateTodoMemo(TodoMemoDto todoMemoDto) {
+        Long todoMemoId = todoMemoDto.getTodoMemoId();
+        String todoMemoContent = todoMemoDto.getTodoMemoContent();
+
+        TodoMemo todoMemo = findTodoMemoById(todoMemoId);
+
+        // 수정된 내용이 없으면 update를 쿼리를 날리지 않도록 함
+        if(todoMemo.getTodoMemoContent().equals(todoMemoDto.getTodoMemoContent())){
+            return;
+        }
+
+        todoMemo.updateContent(todoMemoDto);
     }
 }

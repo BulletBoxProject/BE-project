@@ -1,6 +1,10 @@
 package com.hanghae.bulletbox.diary.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import com.hanghae.bulletbox.member.dto.MemberDto;
+import com.hanghae.bulletbox.todo.TodoBullet;
+import com.hanghae.bulletbox.todo.dto.TodoDto;
 import com.hanghae.bulletbox.todo.dto.TodoMemoDto;
 
 import lombok.AccessLevel;
@@ -10,6 +14,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @NoArgsConstructor
 public class DailyTodoDto {
@@ -21,6 +26,8 @@ public class DailyTodoDto {
     private String todoContent;
 
     private String todoBulletName;
+
+    private String todoBulletImgUrl;
 
     private String time;
 
@@ -37,11 +44,12 @@ public class DailyTodoDto {
     private List<TodoMemoDto> memos;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private DailyTodoDto(MemberDto memberDto, Long todoId, String todoContent, String todoBulletName, String time, Long categoryId, String categoryColor, Long year, Long month, Long day, List<TodoMemoDto> memos) {
+    private DailyTodoDto(MemberDto memberDto, Long todoId, String todoContent, String todoBulletName, String todoBulletImgUrl, String time, Long categoryId, String categoryColor, Long year, Long month, Long day, List<TodoMemoDto> memos) {
         this.memberDto = memberDto;
         this.todoId = todoId;
         this.todoContent = todoContent;
         this.todoBulletName = todoBulletName;
+        this.todoBulletImgUrl = todoBulletImgUrl;
         this.time = time;
         this.categoryId = categoryId;
         this.categoryColor = categoryColor;
@@ -51,12 +59,39 @@ public class DailyTodoDto {
         this.memos = memos;
     }
 
+
     public static DailyTodoDto toDailyTodoDto(MemberDto memberDto, Long year, Long month, Long day){
         return DailyTodoDto.builder()
                 .memberDto(memberDto)
                 .year(year)
                 .month(month)
                 .day(day)
+                .build();
+    }
+
+    public static DailyTodoDto toDailyTodoDto(TodoDto todoDto, List<TodoMemoDto> memos){
+        Long todoId = todoDto.getTodoId();
+        Long categoryId = todoDto.getCategoryId();
+        TodoBullet todoBullet = todoDto.getTodoBullet();
+        String todoBulletName = todoBullet.getName();
+        String todoBulletImgUrl = todoBullet.getImgUrl();
+        String todoContent = todoDto.getTodoContent();
+        String time = todoDto.getTime();
+        Long todoYear = todoDto.getTodoYear();
+        Long todoMonth = todoDto.getTodoMonth();
+        Long todoDay = todoDto.getTodoDay();
+
+        return DailyTodoDto.builder()
+                .todoId(todoId)
+                .categoryId(categoryId)
+                .todoBulletName(todoBulletName)
+                .todoBulletImgUrl(todoBulletImgUrl)
+                .todoContent(todoContent)
+                .time(time)
+                .year(todoYear)
+                .month(todoMonth)
+                .day(todoDay)
+                .memos(memos)
                 .build();
     }
 
@@ -73,6 +108,33 @@ public class DailyTodoDto {
 
         return DailyTodoDto.builder()
                 .memberDto(memberDto)
+                .todoContent(todoContent)
+                .todoBulletName(todoBulletName)
+                .time(time)
+                .categoryId(categoryId)
+                .categoryColor(categoryColor)
+                .year(year)
+                .month(month)
+                .day(day)
+                .memos(memos)
+                .build();
+    }
+
+    public static DailyTodoDto toDailyTodoDto(RequestUpdateTodoDto requestUpdateTodoDto, MemberDto memberDto) {
+        Long todoId = requestUpdateTodoDto.getTodoId();
+        String todoContent = requestUpdateTodoDto.getTodoContent();
+        String todoBulletName = requestUpdateTodoDto.getTodoBulletName();
+        String time = requestUpdateTodoDto.getTime();
+        Long categoryId = requestUpdateTodoDto.getCategoryId();
+        String categoryColor = requestUpdateTodoDto.getCategoryColor();
+        Long year = requestUpdateTodoDto.getYear();
+        Long month = requestUpdateTodoDto.getMonth();
+        Long day = requestUpdateTodoDto.getDay();
+        List<TodoMemoDto> memos = requestUpdateTodoDto.getMemos();
+
+        return DailyTodoDto.builder()
+                .memberDto(memberDto)
+                .todoId(todoId)
                 .todoContent(todoContent)
                 .todoBulletName(todoBulletName)
                 .time(time)
