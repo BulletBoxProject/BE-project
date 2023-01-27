@@ -1,17 +1,22 @@
 package com.hanghae.bulletbox.member.controller;
 
 import com.hanghae.bulletbox.common.response.Response;
+import com.hanghae.bulletbox.common.security.UserDetailsImpl;
 import com.hanghae.bulletbox.member.dto.MemberDto;
+import com.hanghae.bulletbox.member.dto.OauthLoginDto;
 import com.hanghae.bulletbox.member.dto.RequestLoginDto;
 import com.hanghae.bulletbox.member.dto.RequestSignupDto;
 import com.hanghae.bulletbox.member.dto.VerifyCodeDto;
 import com.hanghae.bulletbox.member.service.MailService;
 import com.hanghae.bulletbox.member.service.MemberService;
+import com.hanghae.bulletbox.member.service.OauthService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -23,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Tag(name = "Member", description = "회원 API")
@@ -54,8 +60,8 @@ public class MemberController {
             @ApiResponse(responseCode = "200", description = "이메일 인증 메일이 전송되었습니다.")
     })
     @PostMapping("/signup/email-validate")
-    public Response<MemberDto> mailConfirm(@ApiIgnore @RequestBody MemberDto memberDto) throws Exception {
-        String email = memberDto.getEmail();
+    public Response<MemberDto> mailConfirm(@ApiIgnore @RequestBody VerifyCodeDto verifyCodeDto) throws Exception {
+        String email = verifyCodeDto.getEmail();
         mailService.sendSimpleMessage(email);
         return Response.success(200, "이메일 인증 메일이 전송되었습니다.", null);
     }
@@ -66,8 +72,8 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "인증 번호가 일치하지 않습니다.")
     })
     @PostMapping("/signup/verifycode")
-    public Response<?> verifyCode(@ApiIgnore @RequestBody VerifyCodeDto verifyCodeDto, MemberDto memberDto) {
-        String email = memberDto.getEmail();
+    public Response<?> verifyCode(@ApiIgnore @RequestBody VerifyCodeDto verifyCodeDto) {
+        String email = verifyCodeDto.getEmail();
         String code = verifyCodeDto.getVerifyCode();
         mailService.verifyCode(email, code);
         return Response.success(200, "이메일 인증이 완료되었습니다.", true);
@@ -85,5 +91,18 @@ public class MemberController {
         memberService.login(memberDto, httpServletResponse);
         return Response.success(200, "로그인이 완료되었습니다.", null);
     }
+
+    @PostMapping("/logout")
+    public Response<?> logout(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        memberService.logout(userDetails.getMember());
+        return Response.success(200, "로그아웃 성공", null);
+    }
+
+    @PostMapping("/auth/token")
+    public Response<?> reissueToken(HttpServletRequest request, HttpServletResponse response){
+        memberService.reissueToken(request, response);
+        return Response.success(200, "토큰 재발행 성공", null);
+    }
+
 }
 
