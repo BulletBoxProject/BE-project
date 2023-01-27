@@ -1,8 +1,9 @@
 package com.hanghae.bulletbox.todo.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.hanghae.bulletbox.favorite.dto.FavoriteMemoDto;
 import com.hanghae.bulletbox.member.dto.MemberDto;
-
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.todo.entity.Todo;
 import com.hanghae.bulletbox.todo.entity.TodoMemo;
@@ -22,8 +23,10 @@ public class TodoMemoDto {
 
     private String todoMemoContent;
 
+    @JsonIgnore
     private MemberDto memberDto;
 
+    @JsonIgnore
     private TodoDto todoDto;
 
     @Builder(access = AccessLevel.PRIVATE)

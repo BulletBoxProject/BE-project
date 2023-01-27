@@ -6,6 +6,7 @@ import com.hanghae.bulletbox.common.entity.TimeStamped;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.todo.TodoBullet;
+import com.hanghae.bulletbox.todo.dto.SearchTodoDto;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 
 import lombok.AccessLevel;
@@ -103,6 +104,35 @@ public class Todo extends TimeStamped {
         Long todoMonth = todoDto.getTodoMonth();
         Long todoDay = todoDto.getTodoDay();
         String time = todoDto.getTime();
+
+        return Todo.builder()
+                .todoId(todoId)
+                .member(member)
+                .categoryId(categoryId)
+                .categoryColor(categoryColor)
+                .todoBullet(todoBullet)
+                .todoContent(todoContent)
+                .todoYear(todoYear)
+                .todoMonth(todoMonth)
+                .todoDay(todoDay)
+                .time(time)
+                .build();
+    }
+
+    public static Todo toTodo(SearchTodoDto searchTodoDto) {
+
+        MemberDto memberDto = searchTodoDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+
+        Long todoId = searchTodoDto.getTodoId();
+        Long categoryId = searchTodoDto.getCategoryId();
+        String categoryColor = searchTodoDto.getCategoryColor();
+        TodoBullet todoBullet = searchTodoDto.getTodoBullet();
+        String todoContent = searchTodoDto.getTodoContent();
+        Long todoYear = searchTodoDto.getTodoYear();
+        Long todoMonth = searchTodoDto.getTodoMonth();
+        Long todoDay = searchTodoDto.getTodoDay();
+        String time = searchTodoDto.getTime();
 
         return Todo.builder()
                 .todoId(todoId)
