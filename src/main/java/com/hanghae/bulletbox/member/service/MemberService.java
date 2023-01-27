@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.DIFFERENT_PASSWORD_MSG;
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.DUPLICATE_EMAIL_MSG;
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_EMAIL_MSG;
-import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_MATCH_REFRESHTOKEN;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_MATCH_REFRESH_TOKEN;
 import static com.hanghae.bulletbox.common.security.jwt.JwtUtil.AUTHORIZATION_ACCESS;
 import static com.hanghae.bulletbox.common.security.jwt.JwtUtil.AUTHORIZATION_REFRESH;
 
@@ -87,14 +87,12 @@ public class MemberService {
         String token = jwtUtil.resolveToken(request, AUTHORIZATION_ACCESS); //요청헤더에서 온 ATK(bearer 제외)
         Claims info = jwtUtil.getUserInfoFromToken(token, true); //ATK에서 body가지고 옴
         String email = info.getSubject(); //가지고온 body에서 subject 빼오기 = email
-        System.out.println(email);
         String refreshTokenFromRedis = redisUtil.getData(email);
-        if (refreshTokenFromRequest.equals(refreshTokenFromRedis)) {
-            jwtUtil.validateRefreshToken(request, email);
-            issueTokens(response, email);
-        } else {
-            throw new IllegalArgumentException(NOT_MATCH_REFRESHTOKEN.getMsg());
+        if(!refreshTokenFromRequest.equals(refreshTokenFromRedis)){
+            throw new IllegalArgumentException(NOT_MATCH_REFRESH_TOKEN.getMsg());
         }
+        jwtUtil.validateRefreshToken(request, email);
+        issueTokens(response, email);
     }
 
     @Transactional

@@ -24,9 +24,7 @@ import javax.annotation.PostConstruct;
 
 import javax.servlet.http.HttpServletRequest;
 
-import java.net.http.HttpRequest;
 import java.security.Key;
-
 import java.util.Base64;
 import java.util.Date;
 
@@ -53,6 +51,7 @@ public class JwtUtil {
 
     @Value("${jwt.secret.key.refresh}")
     private String refreshTokenSecretKey;
+
     private Key accessTokenKey;
 
     private Key refreshTokenKey;
@@ -140,16 +139,16 @@ public class JwtUtil {
 
     // 토큰에서 사용자 정보 가져오기
     public Claims getUserInfoFromToken(String token, boolean isRefresh) {
-        if (isRefresh) {
-            try {
-                return Jwts.parserBuilder().setSigningKey(accessTokenKey).build().parseClaimsJws(token).getBody();
-            } catch (ExpiredJwtException e) {
-                return e.getClaims();
-            }
-        } else {
+        if (!isRefresh) {
             return Jwts.parserBuilder().setSigningKey(accessTokenKey).build().parseClaimsJws(token).getBody();
         }
+        try {
+            return Jwts.parserBuilder().setSigningKey(accessTokenKey).build().parseClaimsJws(token).getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
     }
+
 
     // Authentication 객체 생성
     public Authentication createAuthentication(String email) {
