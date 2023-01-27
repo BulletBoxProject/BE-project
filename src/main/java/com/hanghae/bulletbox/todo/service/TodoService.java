@@ -3,6 +3,7 @@ package com.hanghae.bulletbox.todo.service;
 import com.hanghae.bulletbox.category.repository.CategoryRepository;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
+import com.hanghae.bulletbox.todo.dto.SearchTodoDto;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 import com.hanghae.bulletbox.todo.entity.Todo;
 import com.hanghae.bulletbox.todo.repository.TodoRepository;
@@ -12,10 +13,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
-import static com.hanghae.bulletbox.common.exception.ExceptionMessage.*;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_CATEGORY_MSG;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_MEMBER_MSG;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.TODO_NOT_FOUND_MSG;
 
 
 @RequiredArgsConstructor
@@ -116,5 +120,25 @@ public class TodoService {
         checkTodoIsSafe(todo);
 
         todo.updateAll(todoDto);
+    }
+
+    // member 기준 모든 할 일 조회하기 (검색용)
+    public List<SearchTodoDto> findAllByMember(MemberDto memberDto) {
+
+        Member member = Member.toMember(memberDto);
+
+        // member 유효성 검사
+        checkMemberIsNotNull(member);
+
+        List<Todo> todoList = todoRepository.findAllByMember(member);
+        List<SearchTodoDto> searchTodoDtoList = new ArrayList<>();
+
+        for (Todo todo : todoList) {
+            // Entity -> Dto 변환
+            SearchTodoDto searchTodoDto = SearchTodoDto.toSearchTodoDto(todo);
+            searchTodoDtoList.add(searchTodoDto);
+        }
+
+        return searchTodoDtoList;
     }
 }
