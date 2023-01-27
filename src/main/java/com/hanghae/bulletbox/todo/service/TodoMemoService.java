@@ -2,6 +2,7 @@ package com.hanghae.bulletbox.todo.service;
 
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
+import com.hanghae.bulletbox.todo.dto.SearchTodoDto;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 import com.hanghae.bulletbox.todo.dto.TodoMemoDto;
 import com.hanghae.bulletbox.todo.entity.Todo;
@@ -63,6 +64,25 @@ public class TodoMemoService {
 
         List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMemberAndTodo(member, todo);
 
+        List<TodoMemoDto> todoMemoDtoList = new ArrayList<>();
+
+        for(TodoMemo todoMemo : todoMemoList){
+            TodoMemoDto todoMemoDto = TodoMemoDto.toTodoMemoDto(todoMemo);
+            todoMemoDtoList.add(todoMemoDto);
+        }
+
+        return todoMemoDtoList;
+    }
+
+    // todo로 메모 찾기 (검색용)
+    @Transactional(readOnly = true)
+    public List<TodoMemoDto> findAllMemoByTodo(SearchTodoDto searchTodoDto){
+
+        Todo todo = Todo.toTodo(searchTodoDto);
+        MemberDto memberDto = searchTodoDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+
+        List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMemberAndTodo(member, todo);
         List<TodoMemoDto> todoMemoDtoList = new ArrayList<>();
 
         for(TodoMemo todoMemo : todoMemoList){
