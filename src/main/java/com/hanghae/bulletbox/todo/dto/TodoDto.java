@@ -3,6 +3,7 @@ package com.hanghae.bulletbox.todo.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import com.hanghae.bulletbox.diary.dto.DailyTodoDto;
+import com.hanghae.bulletbox.favorite.dto.FavoriteDto;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.todo.TodoBullet;
@@ -91,6 +92,25 @@ public class TodoDto {
                 .todoMonth(todoMonth)
                 .todoDay(todoDay)
                 .time(time)
+                .build();
+    }
+
+    public static TodoDto toTodoDto(FavoriteDto favoriteDto, Long todoYear, Long todoMonth, Long todoDay) {
+        String favoriteContent = favoriteDto.getFavoriteContent();
+        MemberDto memberDto = favoriteDto.getMemberDto();
+        Long categoryId = favoriteDto.getCategoryId();
+        String categoryColor = favoriteDto.getCategoryColor();
+
+
+        return TodoDto.builder()
+                .memberDto(memberDto)
+                .todoContent(favoriteContent)
+                .categoryId(categoryId)
+                .categoryColor(categoryColor)
+                .todoBullet(TodoBullet.FAVORITE)
+                .todoYear(todoYear)
+                .todoMonth(todoMonth)
+                .todoDay(todoDay)
                 .build();
     }
 

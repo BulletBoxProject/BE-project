@@ -134,4 +134,14 @@ public class FavoriteService {
                 () -> new NoSuchElementException(NOT_FOUND_FAVORITE_MSG.getMsg())
         );
     }
+
+    // favoriteId로 루틴 조회
+    public FavoriteDto findDtoById(Long favoriteId) {
+        Favorite favorite = favoriteRepository.findById(favoriteId)
+                .orElseThrow(() -> new NoSuchElementException(NOT_FOUND_FAVORITE_MSG.getMsg()));
+
+        FavoriteDto favoriteDto = FavoriteDto.toFavoriteDto(favorite);
+
+        return favoriteDto;
+    }
 }

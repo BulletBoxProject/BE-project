@@ -5,6 +5,9 @@ import com.hanghae.bulletbox.category.service.CategoryService;
 import com.hanghae.bulletbox.diary.dto.DailyTodoDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowTodoCreatePageDto;
 import com.hanghae.bulletbox.diary.dto.ResponseTodoUpdatePageDto;
+import com.hanghae.bulletbox.favorite.dto.FavoriteDto;
+import com.hanghae.bulletbox.favorite.dto.FavoriteMemoDto;
+import com.hanghae.bulletbox.favorite.service.FavoriteService;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 import com.hanghae.bulletbox.todo.dto.TodoMemoDto;
@@ -27,6 +30,8 @@ public class DailyTodoService {
     private final TodoService todoService;
 
     private final TodoMemoService todoMemoService;
+
+    private final FavoriteService favoriteService;
 
 
     // 데일리 로그 할 일 추가 페이지 조회
@@ -128,6 +133,32 @@ public class DailyTodoService {
 
             // 기존에 있던 메모 업데이트
             todoMemoService.updateTodoMemo(todoMemoDto);
+        }
+    }
+
+    @Transactional
+    public void loadFavorite(Long favoriteId, DailyTodoDto dailyTodoDto) {
+        MemberDto memberDto = dailyTodoDto.getMemberDto();
+        Long year = dailyTodoDto.getYear();
+        Long month = dailyTodoDto.getMonth();
+        Long day = dailyTodoDto.getDay();
+
+        // 루틴 찾기
+        FavoriteDto favoriteDto = favoriteService.findDtoById(favoriteId);
+
+        // 루틴에 있는 내용 할 일로 담기
+        TodoDto todoDto = TodoDto.toTodoDto(favoriteDto, year, month, day);
+
+        TodoDto savedTodoDto = todoService.saveTodo(todoDto);
+
+        // 루틴에 있는 메모들 메모에 담기
+        List<FavoriteMemoDto> favoriteMemoDtoList = favoriteDto.getFavoriteMemos();
+
+        for(FavoriteMemoDto favoriteMemoDto : favoriteMemoDtoList){
+            TodoMemoDto todoMemoDto = TodoMemoDto.toTodoMemoDto(favoriteMemoDto);
+            todoMemoDto.setTodoDto(savedTodoDto);
+
+            todoMemoService.saveTodoMemo(todoMemoDto);
         }
     }
 }
