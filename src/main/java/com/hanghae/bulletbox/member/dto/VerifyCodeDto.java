@@ -17,7 +17,10 @@ public class VerifyCodeDto {
     @NotNull
     private String verifyCode;
 
-    public VerifyCodeDto(String verifyCode) {
+    private String email;
+
+    public VerifyCodeDto(String email, String verifyCode) {
         this.verifyCode = verifyCode;
+        this.email = email;
     }
 }
