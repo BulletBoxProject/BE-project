@@ -2,6 +2,7 @@ package com.hanghae.bulletbox.todo.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.hanghae.bulletbox.favorite.dto.FavoriteMemoDto;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.todo.entity.Todo;
@@ -34,6 +35,16 @@ public class TodoMemoDto {
         this.todoMemoContent = todoMemoContent;
         this.memberDto = memberDto;
         this.todoDto = todoDto;
+    }
+
+    public static TodoMemoDto toTodoMemoDto(FavoriteMemoDto favoriteMemoDto){
+        MemberDto memberDto = favoriteMemoDto.getMemberDto();
+        String favoriteMemoContent = favoriteMemoDto.getFavoriteMemoContent();
+
+        return TodoMemoDto.builder()
+                .memberDto(memberDto)
+                .todoMemoContent(favoriteMemoContent)
+                .build();
     }
 
     public static TodoMemoDto toTodoMemoDto(TodoMemo todoMemo) {
