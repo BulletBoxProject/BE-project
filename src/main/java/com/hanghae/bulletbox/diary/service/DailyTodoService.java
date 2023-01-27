@@ -4,8 +4,8 @@ import com.hanghae.bulletbox.category.dto.CategoryDto;
 import com.hanghae.bulletbox.category.service.CategoryService;
 import com.hanghae.bulletbox.diary.dto.DailyTodoDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowTodoCreatePageDto;
+import com.hanghae.bulletbox.diary.dto.ResponseTodoUpdatePageDto;
 import com.hanghae.bulletbox.member.dto.MemberDto;
-
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 import com.hanghae.bulletbox.todo.dto.TodoMemoDto;
 import com.hanghae.bulletbox.todo.service.TodoMemoService;
@@ -17,9 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-
-import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_MEMBER_MSG;
 
 @RequiredArgsConstructor
 @Service
@@ -70,16 +67,67 @@ public class DailyTodoService {
     @Transactional
     public void deleteTodo(MemberDto memberDto, Long todoId) {
 
-        TodoDto todoDto = todoService.findByTodoId(todoId);
-
-        if(!todoDto.getMemberDto().equals(memberDto)){
-            throw new NoSuchElementException(NOT_FOUND_MEMBER_MSG.getMsg());
-        }
+        TodoDto todoDto = todoService.findDtoByTodoIdAndMember(todoId, memberDto);
 
         // 지우려는 할 일의 하위 메모 찾아서 삭제하기
         todoMemoService.deleteTodoMemosOfTodo(todoDto);
 
         // 할 일 삭제하기
         todoService.deleteTodo(todoDto);
+    }
+
+    // 할 일 수정 페이지 조회하기
+    @Transactional(readOnly = true)
+    public ResponseTodoUpdatePageDto showTodoUpdatePage(Long todoId, MemberDto memberDto) {
+        // 카테고리 조회하기
+        List<CategoryDto> categoryDtoList = categoryService.findAllCategory(memberDto);
+
+        // 할 일 조회해서 받기
+        TodoDto todoDto = todoService.findDtoByTodoIdAndMember(todoId,memberDto);
+
+        // 메모 조회해서 받기
+        List<TodoMemoDto> todoMemoDtoList = todoMemoService.findAllMemoByTodo(todoDto);
+
+        // 할 일, 메모 합쳐서 반환하기
+        DailyTodoDto dailyTodoDto = DailyTodoDto.toDailyTodoDto(todoDto, todoMemoDtoList);
+
+        ResponseTodoUpdatePageDto responseTodoUpdatePageDto = ResponseTodoUpdatePageDto.toResponseTodoUpdatePageDto(categoryDtoList, dailyTodoDto);
+
+        return responseTodoUpdatePageDto;
+    }
+
+    // 할 일 수정하기
+    @Transactional
+    public void updateTodo(DailyTodoDto dailyTodoDto) {
+        // 할 일 업데이트 하기
+        TodoDto todoDto = TodoDto.toTodoDto(dailyTodoDto);
+
+        todoService.updateTodo(todoDto);
+
+        // 메모 업데이트 하기 (아이디가 있을 경우 업데이트, 있었는데 없을 경우 삭제, 원래 없는 경우는 추가)
+        List<TodoMemoDto> memos = dailyTodoDto.getMemos();
+        MemberDto memberDto = dailyTodoDto.getMemberDto();
+
+        for(TodoMemoDto todoMemoDto : memos){
+            Long todoMemoId = todoMemoDto.getTodoMemoId();
+            String todoMemoContent = todoMemoDto.getTodoMemoContent();
+
+            // 있었는데 없어진 메모 삭제
+            if(todoMemoContent == null){
+                todoMemoService.deleteTodoMemoById(todoMemoId);
+                continue;
+            }
+
+            // 새로 생긴 메모 생성
+            if(todoMemoId == null){
+                todoMemoDto.setTodoDto(todoDto);
+                todoMemoDto.setMemberDto(memberDto);
+                todoMemoService.saveTodoMemo(todoMemoDto);
+                continue;
+            }
+
+            // 기존에 있던 메모 업데이트
+            todoMemoService.updateTodoMemo(todoMemoDto);
+        }
     }
 }

@@ -5,9 +5,11 @@ import com.hanghae.bulletbox.common.response.Response;
 import com.hanghae.bulletbox.common.security.UserDetailsImpl;
 import com.hanghae.bulletbox.diary.dto.DailyTodoDto;
 import com.hanghae.bulletbox.diary.dto.RequestCreateTodoDto;
+import com.hanghae.bulletbox.diary.dto.RequestUpdateTodoDto;
 import com.hanghae.bulletbox.diary.dto.ResponseDailyDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowDailyDto;
 import com.hanghae.bulletbox.diary.dto.ResponseShowTodoCreatePageDto;
+import com.hanghae.bulletbox.diary.dto.ResponseTodoUpdatePageDto;
 import com.hanghae.bulletbox.diary.service.DailyService;
 import com.hanghae.bulletbox.diary.service.DailyTodoService;
 import com.hanghae.bulletbox.member.dto.MemberDto;
@@ -26,12 +28,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
 import springfox.documentation.annotations.ApiIgnore;
 
 @Tag(name = "Daily", description = "데일리 로그 API")
@@ -119,6 +121,7 @@ public class DailyController {
         return Response.success(201, "할 일을 생성하였습니다.", null);
     }
 
+    // 할 일 삭제하기
     @DeleteMapping("/todo/{todoId}")
     public Response<?> deleteTodo(@PathVariable Long todoId,
                                   @AuthenticationPrincipal UserDetailsImpl userDetails){
@@ -128,5 +131,32 @@ public class DailyController {
         dailyTodoService.deleteTodo(memberDto, todoId);
 
         return Response.success(200, "할 일을 삭제하였습니다.", null);
+    }
+
+    // 할 일 수정 페이지 조회하기
+    @GetMapping("/todo/{todoId}")
+    public Response<ResponseTodoUpdatePageDto> showTodoUpdatePage(@PathVariable Long todoId,
+                                                                  @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        MemberDto memberDto = MemberDto.toMemberDto(userDetails);
+
+        ResponseTodoUpdatePageDto responseTodoUpdatePageDto = dailyTodoService.showTodoUpdatePage(todoId, memberDto);
+
+        return Response.success(200, "할 일 수정 페이지를 조회하였습니다.", responseTodoUpdatePageDto);
+
+    }
+
+    // 할 일 수정하기
+    @PutMapping("/todo")
+    public Response<?> updateTodo(@RequestBody RequestUpdateTodoDto requestUpdateTodoDto,
+                                  @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        MemberDto memberDto = MemberDto.toMemberDto(userDetails);
+
+        DailyTodoDto dailyTodoDto = DailyTodoDto.toDailyTodoDto(requestUpdateTodoDto, memberDto);
+
+        dailyTodoService.updateTodo(dailyTodoDto);
+
+        return Response.success(200, "할 일이 수정되었습니다.", null);
     }
 }
