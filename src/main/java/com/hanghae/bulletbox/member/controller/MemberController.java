@@ -3,13 +3,11 @@ package com.hanghae.bulletbox.member.controller;
 import com.hanghae.bulletbox.common.response.Response;
 import com.hanghae.bulletbox.common.security.UserDetailsImpl;
 import com.hanghae.bulletbox.member.dto.MemberDto;
-import com.hanghae.bulletbox.member.dto.OauthLoginDto;
 import com.hanghae.bulletbox.member.dto.RequestLoginDto;
 import com.hanghae.bulletbox.member.dto.RequestSignupDto;
 import com.hanghae.bulletbox.member.dto.VerifyCodeDto;
 import com.hanghae.bulletbox.member.service.MailService;
 import com.hanghae.bulletbox.member.service.MemberService;
-import com.hanghae.bulletbox.member.service.OauthService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
