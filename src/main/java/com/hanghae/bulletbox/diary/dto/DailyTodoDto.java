@@ -72,6 +72,7 @@ public class DailyTodoDto {
     public static DailyTodoDto toDailyTodoDto(TodoDto todoDto, List<TodoMemoDto> memos){
         Long todoId = todoDto.getTodoId();
         Long categoryId = todoDto.getCategoryId();
+        String categoryColor = todoDto.getCategoryColor();
         TodoBullet todoBullet = todoDto.getTodoBullet();
         String todoBulletName = todoBullet.getName();
         String todoBulletImgUrl = todoBullet.getImgUrl();
@@ -84,6 +85,7 @@ public class DailyTodoDto {
         return DailyTodoDto.builder()
                 .todoId(todoId)
                 .categoryId(categoryId)
+                .categoryColor(categoryColor)
                 .todoBulletName(todoBulletName)
                 .todoBulletImgUrl(todoBulletImgUrl)
                 .todoContent(todoContent)
