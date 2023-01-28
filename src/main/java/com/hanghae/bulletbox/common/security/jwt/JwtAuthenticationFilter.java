@@ -17,6 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+import static com.hanghae.bulletbox.common.security.jwt.JwtUtil.AUTHORIZATION_ACCESS;
+import static com.hanghae.bulletbox.common.security.jwt.JwtUtil.AUTHORIZATION_REFRESH;
+
 @Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -26,20 +29,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        String token = jwtUtil.resolveToken(request);
+        String token = jwtUtil.resolveToken(request, AUTHORIZATION_ACCESS);
 
-        if (token == null) {
+        String refreshToken = jwtUtil.resolveToken(request, AUTHORIZATION_REFRESH);
+
+        if (token == null || refreshToken != null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        if (!jwtUtil.validateAccessToken(token)) {
-            // 핸들러 추가해야함.
-            return;
-        }
+//        if (!jwtUtil.validateAccessToken(token)) {
+//            // 핸들러 추가해야함.
+//            return;
+//        }
 
         // 사용자 인증
-        Claims claims = jwtUtil.getUserInfoFromToken(token);
+        Claims claims = jwtUtil.getUserInfoFromToken(token, false);
         setAuthentication(claims.getSubject());
         filterChain.doFilter(request, response);
     }

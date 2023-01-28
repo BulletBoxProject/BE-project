@@ -25,7 +25,6 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 import java.security.Key;
-
 import java.util.Base64;
 import java.util.Date;
 
@@ -35,18 +34,27 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtUtil {
 
-    public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String AUTHORIZATION_ACCESS = "Authorization";
+
+    public static final String AUTHORIZATION_REFRESH = "RefreshToken";
+
     public static final String BEARER_PREFIX = "Bearer ";
     // 토큰 만료시간 1시간(분 * 초 * 밀리 sec)
     // 작업의 편리함을 위해 토큰 만료시간 6시간으로 설정
-    private static final Long TOKEN_TIME = 6 * 30 * 60 * 1000L;
+    private static final Long TOKEN_TIME = 6 * 60 * 60 * 1000L;
 
     private final UserDetailsServiceImpl userDetailsServiceImpl;
 
     // JWT SecretKey
     @Value("${jwt.secret.key.access}")
     private String accessTokenSecretKey;
+
+    @Value("${jwt.secret.key.refresh}")
+    private String refreshTokenSecretKey;
+
     private Key accessTokenKey;
+
+    private Key refreshTokenKey;
 
     // 암호화 알고리즘 설정
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
@@ -55,11 +63,14 @@ public class JwtUtil {
     public void init() {
         byte[] accessTokenBytes = Base64.getDecoder().decode(accessTokenSecretKey); // JWT 토큰 값을 Base64 형식으로 디코딩
         accessTokenKey = Keys.hmacShaKeyFor(accessTokenBytes); // key 에 삽입
+
+        byte[] refreshTokenBytes = Base64.getDecoder().decode(refreshTokenSecretKey);
+        refreshTokenKey = Keys.hmacShaKeyFor(refreshTokenBytes);
     }
 
     // Token 분해 Method
-    public String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER); // AccessToken value 가져옴
+    public String resolveToken(HttpServletRequest request, String authorization) {
+        String bearerToken = request.getHeader(authorization); // AccessToken value 가져옴
         // bearerToken 값이 존재하고, bearerToken 값이 "Bearer " 로 시작하면
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
             return bearerToken.substring(7); // "Bearer " 이후의 값을 리턴
@@ -69,7 +80,7 @@ public class JwtUtil {
     }
 
     // AccessToken 생성
-    public String createToken(String email) {
+    public String createAccessToken(String email) {
         Date date = new Date();
 
         return BEARER_PREFIX + // BEARER 앞에 붙여주기
@@ -81,11 +92,21 @@ public class JwtUtil {
                         .compact(); // URL-Safe string Token 생성
     }
 
+    public String createRefreshToken() {
+        Date date = new Date();
+        return BEARER_PREFIX +
+                Jwts.builder()
+                        .setExpiration(new Date(System.currentTimeMillis() + TOKEN_TIME + 24 * 60 * 60 * 1000L))
+                        .setIssuedAt(date)
+                        .signWith(refreshTokenKey, signatureAlgorithm)
+                        .compact();
+    }
+
     // AccessToken 검증
-    public boolean validateAccessToken(String accessToken) {
+    public boolean validateAccessToken(HttpServletRequest request, String accessToken) {
         try {
             // String 형태인 토큰을 Thread-safe 하게 parse 하기 위해 AccessToken 가져와 JWS 로 파싱
-            Jwts.parserBuilder().setSigningKey(accessTokenKey).build().parseClaimsJws(accessToken);
+            Jwts.parserBuilder().setSigningKey(accessTokenKey).build().parseClaimsJws(request.getHeader(AUTHORIZATION_ACCESS).substring(7));
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid Access JWT signature, 유효하지 않는 Access JWT 서명 입니다.");
@@ -99,10 +120,35 @@ public class JwtUtil {
         return false;
     }
 
-    // 토큰에서 사용자 정보 가져오기
-    public Claims getUserInfoFromToken(String token) {
-        return Jwts.parserBuilder().setSigningKey(accessTokenKey).build().parseClaimsJws(token).getBody();
+    public boolean validateRefreshToken(HttpServletRequest request, String email) {
+        try {
+            // String 형태인 토큰을 Thread-safe 하게 parse 하기 위해 AccessToken 가져와 JWS 로 파싱
+            Jwts.parserBuilder().setSigningKey(refreshTokenKey).build().parseClaimsJws(request.getHeader(AUTHORIZATION_REFRESH).substring(7));
+            return true;
+        } catch (SecurityException | MalformedJwtException e) {
+            log.info("Invalid Refresh JWT signature, 유효하지 않는 Refresh JWT 서명 입니다.");
+        } catch (ExpiredJwtException e) {
+            log.info("Expired Refresh JWT, 만료된 Refresh JWT 입니다.");
+        } catch (UnsupportedJwtException e) {
+            log.info("Unsupported Access JWT, 지원되지 않는 Refresh JWT 입니다.");
+        } catch (IllegalArgumentException e) {
+            log.info("Access JWT claims is empty, 잘못된 Refresh JWT 입니다.");
+        }
+        return false;
     }
+
+    // 토큰에서 사용자 정보 가져오기
+    public Claims getUserInfoFromToken(String token, boolean isRefresh) {
+        if (!isRefresh) {
+            return Jwts.parserBuilder().setSigningKey(accessTokenKey).build().parseClaimsJws(token).getBody();
+        }
+        try {
+            return Jwts.parserBuilder().setSigningKey(accessTokenKey).build().parseClaimsJws(token).getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
+    }
+
 
     // Authentication 객체 생성
     public Authentication createAuthentication(String email) {

@@ -42,3 +42,4 @@ out/
 application-security.properties
 application-dev.properties
 mail-security.properties
+application-security-oauth.properties

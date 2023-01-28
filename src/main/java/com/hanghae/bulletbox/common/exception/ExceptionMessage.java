@@ -4,13 +4,12 @@ import lombok.Getter;
 
 @Getter
 public enum ExceptionMessage {
-    EXCEPTION_MESSAGE_SAMPLE(401,"예외 내용을 적어주세요"),
 
     NOT_FOUND_MEMBER_MSG(404, "존재하지 않는 사용자입니다."),
 
     DUPLICATE_EMAIL_MSG(400, "이미 가입한 이메일입니다."),
 
-    NOT_FOUND_EMAIL_MSG(400,"이메일 또는 비밀번호를 확인해주세요."),
+    NOT_FOUND_EMAIL_MSG(400, "이메일 또는 비밀번호를 확인해주세요."),
 
     DIFFERENT_PASSWORD_MSG(400, "이메일 또는 비밀번호가 일치하지 않습니다."),
 
@@ -19,15 +18,19 @@ public enum ExceptionMessage {
     FAILED_TO_SEND_MAIL(400, "메일 발송에 실패하였습니다."),
 
     /*Jwt, Security */
-    TOKEN_NOT_FOUND_MSG(401,"토큰이 존재하지 않습니다."),
+    TOKEN_NOT_FOUND_MSG(401, "토큰이 존재하지 않습니다."),
 
-    INVALID_TOKEN_MSG(401,"토큰이 유효하지 않습니다."),
+    INVALID_TOKEN_MSG(401, "토큰이 유효하지 않습니다."),
+
+    SOCIAL_LOGIN_ERROR(401, "소셜 로그인에 실패하였습니다."),
+
+    NOT_MATCH_REFRESH_TOKEN(401, "리프레쉬 토큰이 일치하지 않습니다."),
 
     // Todo관련
     BULLET_NOT_FOUND_MSG(404, "불렛이 존재하지 않습니다."),
 
     TODO_NOT_FOUND_MSG(404, "할 일이 존재하지 않습니다."),
-
+    
     // TodoMemo 관련
     TODO_MEMO_NOT_FOUND_MSG(404, "메모가 존재하지 않습니다"),
 

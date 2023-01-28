@@ -46,6 +46,10 @@ dependencies {
 
     // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    //OAuth2
+    implementation group: 'org.springframework.security', name: 'spring-security-oauth2-client', version: '5.6.3'
+    implementation 'com.google.code.gson:gson:2.8.9'
 }
 
 tasks.named('test') {
