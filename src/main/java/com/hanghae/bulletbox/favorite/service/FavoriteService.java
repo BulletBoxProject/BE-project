@@ -123,6 +123,9 @@ public class FavoriteService {
 
         Favorite favorite = findFavoriteByIdAndMember(favoriteId, member);
 
+        Long categoryId = favoriteDto.getCategoryId();
+        favorite.setCategoryId(categoryId);
+
         checkFavoriteTodoIsSafe(favorite);
 
         favorite.update(favoriteDto);
