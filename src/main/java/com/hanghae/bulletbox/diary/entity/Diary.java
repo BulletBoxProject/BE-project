@@ -78,4 +78,10 @@ public class Diary {
                 .day(day)
                 .build();
     }
+
+    // Diary 수정
+    public void updateAll(DiaryDto diaryDto) {
+        diaryContent = diaryDto.getDiaryContent();
+        emotion = diaryDto.getEmotion();
+    }
 }
