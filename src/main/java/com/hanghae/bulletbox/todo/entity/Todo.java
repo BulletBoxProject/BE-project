@@ -147,4 +147,8 @@ public class Todo extends TimeStamped {
                 .time(time)
                 .build();
     }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
 }
