@@ -1,4 +1,4 @@
-package com.hanghae.bulletbox.diary.dto;
+package com.hanghae.bulletbox.todo.dto;
 
 import com.hanghae.bulletbox.todo.dto.TodoMemoDto;
 
@@ -10,7 +10,9 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RequestCreateTodoDto {
+public class RequestUpdateTodoDto {
+
+    private Long todoId;
 
     private String todoContent;
 
@@ -29,4 +31,5 @@ public class RequestCreateTodoDto {
     private Long day;
 
     private List<TodoMemoDto> memos;
+
 }

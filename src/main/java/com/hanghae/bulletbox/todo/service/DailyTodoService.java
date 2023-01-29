@@ -1,10 +1,10 @@
-package com.hanghae.bulletbox.diary.service;
+package com.hanghae.bulletbox.todo.service;
 
 import com.hanghae.bulletbox.category.dto.CategoryDto;
 import com.hanghae.bulletbox.category.service.CategoryService;
-import com.hanghae.bulletbox.diary.dto.DailyTodoDto;
-import com.hanghae.bulletbox.diary.dto.ResponseShowTodoCreatePageDto;
-import com.hanghae.bulletbox.diary.dto.ResponseTodoUpdatePageDto;
+import com.hanghae.bulletbox.todo.dto.DailyTodoDto;
+import com.hanghae.bulletbox.todo.dto.ResponseShowTodoCreatePageDto;
+import com.hanghae.bulletbox.todo.dto.ResponseTodoUpdatePageDto;
 import com.hanghae.bulletbox.favorite.dto.FavoriteDto;
 import com.hanghae.bulletbox.favorite.dto.FavoriteMemoDto;
 import com.hanghae.bulletbox.favorite.service.FavoriteService;

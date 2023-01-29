@@ -1,11 +1,9 @@
-package com.hanghae.bulletbox.diary.dto;
+package com.hanghae.bulletbox.todo.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.todo.TodoBullet;
-import com.hanghae.bulletbox.todo.dto.TodoDto;
-import com.hanghae.bulletbox.todo.dto.TodoMemoDto;
 
 import lombok.AccessLevel;
 import lombok.Builder;
