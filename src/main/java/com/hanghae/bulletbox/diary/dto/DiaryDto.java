@@ -42,6 +42,25 @@ public class DiaryDto {
         this.day = day;
     }
 
+    public static DiaryDto toDiaryDto(RequestDiaryUpdateDto requestDiaryUpdateDto, MemberDto memberDto){
+        Long diaryId = requestDiaryUpdateDto.getDiaryId();
+        String diaryContent = requestDiaryUpdateDto.getDiaryContent();
+        String emotion = requestDiaryUpdateDto.getEmotion();
+        Long year = requestDiaryUpdateDto.getYear();
+        Long month = requestDiaryUpdateDto.getMonth();
+        Long day = requestDiaryUpdateDto.getDay();
+
+        return DiaryDto.builder()
+                .diaryId(diaryId)
+                .memberDto(memberDto)
+                .diaryContent(diaryContent)
+                .emotion(emotion)
+                .year(year)
+                .month(month)
+                .day(day)
+                .build();
+    }
+
     // Diary를 DiaryDto로 변환
     public static DiaryDto toDiaryDto(Diary diary) {
         Long diaryId = diary.getDiaryId();
