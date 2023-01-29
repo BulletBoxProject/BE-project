@@ -1,5 +1,7 @@
 package com.hanghae.bulletbox.diary.entity;
 
+import com.hanghae.bulletbox.diary.dto.DiaryDto;
+import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 
 import lombok.AccessLevel;
@@ -45,12 +47,35 @@ public class Diary {
     private Long day;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private Diary(Member member, String diaryContent, String emotion, Long year, Long month, Long day) {
+    private Diary(Long diaryId, Member member, String diaryContent, String emotion, Long year, Long month, Long day) {
+        this.diaryId = diaryId;
         this.member = member;
         this.diaryContent = diaryContent;
         this.emotion = emotion;
         this.year = year;
         this.month = month;
         this.day = day;
+    }
+
+    // diaryDto를 diary로 변환
+    public static Diary toDiary(DiaryDto diaryDto) {
+        Long diaryId = diaryDto.getDiaryId();
+        MemberDto memberDto = diaryDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+        String diaryContent = diaryDto.getDiaryContent();
+        String emotion = diaryDto.getEmotion();
+        Long year = diaryDto.getYear();
+        Long month = diaryDto.getMonth();
+        Long day = diaryDto.getDay();
+
+        return Diary.builder()
+                .diaryId(diaryId)
+                .member(member)
+                .diaryContent(diaryContent)
+                .emotion(emotion)
+                .year(year)
+                .month(month)
+                .day(day)
+                .build();
     }
 }
