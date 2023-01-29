@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 PROJECT_ROOT="/home/ubuntu/BulletBox"
-JAR_FILE="$PROJECT_ROOT/bulletBox-webapp.jar"
+JAR_FILE="bulletBox-webapp.jar"
 
 DEPLOY_LOG="$PROJECT_ROOT/deploy.log"
 
@@ -16,4 +16,5 @@ if [ -z $CURRENT_PID ]; then
 else
   echo "$TIME_NOW > 실행중인 $CURRENT_PID 애플리케이션 종료 " >> $DEPLOY_LOG
   kill -15 $CURRENT_PID
+  sleep 5
 fi
