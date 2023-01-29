@@ -2,6 +2,7 @@ package com.hanghae.bulletbox.diary.controller;
 
 import com.hanghae.bulletbox.common.response.Response;
 import com.hanghae.bulletbox.common.security.UserDetailsImpl;
+import com.hanghae.bulletbox.diary.dto.DiaryDto;
 import com.hanghae.bulletbox.diary.dto.MonthlyEmotionDto;
 import com.hanghae.bulletbox.diary.dto.ResponseDiaryCalendarPageDto;
 import com.hanghae.bulletbox.diary.dto.ResponseDiaryPageDto;
@@ -23,6 +24,7 @@ public class DiaryController {
 
     private final DiaryPageService diaryPageService;
 
+    // 일기장 페이지 조회
     @GetMapping
     public Response<ResponseDiaryPageDto> showDiaryPage(@AuthenticationPrincipal UserDetailsImpl userDetails){
 
@@ -33,6 +35,7 @@ public class DiaryController {
         return Response.success(200, "일기장 페이지 조회를 성공했습니다.", responseDiaryPageDto);
     }
 
+    // 일기장 페이지 달력 조회 날짜 변경
     @GetMapping("/calendars")
     public Response<ResponseDiaryCalendarPageDto> changeMonthOfDiaryPage(@RequestParam(value = "year") Long year,
                                                                          @RequestParam(value = "month") Long month,
@@ -43,5 +46,19 @@ public class DiaryController {
         ResponseDiaryCalendarPageDto responseDiaryCalendarPageDto = diaryPageService.changeMonthOfDiaryPage(year, month, memberDto);
 
         return Response.success(200, "일기장 페이지 조회 날짜를 변경하였습니다.", responseDiaryCalendarPageDto);
+    }
+
+    // 일기장 조회 날짜 변경
+    @GetMapping("/date")
+    public Response<DiaryDto> showDiaryOfAnotherDay(@RequestParam(value = "year") Long year,
+                                                    @RequestParam(value = "month") Long month,
+                                                    @RequestParam(value = "day") Long day,
+                                                    @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        MemberDto memberDto = MemberDto.toMemberDto(userDetails);
+
+        DiaryDto diaryDto = diaryPageService.showDiaryOfAnotherDay(year, month, day, memberDto);
+
+        return Response.success(200, "해당 날짜의 일기를 조회하였습니다.", diaryDto);
     }
 }

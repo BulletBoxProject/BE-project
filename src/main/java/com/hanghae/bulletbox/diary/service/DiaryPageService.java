@@ -70,4 +70,12 @@ public class DiaryPageService {
 
         return responseDiaryCalendarPageDto;
     }
+
+    // 일기장 조회 날짜 변경
+    @Transactional(readOnly = true)
+    public DiaryDto showDiaryOfAnotherDay(Long year, Long month, Long day, MemberDto memberDto) {
+        DiaryDto diaryDto = diaryService.findByYearAndMonthAndDayAndMember(year, month, day, memberDto);
+
+        return diaryDto;
+    }
 }

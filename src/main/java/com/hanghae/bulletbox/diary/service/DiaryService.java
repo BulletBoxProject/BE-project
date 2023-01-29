@@ -36,4 +36,16 @@ public class DiaryService {
 
         return diaryDtoList;
     }
+
+    // 연,월,일,멤버로 diary 찾아서 반환하기
+    @Transactional(readOnly = true)
+    public DiaryDto findByYearAndMonthAndDayAndMember(Long year, Long month, Long day, MemberDto memberDto) {
+        Member member = Member.toMember(memberDto);
+
+        Diary diary = diaryRepository.findByMemberAndYearAndMonthAndDay(member, year, month, day).get();
+
+        DiaryDto diaryDto = DiaryDto.toDiaryDto(diary);
+
+        return diaryDto;
+    }
 }
