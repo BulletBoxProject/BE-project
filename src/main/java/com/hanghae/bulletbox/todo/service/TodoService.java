@@ -117,6 +117,9 @@ public class TodoService {
 
         Todo todo = findByTodoIdAndMember(todoId, member);
 
+        Long categoryId = todoDto.getCategoryId();
+        todo.setCategoryId(categoryId);
+
         checkTodoIsSafe(todo);
 
         todo.updateAll(todoDto);
