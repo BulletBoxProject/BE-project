@@ -3,7 +3,7 @@ package com.hanghae.bulletbox.diary.controller;
 import com.hanghae.bulletbox.common.response.Response;
 import com.hanghae.bulletbox.common.security.UserDetailsImpl;
 import com.hanghae.bulletbox.diary.dto.DiaryDto;
-import com.hanghae.bulletbox.diary.dto.MonthlyEmotionDto;
+import com.hanghae.bulletbox.diary.dto.RequestDiaryUpdateDto;
 import com.hanghae.bulletbox.diary.dto.ResponseDiaryCalendarPageDto;
 import com.hanghae.bulletbox.diary.dto.ResponseDiaryPageDto;
 import com.hanghae.bulletbox.diary.service.DiaryPageService;
@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,5 +62,19 @@ public class DiaryController {
         DiaryDto diaryDto = diaryPageService.showDiaryOfAnotherDay(year, month, day, memberDto);
 
         return Response.success(200, "해당 날짜의 일기를 조회하였습니다.", diaryDto);
+    }
+
+    // 일기장 작성 및 수정
+    @PostMapping
+    public Response<?> updateDiary(@RequestBody RequestDiaryUpdateDto requestDiaryUpdateDto,
+                                   @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        MemberDto memberDto = MemberDto.toMemberDto(userDetails);
+
+        DiaryDto diaryDto = DiaryDto.toDiaryDto(requestDiaryUpdateDto, memberDto);
+
+        diaryPageService.updateDiary(diaryDto);
+
+        return Response.success(200, "일기장 수정을 완료했습니다.", null);
     }
 }
