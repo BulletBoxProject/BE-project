@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 PROJECT_ROOT="/home/ubuntu/BulletBox"
-JAR_FILE="bulletBox-webapp.jar"
+JAR_FILE="$PROJECT_ROOT/bulletBox-webapp.jar"
 
 APP_LOG="$PROJECT_ROOT/application.log"
 ERROR_LOG="$PROJECT_ROOT/error.log"
@@ -23,10 +23,8 @@ fi
 
 # build 파일 복사
 echo "$TIME_NOW > $JAR_FILE 파일 복사" >> $DEPLOY_LOG
-cp $PROJECT_ROOT/build/libs/*.jar $PROJECT_ROOT/jar
-
-JAR_NAME=$(ls $PROJECT_ROOT | grep 'bulletBox' | tail -n 1)
+cp $PROJECT_ROOT/build/libs/*.jar $JAR_FILE
 
 # jar 파일 실행
 echo "$TIME_NOW > $JAR_NAME 파일 실행" >> $DEPLOY_LOG
-nohup java -jar $PROJECT_ROOT/jar/$JAR_NAME > $APP_LOG > $ERROR_LOG &
+nohup java -jar $JAR_FILE > $APP_LOG 2> $ERROR_LOG &
