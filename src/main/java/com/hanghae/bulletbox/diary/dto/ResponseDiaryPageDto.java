@@ -11,7 +11,6 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseDiaryPageDto {
 
     private List<MonthlyEmotionDto> emotions;
