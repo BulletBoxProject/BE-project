@@ -33,7 +33,6 @@ public class DailyTodoService {
 
     private final FavoriteService favoriteService;
 
-
     // 데일리 로그 할 일 추가 페이지 조회
     @Transactional(readOnly = true)
     public ResponseShowTodoCreatePageDto showTodoCreatePage(DailyTodoDto dailyTodoDto) {
@@ -153,6 +152,10 @@ public class DailyTodoService {
 
         // 루틴에 있는 메모들 메모에 담기
         List<FavoriteMemoDto> favoriteMemoDtoList = favoriteDto.getFavoriteMemos();
+
+        if (favoriteMemoDtoList == null) {
+            return;
+        }
 
         for(FavoriteMemoDto favoriteMemoDto : favoriteMemoDtoList){
             TodoMemoDto todoMemoDto = TodoMemoDto.toTodoMemoDto(favoriteMemoDto);
