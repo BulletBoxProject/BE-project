@@ -52,6 +52,9 @@ public class Favorite {
         this.favoriteContent = favoriteContent;
     }
 
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
 
     public static Favorite toFavorite(FavoriteDto favoriteDto) {
         MemberDto memberDto = favoriteDto.getMemberDto();
