@@ -13,6 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.DIARY_NOT_FOUND_MSG;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.DUPLICATE_DIARY_MSG;
 
 @RequiredArgsConstructor
 @Service
@@ -47,5 +52,37 @@ public class DiaryService {
         DiaryDto diaryDto = DiaryDto.toDiaryDto(diary);
 
         return diaryDto;
+    }
+
+    // 일기장 저장
+    @Transactional
+    public void saveDiary(DiaryDto diaryDto) {
+        Long year = diaryDto.getYear();
+        Long month = diaryDto.getMonth();
+        Long day = diaryDto.getDay();
+        MemberDto memberDto = diaryDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+
+        // 같은 날짜의 일기가 이미 있는지 검사
+        Optional<Diary> diaryOptional = diaryRepository.findByMemberAndYearAndMonthAndDay(member, year, month, day);
+
+        if(diaryOptional.isPresent()){
+            throw new NoSuchElementException(DUPLICATE_DIARY_MSG.getMsg());
+        }
+
+        Diary diary = Diary.toDiary(diaryDto);
+
+        diaryRepository.save(diary);
+    }
+
+    // 일기장 수정
+    @Transactional
+    public void updateDiary(DiaryDto diaryDto) {
+        Long diaryId = diaryDto.getDiaryId();
+
+        Diary diary = diaryRepository.findById(diaryId)
+                .orElseThrow(() -> new NoSuchElementException(DIARY_NOT_FOUND_MSG.getMsg()));
+
+        diary.updateAll(diaryDto);
     }
 }
