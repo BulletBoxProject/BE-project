@@ -3,7 +3,7 @@
 PROJECT_ROOT="/home/ubuntu/BulletBox"
 JAR_FILE="bulletBox-webapp.jar"
 
-cd $PROJECT_ROOT/bulletBox-webapp.jar/
+cd $PROJECT_ROOT
 
 APP_LOG="$PROJECT_ROOT/application.log"
 ERROR_LOG="$PROJECT_ROOT/error.log"
@@ -17,7 +17,6 @@ cp ./build/libs/*.jar $PROJECT_ROOT/
 
 # jar 파일 실행
 echo "$TIME_NOW > $JAR_FILE 파일 실행" >> $DEPLOY_LOG
-
 echo nohup java -jar $JAR_FILE > $APP_LOG > $ERROR_LOG &
 
 CURRENT_PID=$(pgrep -f $JAR_FILE)
