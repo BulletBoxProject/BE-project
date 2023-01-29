@@ -9,6 +9,7 @@ import com.hanghae.bulletbox.member.entity.Member;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public class DiaryService {
     private final DiaryRepository diaryRepository;
 
     // 연,월,멤버로 diary 찾아서 dto로 반환
+    @Transactional(readOnly = true)
     public List<DiaryDto> findAllDtoByYearAndMonthAndMember(Long year, Long month, MemberDto memberDto) {
         Member member = Member.toMember(memberDto);
 

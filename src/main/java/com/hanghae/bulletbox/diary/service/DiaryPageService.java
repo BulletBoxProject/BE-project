@@ -2,12 +2,14 @@ package com.hanghae.bulletbox.diary.service;
 
 import com.hanghae.bulletbox.diary.dto.DiaryDto;
 import com.hanghae.bulletbox.diary.dto.MonthlyEmotionDto;
+import com.hanghae.bulletbox.diary.dto.ResponseDiaryCalendarPageDto;
 import com.hanghae.bulletbox.diary.dto.ResponseDiaryPageDto;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ public class DiaryPageService {
     private final DiaryService diaryService;
 
     // 일기장 페이지 조회
+    @Transactional(readOnly = true)
     public ResponseDiaryPageDto showDiaryPage(MemberDto memberDto) {
         Long year = (long) LocalDate.now().getYear();
         Long month = (long) LocalDate.now().getMonthValue();
@@ -47,5 +50,24 @@ public class DiaryPageService {
         ResponseDiaryPageDto responseDiaryPageDto = ResponseDiaryPageDto.toResponseDiaryPageDto(emotions, diaryOfToday);
 
         return responseDiaryPageDto;
+    }
+
+    // 일기장 페이지 달력 조회 날짜 변경
+    @Transactional(readOnly = true)
+    public ResponseDiaryCalendarPageDto changeMonthOfDiaryPage(Long year, Long month, MemberDto memberDto) {
+        List<DiaryDto> diaryDtoList = diaryService.findAllDtoByYearAndMonthAndMember(year, month, memberDto);
+        List<MonthlyEmotionDto> emotions = new ArrayList<>();
+
+        for(DiaryDto diaryDto : diaryDtoList){
+            Long diaryDay = diaryDto.getDay();
+            String emotion = diaryDto.getEmotion();
+
+            MonthlyEmotionDto monthlyEmotionDto = MonthlyEmotionDto.toMonthlyEmotionDto(diaryDay, emotion);
+            emotions.add(monthlyEmotionDto);
+        }
+
+        ResponseDiaryCalendarPageDto responseDiaryCalendarPageDto = ResponseDiaryCalendarPageDto.toResponseDiaryCalendarPageDto(emotions);
+
+        return responseDiaryCalendarPageDto;
     }
 }
