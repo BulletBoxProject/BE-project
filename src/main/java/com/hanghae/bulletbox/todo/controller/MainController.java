@@ -1,11 +1,11 @@
-package com.hanghae.bulletbox.diary.controller;
+package com.hanghae.bulletbox.todo.controller;
 
 import com.hanghae.bulletbox.common.response.Response;
 import com.hanghae.bulletbox.common.security.UserDetailsImpl;
-import com.hanghae.bulletbox.diary.dto.ResponseShowCalendarDto;
-import com.hanghae.bulletbox.diary.dto.ResponseShowMainPageDto;
-import com.hanghae.bulletbox.diary.dto.ResponseShowDailyDto;
-import com.hanghae.bulletbox.diary.service.MainService;
+import com.hanghae.bulletbox.todo.dto.ResponseShowCalendarDto;
+import com.hanghae.bulletbox.todo.dto.ResponseShowMainPageDto;
+import com.hanghae.bulletbox.todo.dto.ResponseShowDailyDto;
+import com.hanghae.bulletbox.todo.service.MainService;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 

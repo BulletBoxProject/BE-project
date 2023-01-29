@@ -1,4 +1,4 @@
-package com.hanghae.bulletbox.diary.dto;
+package com.hanghae.bulletbox.todo.dto;
 
 import com.hanghae.bulletbox.todo.entity.TodoMemo;
 import com.hanghae.bulletbox.todo.entity.Todo;

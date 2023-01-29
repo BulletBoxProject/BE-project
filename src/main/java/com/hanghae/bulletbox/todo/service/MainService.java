@@ -1,13 +1,13 @@
-package com.hanghae.bulletbox.diary.service;
+package com.hanghae.bulletbox.todo.service;
 
 import com.hanghae.bulletbox.category.dto.CategoryDto;
 import com.hanghae.bulletbox.category.entity.Category;
 import com.hanghae.bulletbox.category.repository.CategoryRepository;
-import com.hanghae.bulletbox.diary.dto.CalendarDto;
-import com.hanghae.bulletbox.diary.dto.DailyDto;
-import com.hanghae.bulletbox.diary.dto.ResponseShowCalendarDto;
-import com.hanghae.bulletbox.diary.dto.ResponseShowMainPageDto;
-import com.hanghae.bulletbox.diary.dto.ResponseShowDailyDto;
+import com.hanghae.bulletbox.todo.dto.CalendarDto;
+import com.hanghae.bulletbox.todo.dto.DailyDto;
+import com.hanghae.bulletbox.todo.dto.ResponseShowCalendarDto;
+import com.hanghae.bulletbox.todo.dto.ResponseShowMainPageDto;
+import com.hanghae.bulletbox.todo.dto.ResponseShowDailyDto;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
