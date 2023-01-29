@@ -43,7 +43,11 @@ public enum ExceptionMessage {
     NOT_FOUND_FAVORITE_MSG(404, "루틴이 존재하지 않습니다."),
 
     // FavoriteMemo
-    NOT_FOUND_FAVORITEMEMO_MSG(404, "루틴의 메모가 존재하지 않습니다.");
+    NOT_FOUND_FAVORITEMEMO_MSG(404, "루틴의 메모가 존재하지 않습니다."),
+
+    // Diary
+    DUPLICATE_DIARY_MSG(400, "이미 해당 날짜의 일기가 존재합니다"),
+    DIARY_NOT_FOUND_MSG(404, "해당 날짜의 일기가 존재하지 않습니다.");
 
     private final int statusCode;
     private final String msg;
