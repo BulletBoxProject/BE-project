@@ -85,7 +85,15 @@ public class DailyService {
             dailyDtoList.add(DailyDto.toDailyDto(todo, todoMemoList));
         }
 
-        return ResponseShowDailyDto.toResponseShowDailyDto(dailyDtoList);
+        List<CategoryDto> categoryDtoList = new ArrayList<>();
+        List<Category> categoryList = categoryRepository.findAllByMember(member);
+
+        for (Category category : categoryList) {
+
+            categoryDtoList.add(CategoryDto.toCategoryDto(category.getCategoryId(), category.getCategoryName(), category.getCategoryColor()));
+        }
+
+        return ResponseShowDailyDto.toResponseShowDailyDto(categoryDtoList, dailyDtoList);
     }
 
     public ResponseCategoryDto showDailyByCategory(TodoDto todoDto){
