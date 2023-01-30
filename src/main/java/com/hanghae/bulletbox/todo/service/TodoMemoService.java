@@ -95,20 +95,24 @@ public class TodoMemoService {
 
     // 할 일 메모 생성
     @Transactional
-    public void saveTodoMemo(TodoMemoDto todoMemoDto){
+    public TodoMemoDto saveTodoMemo(TodoMemoDto todoMemoDto){
         TodoMemo todoMemo = TodoMemo.toTodoMemo(todoMemoDto);
         Member member = todoMemo.getMember();
         Todo todo = todoMemo.getTodo();
         String todoMemoContent = todoMemo.getTodoMemoContent();
 
         if(todoMemoContent == null){
-            return;
+            return todoMemoDto;
         }
 
         checkMemberIsNotNull(member);
         checkMemberHasTodoId(member, todo);
 
         todoMemoRepository.save(todoMemo);
+
+        TodoMemoDto savedTodoMemoDto = TodoMemoDto.toTodoMemoDto(todoMemo);
+
+        return savedTodoMemoDto;
     }
 
     // 할 일의 하위 메모들 삭제

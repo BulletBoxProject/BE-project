@@ -2,23 +2,24 @@ package com.hanghae.bulletbox.todo.service;
 
 import com.hanghae.bulletbox.category.dto.CategoryDto;
 import com.hanghae.bulletbox.category.service.CategoryService;
-import com.hanghae.bulletbox.todo.dto.DailyTodoDto;
-import com.hanghae.bulletbox.todo.dto.ResponseShowTodoCreatePageDto;
-import com.hanghae.bulletbox.todo.dto.ResponseTodoUpdatePageDto;
+import com.hanghae.bulletbox.favorite.service.FavoriteMemoService;
 import com.hanghae.bulletbox.favorite.dto.FavoriteDto;
 import com.hanghae.bulletbox.favorite.dto.FavoriteMemoDto;
 import com.hanghae.bulletbox.favorite.service.FavoriteService;
 import com.hanghae.bulletbox.member.dto.MemberDto;
+import com.hanghae.bulletbox.todo.dto.DailyTodoDto;
+import com.hanghae.bulletbox.todo.dto.ResponseLoadFavoriteDto;
+import com.hanghae.bulletbox.todo.dto.ResponseShowTodoCreatePageDto;
+import com.hanghae.bulletbox.todo.dto.ResponseTodoUpdatePageDto;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 import com.hanghae.bulletbox.todo.dto.TodoMemoDto;
-import com.hanghae.bulletbox.todo.service.TodoMemoService;
-import com.hanghae.bulletbox.todo.service.TodoService;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -32,6 +33,8 @@ public class DailyTodoService {
     private final TodoMemoService todoMemoService;
 
     private final FavoriteService favoriteService;
+
+    private final FavoriteMemoService favoriteMemoService;
 
     // 데일리 로그 할 일 추가 페이지 조회
     @Transactional(readOnly = true)
@@ -135,8 +138,9 @@ public class DailyTodoService {
         }
     }
 
+    // 루틴 불러와서 할 일로 저장하기
     @Transactional
-    public void loadFavorite(Long favoriteId, DailyTodoDto dailyTodoDto) {
+    public ResponseLoadFavoriteDto loadFavorite(Long favoriteId, DailyTodoDto dailyTodoDto) {
         MemberDto memberDto = dailyTodoDto.getMemberDto();
         Long year = dailyTodoDto.getYear();
         Long month = dailyTodoDto.getMonth();
@@ -151,17 +155,29 @@ public class DailyTodoService {
         TodoDto savedTodoDto = todoService.saveTodo(todoDto);
 
         // 루틴에 있는 메모들 메모에 담기
-        List<FavoriteMemoDto> favoriteMemoDtoList = favoriteDto.getFavoriteMemos();
+        List<FavoriteMemoDto> favoriteMemoDtoList = favoriteMemoService.findAllDtoByFavorite(favoriteDto);
 
+        // 메모가 없을 경우
         if (favoriteMemoDtoList == null) {
-            return;
+            ResponseLoadFavoriteDto responseLoadFavoriteDto = ResponseLoadFavoriteDto.toResponseLoadFavoriteDto(savedTodoDto, null);
+
+            return responseLoadFavoriteDto;
         }
+
+        // 메모가 있을 경우
+        List<TodoMemoDto> todoMemoDtoList = new ArrayList<>();
 
         for(FavoriteMemoDto favoriteMemoDto : favoriteMemoDtoList){
             TodoMemoDto todoMemoDto = TodoMemoDto.toTodoMemoDto(favoriteMemoDto);
             todoMemoDto.setTodoDto(savedTodoDto);
 
-            todoMemoService.saveTodoMemo(todoMemoDto);
+            TodoMemoDto savedTodoMemoDto = todoMemoService.saveTodoMemo(todoMemoDto);
+
+            todoMemoDtoList.add(savedTodoMemoDto);
         }
+
+        ResponseLoadFavoriteDto responseLoadFavoriteDto = ResponseLoadFavoriteDto.toResponseLoadFavoriteDto(savedTodoDto, todoMemoDtoList);
+
+        return responseLoadFavoriteDto;
     }
 }

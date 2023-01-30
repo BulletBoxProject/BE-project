@@ -127,10 +127,37 @@ public class FavoriteMemoService {
     }
 
     // member, favoriteIdMemo 를 기준으로 루틴의 메모 조회
+    @Transactional(readOnly = true)
     protected FavoriteMemo findFavoriteMemoByIdAndMember(Long favoriteMemoId, Member member) {
         return favoriteMemoRepository.findByFavoriteMemoIdAndMember(favoriteMemoId, member).orElseThrow(
                 () -> new NoSuchElementException(NOT_FOUND_FAVORITEMEMO_MSG.getMsg())
         );
     }
 
+    // Favorite으로 루틴의 메모 리스트 조회
+    @Transactional(readOnly = true)
+    public List<FavoriteMemoDto> findAllDtoByFavorite(FavoriteDto favoriteDto) {
+        Favorite favorite = Favorite.toFavorite(favoriteDto);
+        MemberDto memberDto = favoriteDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+
+        List<FavoriteMemo> favoriteMemoList = favoriteMemoRepository.findAllByMemberAndFavorite(member, favorite);
+        List<FavoriteMemoDto> favoriteMemoDtoList = new ArrayList<>();
+
+        // 메모가 없을 경우 null 반환
+        if(favoriteMemoList == null){
+            favoriteMemoDtoList = null;
+
+            return favoriteMemoDtoList;
+        }
+
+        // 메모가 있을 경우 메모 리스트를 dto로 만들어서 반환
+        for(FavoriteMemo favoriteMemo : favoriteMemoList){
+            FavoriteMemoDto favoriteMemoDto = FavoriteMemoDto.toFavoriteMemoDto(favoriteMemo);
+
+            favoriteMemoDtoList.add(favoriteMemoDto);
+        }
+
+        return favoriteMemoDtoList;
+    }
 }
