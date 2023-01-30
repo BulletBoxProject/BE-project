@@ -1,7 +1,7 @@
 package com.hanghae.bulletbox.todo.dto;
 
-import com.hanghae.bulletbox.favorite.dto.FavoriteMemoDto;
 import com.hanghae.bulletbox.todo.TodoBullet;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
