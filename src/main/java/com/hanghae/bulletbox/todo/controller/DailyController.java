@@ -8,13 +8,14 @@ import com.hanghae.bulletbox.todo.dto.RequestCreateTodoDto;
 import com.hanghae.bulletbox.todo.dto.RequestLoadFavoriteDto;
 import com.hanghae.bulletbox.todo.dto.RequestUpdateTodoDto;
 import com.hanghae.bulletbox.todo.dto.ResponseDailyDto;
+import com.hanghae.bulletbox.todo.dto.ResponseLoadFavoriteDto;
 import com.hanghae.bulletbox.todo.dto.ResponseShowDailyDto;
 import com.hanghae.bulletbox.todo.dto.ResponseShowTodoCreatePageDto;
 import com.hanghae.bulletbox.todo.dto.ResponseTodoUpdatePageDto;
+import com.hanghae.bulletbox.todo.dto.TodoDto;
 import com.hanghae.bulletbox.todo.service.DailyService;
 import com.hanghae.bulletbox.todo.service.DailyTodoService;
 import com.hanghae.bulletbox.member.dto.MemberDto;
-import com.hanghae.bulletbox.todo.dto.TodoDto;
 
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -164,8 +165,8 @@ public class DailyController {
     // 루틴 불러오기
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/favorites")
-    public Response<?> loadFavorite(@RequestBody RequestLoadFavoriteDto requestLoadFavoriteDto,
-                                    @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public Response<ResponseLoadFavoriteDto> loadFavorite(@RequestBody RequestLoadFavoriteDto requestLoadFavoriteDto,
+                                                          @AuthenticationPrincipal UserDetailsImpl userDetails){
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
         Long year = requestLoadFavoriteDto.getYear();
@@ -175,9 +176,9 @@ public class DailyController {
 
         DailyTodoDto dailyTodoDto = DailyTodoDto.toDailyTodoDto(memberDto, year, month, day);
 
-        dailyTodoService.loadFavorite(favoriteId, dailyTodoDto);
+        ResponseLoadFavoriteDto responseLoadFavoriteDto = dailyTodoService.loadFavorite(favoriteId, dailyTodoDto);
 
-        return Response.success(201, "루틴을 오늘의 할 일에 담았습니다.", null);
+        return Response.success(201, "루틴을 오늘의 할 일에 담았습니다.", responseLoadFavoriteDto);
 
     }
 }
