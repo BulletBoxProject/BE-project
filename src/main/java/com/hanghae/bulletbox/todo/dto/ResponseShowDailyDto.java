@@ -1,6 +1,7 @@
 package com.hanghae.bulletbox.todo.dto;
 
 import com.hanghae.bulletbox.category.dto.CategoryDto;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import lombok.AccessLevel;
