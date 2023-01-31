@@ -3,18 +3,12 @@ package com.hanghae.bulletbox.todo.service;
 import com.hanghae.bulletbox.category.dto.CategoryDto;
 import com.hanghae.bulletbox.category.dto.ResponseCategoryDto;
 import com.hanghae.bulletbox.category.entity.Category;
-import com.hanghae.bulletbox.category.repository.CategoryRepository;
-import com.hanghae.bulletbox.todo.dto.DailyDto;
-import com.hanghae.bulletbox.todo.dto.ResponseDailyDto;
-import com.hanghae.bulletbox.todo.dto.ResponseShowDailyDto;
+import com.hanghae.bulletbox.category.service.CategoryService;
+import com.hanghae.bulletbox.todo.dto.*;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
-import com.hanghae.bulletbox.member.repository.MemberRepository;
-import com.hanghae.bulletbox.todo.dto.TodoDto;
 import com.hanghae.bulletbox.todo.entity.TodoMemo;
 import com.hanghae.bulletbox.todo.entity.Todo;
-import com.hanghae.bulletbox.todo.repository.TodoMemoRepository;
-import com.hanghae.bulletbox.todo.repository.TodoRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,42 +25,36 @@ import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_
 @RequiredArgsConstructor
 public class DailyService {
 
-    private final MemberRepository memberRepository;
+    private final CategoryService categoryService;
 
-    private final CategoryRepository categoryRepository;
+    private final TodoService todoService;
 
-    private final TodoRepository todoRepository;
+    private final TodoMemoService todoMemoService;
 
-    private final TodoMemoRepository todoMemoRepository;
-
+    // 데일리 로그 페이지 조회
     @Transactional(readOnly = true)
-    public ResponseDailyDto showDailyPage(Long memberId) {
+    public ResponseDailyDto showDailyPage(MemberDto memberDto) {
 
-        Member member = memberRepository.findById(memberId).orElseThrow(
-                () -> new IllegalArgumentException(NOT_FOUND_MEMBER_MSG.getMsg())
-        );
+        // 해당 멤버의 카테고리들 조회
+        List<CategoryDto> categoryDtoList = categoryService.findAllCategory(memberDto);
 
-        List<CategoryDto> categoryDtoList = new ArrayList<>();
-        List<Category> categoryList = categoryRepository.findAllByMember(member);
-
-        for (Category category : categoryList) {
-
-            categoryDtoList.add(CategoryDto.toCategoryDto(category.getCategoryId(), category.getCategoryName(), category.getCategoryColor()));
-        }
-
-        List<DailyDto> dailyDtoList = new ArrayList<>();
+        // 해당 멤버의 오늘자 데일리 로그 조회
         Long todoYear = (long) LocalDate.now().getYear();
         Long todoMonth = (long) LocalDate.now().getMonthValue();
         Long todoDay = (long) LocalDate.now().getDayOfMonth();
-        List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonthAndTodoDay(member, todoYear, todoMonth, todoDay);
+        List<TodoDto> todoDtoList = todoService.findAllDtoByMemberAndYearAndMonthAndDay(memberDto, todoYear, todoMonth, todoDay);
 
-        for (Todo todo : todoList) {
-            List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMemberAndTodo(member, todo);
+        // 각 할 일들의 메모 조회해서 dailyDto에 담기
+        List<DailyDto> dailyDtoList = new ArrayList<>();
 
-            dailyDtoList.add(DailyDto.toDailyDto(todo, todoMemoList));
+        for(TodoDto todoDto: todoDtoList){
+            List<TodoMemoDto> todoMemoDtoList = todoMemoService.findAllMemoByTodo(todoDto);
+            DailyDto dailyDto = DailyDto.toDailyDto(todoDto, todoMemoDtoList);
+
+            dailyDtoList.add(dailyDto);
         }
 
-        return ResponseDailyDto.toResponseDailyDto(categoryDtoList, dailyDtoList, true);
+        return ResponseDailyDto.toResponseDailyDto(categoryDtoList, dailyDtoList);
     }
 
     public ResponseShowDailyDto showDailyPageChangeDay(TodoDto todoDto) {

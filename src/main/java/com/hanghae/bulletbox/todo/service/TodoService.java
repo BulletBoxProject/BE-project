@@ -144,4 +144,25 @@ public class TodoService {
 
         return searchTodoDtoList;
     }
+
+    // 멤버의 특정 날짜의 모든 할 일들 조회 후 DTO로 반환
+    @Transactional(readOnly = true)
+    public List<TodoDto> findAllDtoByMemberAndYearAndMonthAndDay(MemberDto memberDto, Long todoYear, Long todoMonth, Long todoDay) {
+
+        Member member = Member.toMember(memberDto);
+
+        checkMemberIsNotNull(member);
+
+        List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonthAndTodoDay(member, todoYear, todoMonth, todoDay);
+        List<TodoDto> todoDtoList = new ArrayList<>();
+
+        for(Todo todo : todoList) {
+
+            TodoDto todoDto = TodoDto.toTodoDto(todo);
+
+            todoDtoList.add(todoDto);
+        }
+
+        return todoDtoList;
+    }
 }

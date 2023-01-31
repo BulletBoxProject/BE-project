@@ -2,6 +2,7 @@ package com.hanghae.bulletbox.category.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -21,7 +22,7 @@ public class CategoryDto {
 
     @Schema(description = "Member 참조", type = "Member")
     @JsonIgnore
-    private Member member;
+    private MemberDto memberDto;
 
     @Schema(description = "카테고리 이름", example = "직장", type = "String")
     private String categoryName;
@@ -30,12 +31,13 @@ public class CategoryDto {
     private String categoryColor;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private CategoryDto(Long categoryId, Member member, String categoryName, String categoryColor) {
+    private CategoryDto(Long categoryId, MemberDto memberDto, String categoryName, String categoryColor) {
         this.categoryId = categoryId;
-        this.member = member;
+        this.memberDto = memberDto;
         this.categoryName = categoryName;
         this.categoryColor = categoryColor;
     }
+
 
     public static CategoryDto toCategoryDto(Long categoryId, String categoryName) {
         return CategoryDto.builder()
@@ -52,32 +54,32 @@ public class CategoryDto {
                 .build();
     }
 
-    public static CategoryDto toCategoryDto(Member member) {
+    public static CategoryDto toCategoryDto(MemberDto memberDto) {
         return CategoryDto.builder()
-                .member(member)
+                .memberDto(memberDto)
                 .build();
     }
 
-    public static CategoryDto toCategoryDto(String categoryName, String categoryColor, Member member) {
+    public static CategoryDto toCategoryDto(String categoryName, String categoryColor, MemberDto memberDto) {
         return CategoryDto.builder()
                 .categoryName(categoryName)
                 .categoryColor(categoryColor)
-                .member(member)
+                .memberDto(memberDto)
                 .build();
     }
 
-    public static CategoryDto toCategoryDto(Member member, Long categoryId, String categoryName, String categoryColor) {
+    public static CategoryDto toCategoryDto(MemberDto memberDto, Long categoryId, String categoryName, String categoryColor) {
         return CategoryDto.builder()
-                .member(member)
+                .memberDto(memberDto)
                 .categoryId(categoryId)
                 .categoryName(categoryName)
                 .categoryColor(categoryColor)
                 .build();
     }
 
-    public static CategoryDto toCategoryDto(Member member, Long categoryId) {
+    public static CategoryDto toCategoryDto(MemberDto memberDto, Long categoryId) {
         return CategoryDto.builder()
-                .member(member)
+                .memberDto(memberDto)
                 .categoryId(categoryId)
                 .build();
     }

@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
 import springfox.documentation.annotations.ApiIgnore;
 
 @Tag(name = "Daily", description = "데일리 로그 API")
@@ -45,6 +46,7 @@ import springfox.documentation.annotations.ApiIgnore;
 public class DailyController {
 
     private final DailyService dailyService;
+
     private final DailyTodoService dailyTodoService;
 
     @Operation(tags = {"Daily"}, summary = "데일리 로그 조회")
@@ -54,8 +56,11 @@ public class DailyController {
     })
     @GetMapping
     public Response<ResponseDailyDto> showDailyPage(@ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        Long memberId = userDetails.getMember().getMemberId();
-        ResponseDailyDto responseDailyDto = dailyService.showDailyPage(memberId);
+
+        MemberDto memberDto = MemberDto.toMemberDto(userDetails);
+
+        ResponseDailyDto responseDailyDto = dailyService.showDailyPage(memberDto);
+
         return Response.success(200, "데일리 페이지 조회를 성공했습니다.", responseDailyDto);
     }
 
