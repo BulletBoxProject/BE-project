@@ -34,14 +34,21 @@ public class DailyService {
     // 데일리 로그 페이지 조회
     @Transactional(readOnly = true)
     public ResponseDailyDto showDailyPage(MemberDto memberDto) {
+        Long todoYear = (long) LocalDate.now().getYear();
+        Long todoMonth = (long) LocalDate.now().getMonthValue();
+        Long todoDay = (long) LocalDate.now().getDayOfMonth();
 
+        ResponseDailyDto responseDailyDto = showDailyPageChangeDay(memberDto, todoYear, todoMonth, todoDay);
+
+        return responseDailyDto;
+    }
+
+    // 데일리 로그 조회 날짜 변경
+    public ResponseDailyDto showDailyPageChangeDay(MemberDto memberDto, Long todoYear, Long todoMonth, Long todoDay) {
         // 해당 멤버의 카테고리들 조회
         List<CategoryDto> categoryDtoList = categoryService.findAllCategory(memberDto);
 
         // 해당 멤버의 오늘자 데일리 로그 조회
-        Long todoYear = (long) LocalDate.now().getYear();
-        Long todoMonth = (long) LocalDate.now().getMonthValue();
-        Long todoDay = (long) LocalDate.now().getDayOfMonth();
         List<TodoDto> todoDtoList = todoService.findAllDtoByMemberAndYearAndMonthAndDay(memberDto, todoYear, todoMonth, todoDay);
 
         // 각 할 일들의 메모 조회해서 dailyDto에 담기
@@ -54,34 +61,9 @@ public class DailyService {
             dailyDtoList.add(dailyDto);
         }
 
-        return ResponseDailyDto.toResponseDailyDto(categoryDtoList, dailyDtoList);
-    }
+        ResponseDailyDto responseDailyDto = ResponseDailyDto.toResponseDailyDto(categoryDtoList, dailyDtoList);
 
-    public ResponseShowDailyDto showDailyPageChangeDay(TodoDto todoDto) {
-        MemberDto memberDto = todoDto.getMemberDto();
-        Member member = Member.toMember(memberDto);
-
-        List<DailyDto> dailyDtoList = new ArrayList<>();
-        Long todoYear = todoDto.getTodoYear();
-        Long todoMonth = todoDto.getTodoMonth();
-        Long todoDay = todoDto.getTodoDay();
-        List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonthAndTodoDay(member, todoYear, todoMonth, todoDay);
-
-        for (Todo todo : todoList) {
-            List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMemberAndTodo(member, todo);
-
-            dailyDtoList.add(DailyDto.toDailyDto(todo, todoMemoList));
-        }
-
-        List<CategoryDto> categoryDtoList = new ArrayList<>();
-        List<Category> categoryList = categoryRepository.findAllByMember(member);
-
-        for (Category category : categoryList) {
-
-            categoryDtoList.add(CategoryDto.toCategoryDto(category.getCategoryId(), category.getCategoryName(), category.getCategoryColor()));
-        }
-
-        return ResponseShowDailyDto.toResponseShowDailyDto(categoryDtoList, dailyDtoList);
+        return responseDailyDto;
     }
 
     public ResponseCategoryDto showDailyByCategory(TodoDto todoDto){

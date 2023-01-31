@@ -70,15 +70,16 @@ public class DailyController {
             @ApiResponse(code = 400, message = "존재하지 않는 사용자입니다.")
     })
     @GetMapping("/{todoYear}/{todoMonth}/{todoDay}")
-    public Response<ResponseShowDailyDto> showDailyPageChangeDay(@PathVariable Long todoYear,
+    public Response<ResponseDailyDto> showDailyPageChangeDay(@PathVariable Long todoYear,
                                                                  @PathVariable Long todoMonth,
                                                                  @PathVariable Long todoDay,
                                                                  @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
-        TodoDto todoDto = TodoDto.toTodoDto(memberDto, todoYear, todoMonth, todoDay);
-        ResponseShowDailyDto responseShowDailyDto = dailyService.showDailyPageChangeDay(todoDto);
-        return Response.success(200, "데일리 로그 조회 날짜 변경을 성공했습니다.", responseShowDailyDto);
+
+        ResponseDailyDto responseDailyDto = dailyService.showDailyPageChangeDay(memberDto, todoYear, todoMonth, todoDay);
+
+        return Response.success(200, "데일리 로그 조회 날짜 변경을 성공했습니다.", responseDailyDto);
     }
 
 
