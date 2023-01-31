@@ -63,3 +63,36 @@ jobs:
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
           arguments: clean build
+
+      # 임시 저장
+      - name: Temporarily save build artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifact
+          path: build
+          retention-days: 1
+
+  build-docker-image:
+    needs: build
+    name: Deploy Docker Image
+    runs-on: ubuntu-20.04
+    steps:
+      # 임시 저장 결과 로딩
+      - uses: actions/checkout@v2
+      - name: Retrieve built
+        uses: actions/download-artifact@v2
+        with:
+          name: build-artifact
+          path: build
+
+      # 도커 허브 로그인
+      - name: Docker Hub Login
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      # 도커 이미지 빌드
+      - name: Building Docker Image
+        run: docker build --build-arg JAR_FILE=build/libs/\*.jar -t ${{ secrets.DOCKERHUB_USERNAME }}/bulletbox .
+
+      # 도커 이미지 푸시
+      - name: Publish Docker Image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/bulletbox
