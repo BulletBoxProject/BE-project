@@ -104,6 +104,7 @@ jobs:
           host: ${{ secrets.HOST}}
           username: ubuntu
           key: ${{ secrets.KEY }}
+          port: 22
           script: |
             sudo docker rm -f $(docker ps -qa)
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/bulletbox:web
