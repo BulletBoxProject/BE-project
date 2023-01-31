@@ -105,6 +105,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.KEY }}
           port: 22
+          timeout: 90 # 기본값 30
           script: |
             sudo docker rm -f $(docker ps -qa)
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/bulletbox:web
