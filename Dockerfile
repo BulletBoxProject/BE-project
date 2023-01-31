@@ -1,7 +1,7 @@
 FROM openjdk:17:alpine
 
-WORKDIR /BulletBox
+ARG JAR_FILE=build/libs/*.jar
 
-COPY BulletBox-0.0.1-SNAPSHOT.jar app.jar
+COPY $JAR_FILE app.jar
 
 ENTRYPOINT ["java", "-jar", "/app.jar"]
