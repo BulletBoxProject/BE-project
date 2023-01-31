@@ -81,14 +81,16 @@ public class DiaryPageService {
 
     // 일기장 생성 및 수정
     @Transactional
-    public void updateDiary(DiaryDto diaryDto) {
+    public DiaryDto updateDiary(DiaryDto diaryDto) {
         Long diaryId = diaryDto.getDiaryId();
 
         if(diaryId == null){
-            diaryService.saveDiary(diaryDto);
-            return;
+            DiaryDto savedDiaryDto = diaryService.saveDiary(diaryDto);
+            return savedDiaryDto;
         }
 
-        diaryService.updateDiary(diaryDto);
+        DiaryDto updatedDiaryDto = diaryService.updateDiary(diaryDto);
+
+        return updatedDiaryDto;
     }
 }

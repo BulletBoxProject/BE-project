@@ -66,15 +66,15 @@ public class DiaryController {
 
     // 일기장 작성 및 수정
     @PostMapping
-    public Response<?> updateDiary(@RequestBody RequestDiaryUpdateDto requestDiaryUpdateDto,
-                                   @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public Response<DiaryDto> updateDiary(@RequestBody RequestDiaryUpdateDto requestDiaryUpdateDto,
+                                                        @AuthenticationPrincipal UserDetailsImpl userDetails){
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
 
         DiaryDto diaryDto = DiaryDto.toDiaryDto(requestDiaryUpdateDto, memberDto);
 
-        diaryPageService.updateDiary(diaryDto);
+        DiaryDto updatedDiaryDto = diaryPageService.updateDiary(diaryDto);
 
-        return Response.success(200, "일기장 수정을 완료했습니다.", null);
+        return Response.success(200, "일기장 수정을 완료했습니다.", updatedDiaryDto);
     }
 }

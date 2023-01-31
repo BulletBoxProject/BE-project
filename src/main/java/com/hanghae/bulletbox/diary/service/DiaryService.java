@@ -56,7 +56,7 @@ public class DiaryService {
 
     // 일기장 저장
     @Transactional
-    public void saveDiary(DiaryDto diaryDto) {
+    public DiaryDto saveDiary(DiaryDto diaryDto) {
         Long year = diaryDto.getYear();
         Long month = diaryDto.getMonth();
         Long day = diaryDto.getDay();
@@ -73,16 +73,22 @@ public class DiaryService {
         Diary diary = Diary.toDiary(diaryDto);
 
         diaryRepository.save(diary);
+
+        DiaryDto savedDiaryDto = DiaryDto.toDiaryDto(diary);
+
+        return savedDiaryDto;
     }
 
     // 일기장 수정
     @Transactional
-    public void updateDiary(DiaryDto diaryDto) {
+    public DiaryDto updateDiary(DiaryDto diaryDto) {
         Long diaryId = diaryDto.getDiaryId();
 
         Diary diary = diaryRepository.findById(diaryId)
                 .orElseThrow(() -> new NoSuchElementException(DIARY_NOT_FOUND_MSG.getMsg()));
 
         diary.updateAll(diaryDto);
+
+        return diaryDto;
     }
 }
