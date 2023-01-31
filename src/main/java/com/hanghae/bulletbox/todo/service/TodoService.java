@@ -3,6 +3,7 @@ package com.hanghae.bulletbox.todo.service;
 import com.hanghae.bulletbox.category.repository.CategoryRepository;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
+import com.hanghae.bulletbox.todo.dto.DailyDto;
 import com.hanghae.bulletbox.todo.dto.SearchTodoDto;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 import com.hanghae.bulletbox.todo.entity.Todo;
@@ -70,6 +71,20 @@ public class TodoService {
         return TodoDto.toTodoDto(todo);
     }
 
+    // todo리스트를 todoDto 리스트로 만들어서 반환
+    private List<TodoDto> mapTodoListToTodoDtoList(List<Todo> todoList){
+        List<TodoDto> todoDtoList = new ArrayList<>();
+
+        for(Todo todo : todoList) {
+
+            TodoDto todoDto = TodoDto.toTodoDto(todo);
+
+            todoDtoList.add(todoDto);
+        }
+
+        return todoDtoList;
+    }
+
     // todoId로 할 일 찾기
     @Transactional(readOnly = true)
     protected Todo findByTodoIdAndMember(Long todoId, Member member){
@@ -126,6 +141,7 @@ public class TodoService {
     }
 
     // member 기준 모든 할 일 조회하기 (검색용)
+    @Transactional(readOnly = true)
     public List<SearchTodoDto> findAllByMember(MemberDto memberDto) {
 
         Member member = Member.toMember(memberDto);
@@ -154,14 +170,26 @@ public class TodoService {
         checkMemberIsNotNull(member);
 
         List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonthAndTodoDay(member, todoYear, todoMonth, todoDay);
-        List<TodoDto> todoDtoList = new ArrayList<>();
 
-        for(Todo todo : todoList) {
+        List<TodoDto> todoDtoList = mapTodoListToTodoDtoList(todoList);
 
-            TodoDto todoDto = TodoDto.toTodoDto(todo);
+        return todoDtoList;
+    }
 
-            todoDtoList.add(todoDto);
-        }
+    // 특정 날짜의 데일리 로그 할 일 카테고리별로 조회하기
+    @Transactional(readOnly = true)
+    public List<TodoDto> findAllDtoByMemberAndCategoryIdAndYearAndMonthAndDay(TodoDto todoDto) {
+        MemberDto memberDto = todoDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+        Long todoYear = todoDto.getTodoYear();
+        Long todoMonth = todoDto.getTodoMonth();
+        Long todoDay = todoDto.getTodoDay();
+        Long categoryId = todoDto.getCategoryId();
+
+        checkMemberIsNotNull(member);
+
+        List<Todo> todoList = todoRepository.findAllByMemberAndCategoryIdAndTodoYearAndTodoMonthAndTodoDay(member, categoryId, todoYear, todoMonth, todoDay);
+        List<TodoDto> todoDtoList = mapTodoListToTodoDtoList(todoList);
 
         return todoDtoList;
     }

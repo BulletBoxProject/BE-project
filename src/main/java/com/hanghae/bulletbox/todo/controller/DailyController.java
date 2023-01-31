@@ -91,12 +91,16 @@ public class DailyController {
     @GetMapping("/{todoYear}/{todoMonth}/{todoDay}/{categoryId}")
     public Response<ResponseCategoryDto> showDailyByCategory(@PathVariable Long todoYear,
                                                              @PathVariable Long todoMonth,
-                                                             @PathVariable Long todoDay, @PathVariable Long categoryId,
+                                                             @PathVariable Long todoDay,
+                                                             @PathVariable Long categoryId,
                                                              @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
+
         TodoDto todoDto = TodoDto.toTodoDto(memberDto, categoryId, todoYear, todoMonth, todoDay);
+
         ResponseCategoryDto responseCategoryDto = dailyService.showDailyByCategory(todoDto);
+
         return Response.success(200, "카테고리별 데일리 로그 조회를 성공했습니다.", responseCategoryDto);
     }
 

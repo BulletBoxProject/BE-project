@@ -2,13 +2,12 @@ package com.hanghae.bulletbox.todo.service;
 
 import com.hanghae.bulletbox.category.dto.CategoryDto;
 import com.hanghae.bulletbox.category.dto.ResponseCategoryDto;
-import com.hanghae.bulletbox.category.entity.Category;
 import com.hanghae.bulletbox.category.service.CategoryService;
-import com.hanghae.bulletbox.todo.dto.*;
 import com.hanghae.bulletbox.member.dto.MemberDto;
-import com.hanghae.bulletbox.member.entity.Member;
-import com.hanghae.bulletbox.todo.entity.TodoMemo;
-import com.hanghae.bulletbox.todo.entity.Todo;
+import com.hanghae.bulletbox.todo.dto.DailyDto;
+import com.hanghae.bulletbox.todo.dto.ResponseDailyDto;
+import com.hanghae.bulletbox.todo.dto.TodoDto;
+import com.hanghae.bulletbox.todo.dto.TodoMemoDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,8 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_MEMBER_MSG;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +41,7 @@ public class DailyService {
     }
 
     // 데일리 로그 조회 날짜 변경
+    @Transactional(readOnly = true)
     public ResponseDailyDto showDailyPageChangeDay(MemberDto memberDto, Long todoYear, Long todoMonth, Long todoDay) {
         // 해당 멤버의 카테고리들 조회
         List<CategoryDto> categoryDtoList = categoryService.findAllCategory(memberDto);
@@ -52,6 +50,31 @@ public class DailyService {
         List<TodoDto> todoDtoList = todoService.findAllDtoByMemberAndYearAndMonthAndDay(memberDto, todoYear, todoMonth, todoDay);
 
         // 각 할 일들의 메모 조회해서 dailyDto에 담기
+        List<DailyDto> dailyDtoList = findAllMemoOfTodo(todoDtoList);
+
+        ResponseDailyDto responseDailyDto = ResponseDailyDto.toResponseDailyDto(categoryDtoList, dailyDtoList);
+
+        return responseDailyDto;
+    }
+
+    // 데일리 로그 카테고리별 조회
+    @Transactional(readOnly = true)
+    public ResponseCategoryDto showDailyByCategory(TodoDto todoDto){
+        MemberDto memberDto = todoDto.getMemberDto();
+
+        // 카테고리에 해당하는 Todo들 정보 찾기
+        List<TodoDto> todoDtoList = todoService.findAllDtoByMemberAndCategoryIdAndYearAndMonthAndDay(todoDto);
+
+        // 각 할 일들의 메모 조회해서 dailyDto에 담기
+        List<DailyDto> dailyDtoList = findAllMemoOfTodo(todoDtoList);
+
+        ResponseCategoryDto responseCategoryDto = ResponseCategoryDto.toResponseCategoryDto(dailyDtoList);
+
+        return responseCategoryDto;
+    }
+
+    // 각 할 일들의 메모 조회해서 dailyDto에 담기
+    private List<DailyDto> findAllMemoOfTodo(List<TodoDto> todoDtoList){
         List<DailyDto> dailyDtoList = new ArrayList<>();
 
         for(TodoDto todoDto: todoDtoList){
@@ -61,29 +84,6 @@ public class DailyService {
             dailyDtoList.add(dailyDto);
         }
 
-        ResponseDailyDto responseDailyDto = ResponseDailyDto.toResponseDailyDto(categoryDtoList, dailyDtoList);
-
-        return responseDailyDto;
+        return dailyDtoList;
     }
-
-    public ResponseCategoryDto showDailyByCategory(TodoDto todoDto){
-        MemberDto memberDto = todoDto.getMemberDto();
-        Member member = Member.toMember(memberDto);
-
-        List<DailyDto> dailyDtoList = new ArrayList<>();
-        Long categoryId = todoDto.getCategoryId();
-        Long todoYear = todoDto.getTodoYear();
-        Long todoMonth = todoDto.getTodoMonth();
-        Long todoDay = todoDto.getTodoDay();
-        List<Todo> todoList = todoRepository.findAllByMemberAndCategoryIdAndTodoYearAndTodoMonthAndTodoDay(member, categoryId, todoYear, todoMonth, todoDay);
-
-        for (Todo todo : todoList) {
-            List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMemberAndTodo(member, todo);
-
-            dailyDtoList.add(DailyDto.toDailyDto(todo, todoMemoList));
-        }
-
-        return ResponseCategoryDto.toResponseCategoryDto(dailyDtoList);
-    }
-
 }

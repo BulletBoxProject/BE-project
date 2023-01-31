@@ -3,6 +3,7 @@ package com.hanghae.bulletbox.category.dto;
 import com.hanghae.bulletbox.todo.dto.DailyDto;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -14,13 +15,15 @@ public class ResponseCategoryDto {
 
     private List<DailyDto> daily;
 
-
-    public ResponseCategoryDto(List<DailyDto> daily){
+    @Builder
+    private ResponseCategoryDto(List<DailyDto> daily){
         this.daily = daily;
     }
 
     public static ResponseCategoryDto toResponseCategoryDto(List<DailyDto> daily){
-        return new ResponseCategoryDto(daily);
+        return ResponseCategoryDto.builder()
+                .daily(daily)
+                .build();
     }
 }
 
