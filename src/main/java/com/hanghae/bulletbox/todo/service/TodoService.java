@@ -70,6 +70,20 @@ public class TodoService {
         return TodoDto.toTodoDto(todo);
     }
 
+    // todo리스트를 todoDto 리스트로 만들어서 반환
+    private List<TodoDto> mapTodoListToTodoDtoList(List<Todo> todoList){
+        List<TodoDto> todoDtoList = new ArrayList<>();
+
+        for(Todo todo : todoList) {
+
+            TodoDto todoDto = TodoDto.toTodoDto(todo);
+
+            todoDtoList.add(todoDto);
+        }
+
+        return todoDtoList;
+    }
+
     // todoId로 할 일 찾기
     @Transactional(readOnly = true)
     protected Todo findByTodoIdAndMember(Long todoId, Member member){
@@ -126,6 +140,7 @@ public class TodoService {
     }
 
     // member 기준 모든 할 일 조회하기 (검색용)
+    @Transactional(readOnly = true)
     public List<SearchTodoDto> findAllByMember(MemberDto memberDto) {
 
         Member member = Member.toMember(memberDto);
@@ -143,5 +158,52 @@ public class TodoService {
         }
 
         return searchTodoDtoList;
+    }
+
+    // 멤버의 특정 날짜의 모든 할 일들 조회 후 DTO로 반환
+    @Transactional(readOnly = true)
+    public List<TodoDto> findAllDtoByMemberAndYearAndMonthAndDay(MemberDto memberDto, Long todoYear, Long todoMonth, Long todoDay) {
+
+        Member member = Member.toMember(memberDto);
+
+        checkMemberIsNotNull(member);
+
+        List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonthAndTodoDay(member, todoYear, todoMonth, todoDay);
+
+        List<TodoDto> todoDtoList = mapTodoListToTodoDtoList(todoList);
+
+        return todoDtoList;
+    }
+
+    // 특정 날짜의 데일리 로그 할 일 카테고리별로 조회하기
+    @Transactional(readOnly = true)
+    public List<TodoDto> findAllDtoByMemberAndCategoryIdAndYearAndMonthAndDay(TodoDto todoDto) {
+        MemberDto memberDto = todoDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+        Long todoYear = todoDto.getTodoYear();
+        Long todoMonth = todoDto.getTodoMonth();
+        Long todoDay = todoDto.getTodoDay();
+        Long categoryId = todoDto.getCategoryId();
+
+        checkMemberIsNotNull(member);
+
+        List<Todo> todoList = todoRepository.findAllByMemberAndCategoryIdAndTodoYearAndTodoMonthAndTodoDay(member, categoryId, todoYear, todoMonth, todoDay);
+        List<TodoDto> todoDtoList = mapTodoListToTodoDtoList(todoList);
+
+        return todoDtoList;
+    }
+
+    // 해당 멤버의 이달의 할 일 찾아서 반환
+    @Transactional(readOnly = true)
+    public List<TodoDto> findAllDtoByMemberAndYearAndMonth(MemberDto memberDto, Long todoYear, Long todoMonth) {
+        Member member = Member.toMember(memberDto);
+
+        checkMemberIsNotNull(member);
+
+        List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonth(member, todoYear, todoMonth);
+
+        List<TodoDto> todoDtoList = mapTodoListToTodoDtoList(todoList);
+
+        return todoDtoList;
     }
 }

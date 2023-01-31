@@ -1,5 +1,6 @@
 package com.hanghae.bulletbox.todo.dto;
 
+import com.hanghae.bulletbox.todo.TodoBullet;
 import com.hanghae.bulletbox.todo.entity.TodoMemo;
 import com.hanghae.bulletbox.todo.entity.Todo;
 
@@ -39,10 +40,10 @@ public class DailyDto {
     private String time;
 
     @Schema(description = "할 일의 하위 메모")
-    private List<TodoMemo> todoMemos;
+    private List<TodoMemoDto> todoMemos;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private DailyDto(Long todoId, Long categoryId, String categoryColor, String todoBulletName, String todoBulletImgUrl, String todoContent, String time, List<TodoMemo> todoMemos) {
+    private DailyDto(Long todoId, Long categoryId, String categoryColor, String todoBulletName, String todoBulletImgUrl, String todoContent, String time, List<TodoMemoDto> todoMemos) {
         this.todoId = todoId;
         this.categoryId = categoryId;
         this.categoryColor = categoryColor;
@@ -53,16 +54,25 @@ public class DailyDto {
         this.todoMemos = todoMemos;
     }
 
-    public static DailyDto toDailyDto(Todo todo, List<TodoMemo> todoMemos) {
-        return new DailyDto(
-                todo.getTodoId(),
-                todo.getCategoryId(),
-                todo.getCategoryColor(),
-                todo.getTodoBullet().getName(),
-                todo.getTodoBullet().getImgUrl(),
-                todo.getTodoContent(),
-                todo.getTime(),
-                todoMemos
-        );
+    public static DailyDto toDailyDto(TodoDto todoDto, List<TodoMemoDto> todoMemos) {
+        Long todoId = todoDto.getTodoId();
+        Long categoryId = todoDto.getCategoryId();
+        String categoryColor = todoDto.getCategoryColor();
+        TodoBullet todoBullet = todoDto.getTodoBullet();
+        String todoBulletName = todoBullet.getName();
+        String todoBulletImgUrl = todoBullet.getImgUrl();
+        String todoContent = todoDto.getTodoContent();
+        String time = todoDto.getTime();
+
+        return DailyDto.builder()
+                .todoId(todoId)
+                .categoryId(categoryId)
+                .categoryColor(categoryColor)
+                .todoBulletName(todoBulletName)
+                .todoBulletImgUrl(todoBulletImgUrl)
+                .todoContent(todoContent)
+                .time(time)
+                .todoMemos(todoMemos)
+                .build();
     }
 }

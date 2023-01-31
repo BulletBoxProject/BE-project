@@ -9,6 +9,7 @@ import com.hanghae.bulletbox.category.dto.ResponseShowCategoryDto;
 import com.hanghae.bulletbox.category.service.CategoryPageService;
 import com.hanghae.bulletbox.common.response.Response;
 import com.hanghae.bulletbox.common.security.UserDetailsImpl;
+import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -46,8 +47,8 @@ public class CategoryController {
     @GetMapping
     public Response<ResponseShowCategoryDto> showCategory(@ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        Member member = userDetails.getMember();
-        CategoryDto categoryDto = CategoryDto.toCategoryDto(member);
+        MemberDto memberDto = MemberDto.toMemberDto(userDetails);
+        CategoryDto categoryDto = CategoryDto.toCategoryDto(memberDto);
         ResponseShowCategoryDto responseShowCategoryDto = categoryService.showCategory(categoryDto);
 
         return Response.success(200, "카테고리 목록 조회를 성공했습니다.", responseShowCategoryDto);
@@ -62,11 +63,11 @@ public class CategoryController {
     public Response<ResponseCreateCategoryDto> createCategory(@RequestBody RequestCreateCategoryDto requestCreateCategoryDto,
                                                               @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        Member member = userDetails.getMember();
+        MemberDto memberDto = MemberDto.toMemberDto(userDetails);
         String categoryName = requestCreateCategoryDto.getCategoryName();
         String categoryColor = requestCreateCategoryDto.getCategoryColor();
 
-        CategoryDto categoryDto = CategoryDto.toCategoryDto(categoryName, categoryColor, member);
+        CategoryDto categoryDto = CategoryDto.toCategoryDto(categoryName, categoryColor, memberDto);
         ResponseCreateCategoryDto responseCreateCategoryDto = categoryService.createCategory(categoryDto);
 
         return Response.success(200, "카테고리 생성을 성공했습니다.", responseCreateCategoryDto);
@@ -82,11 +83,11 @@ public class CategoryController {
                                    @RequestBody RequestUpdateCategoryDto requestUpdateCategoryDto,
                                    @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        Member member = userDetails.getMember();
+        MemberDto memberDto = MemberDto.toMemberDto(userDetails);
         String categoryName = requestUpdateCategoryDto.getCategoryName();
         String categoryColor = requestUpdateCategoryDto.getCategoryColor();
 
-        CategoryDto categoryDto = CategoryDto.toCategoryDto(member, categoryId, categoryName, categoryColor);
+        CategoryDto categoryDto = CategoryDto.toCategoryDto(memberDto, categoryId, categoryName, categoryColor);
         categoryService.updateCategory(categoryDto);
 
         return Response.success(200, "카테고리 수정을 성공했습니다.", null);
@@ -101,9 +102,9 @@ public class CategoryController {
     public Response<ResponseDeleteCategoryDto> deleteCategory(@PathVariable Long categoryId,
                                                               @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        Member member = userDetails.getMember();
+        MemberDto memberDto = MemberDto.toMemberDto(userDetails);
 
-        CategoryDto categoryDto = CategoryDto.toCategoryDto(member, categoryId);
+        CategoryDto categoryDto = CategoryDto.toCategoryDto(memberDto, categoryId);
         ResponseDeleteCategoryDto responseDeleteCategoryDto = categoryService.deleteCategory(categoryDto);
 
         return Response.success(200, "카테고리 삭제를 성공했습니다.", responseDeleteCategoryDto);

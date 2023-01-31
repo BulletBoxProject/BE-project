@@ -21,16 +21,12 @@ public class ResponseDailyDto {
     @Schema(description = "할 일 정보")
     private List<DailyDto> daily;
 
-    @Schema(description = "경혐 조회 여부", type = "boolean", example = "false")
-    private boolean withExperience;
-
-    private ResponseDailyDto(List<CategoryDto> categories, List<DailyDto> daily, boolean withExperience){
+    private ResponseDailyDto(List<CategoryDto> categories, List<DailyDto> daily){
         this.categories = categories;
         this.daily = daily;
-        this.withExperience = withExperience;
     }
 
-    public static ResponseDailyDto toResponseDailyDto(List<CategoryDto> categories, List<DailyDto> daily, boolean withExperience){
-        return new ResponseDailyDto(categories, daily, withExperience);
+    public static ResponseDailyDto toResponseDailyDto(List<CategoryDto> categories, List<DailyDto> daily){
+        return new ResponseDailyDto(categories, daily);
     }
 }

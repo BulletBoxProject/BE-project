@@ -37,9 +37,13 @@ public class MainController {
     })
     @GetMapping
     public Response<ResponseShowMainPageDto> showMainPage(@ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
+
         TodoDto todoDto = TodoDto.toTodoDto(memberDto);
+
         ResponseShowMainPageDto responseMainDto = mainService.showMainPage(todoDto);
+
         return Response.success(200, "메인 페이지 조회를 성공했습니다.", responseMainDto);
     }
 
@@ -52,9 +56,13 @@ public class MainController {
                                                           @RequestParam(value = "month") Long month,
                                                           @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails)
     {
+
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
+
         TodoDto todoDto = TodoDto.toTodoDto(memberDto, year, month);
+
         ResponseShowCalendarDto responseChangeCalendarDto = mainService.showCalendar(todoDto);
+
         return Response.success(200, "메인 페이지 달력 조회 날짜 변경을 성공했습니다.", responseChangeCalendarDto);
     }
 
@@ -69,8 +77,9 @@ public class MainController {
                                                     @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
-        TodoDto todoDto = TodoDto.toTodoDto(memberDto, year, month, day);
-        ResponseShowDailyDto responseShowDailyDto = mainService.showDaily(todoDto);
+
+        ResponseShowDailyDto responseShowDailyDto = mainService.showDaily(memberDto, year, month, day);
+
         return Response.success(200, "데일리 로그 날짜 변경 조회를 성공했습니다.", responseShowDailyDto);
     }
 }

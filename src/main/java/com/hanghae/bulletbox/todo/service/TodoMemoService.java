@@ -2,6 +2,7 @@ package com.hanghae.bulletbox.todo.service;
 
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
+import com.hanghae.bulletbox.todo.dto.DailyDto;
 import com.hanghae.bulletbox.todo.dto.SearchTodoDto;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 import com.hanghae.bulletbox.todo.dto.TodoMemoDto;
@@ -62,14 +63,7 @@ public class TodoMemoService {
         MemberDto memberDto = todoDto.getMemberDto();
         Member member = Member.toMember(memberDto);
 
-        List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMemberAndTodo(member, todo);
-
-        List<TodoMemoDto> todoMemoDtoList = new ArrayList<>();
-
-        for(TodoMemo todoMemo : todoMemoList){
-            TodoMemoDto todoMemoDto = TodoMemoDto.toTodoMemoDto(todoMemo);
-            todoMemoDtoList.add(todoMemoDto);
-        }
+        List<TodoMemoDto> todoMemoDtoList = findAllMemoDtoOfTodo(member, todo);
 
         return todoMemoDtoList;
     }
@@ -82,13 +76,7 @@ public class TodoMemoService {
         MemberDto memberDto = searchTodoDto.getMemberDto();
         Member member = Member.toMember(memberDto);
 
-        List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMemberAndTodo(member, todo);
-        List<TodoMemoDto> todoMemoDtoList = new ArrayList<>();
-
-        for(TodoMemo todoMemo : todoMemoList){
-            TodoMemoDto todoMemoDto = TodoMemoDto.toTodoMemoDto(todoMemo);
-            todoMemoDtoList.add(todoMemoDto);
-        }
+        List<TodoMemoDto> todoMemoDtoList = findAllMemoDtoOfTodo(member, todo);
 
         return todoMemoDtoList;
     }
@@ -148,5 +136,34 @@ public class TodoMemoService {
         }
 
         todoMemo.updateContent(todoMemoDto);
+    }
+
+    // 할 일의 메모 찾아서 DailyDtoList로 반환
+    @Transactional(readOnly = true)
+    public List<DailyDto> makeDailyDtoListWithMemo(List<TodoDto> todoDtoList){
+        List<DailyDto> dailyDtoList = new ArrayList<>();
+
+        for(TodoDto todoDto: todoDtoList){
+            List<TodoMemoDto> todoMemoDtoList = findAllMemoByTodo(todoDto);
+            DailyDto dailyDto = DailyDto.toDailyDto(todoDto, todoMemoDtoList);
+
+            dailyDtoList.add(dailyDto);
+        }
+
+        return dailyDtoList;
+    }
+
+    // 메모 찾아서 메모 리스트로 반환하기
+    @Transactional(readOnly = true)
+    protected List<TodoMemoDto> findAllMemoDtoOfTodo(Member member, Todo todo){
+        List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMemberAndTodo(member, todo);
+        List<TodoMemoDto> todoMemoDtoList = new ArrayList<>();
+
+        for(TodoMemo todoMemo : todoMemoList){
+            TodoMemoDto todoMemoDto = TodoMemoDto.toTodoMemoDto(todoMemo);
+            todoMemoDtoList.add(todoMemoDto);
+        }
+
+        return todoMemoDtoList;
     }
 }

@@ -3,6 +3,7 @@ package com.hanghae.bulletbox.todo.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,12 +18,16 @@ public class CalendarDto {
     @Schema(description = "할 일이 존재하는 요일의 할 일 개수", example = "3", type = "Long")
     private Long count;
 
+    @Builder
     private CalendarDto(Long day, Long count) {
         this.day = day;
         this.count = count;
     }
 
     public static CalendarDto toCalendar(Long day, Long count) {
-        return new CalendarDto(day, count);
+        return CalendarDto.builder()
+                .day(day)
+                .count(count)
+                .build();
     }
 }
