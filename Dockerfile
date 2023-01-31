@@ -1,4 +1,4 @@
-FROM openjdk:17:alpine
+FROM openjdk:17-alpine
 
 ARG JAR_FILE=build/libs/*.jar
 
