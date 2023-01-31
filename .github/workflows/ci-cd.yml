@@ -131,8 +131,13 @@ jobs:
       - name: Publish Docker Image
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/bulletbox:web
 
-      # docker-compose 파일 배포
+  docker-deploy:
+    name: deploy
+    runs-on: ubuntu-20.04
+    steps:
       - uses: actions/checkout@master
+
+      # docker-compose 파일 배포
       - name: copy file via ssh password
       - uses: appleboy/scp-action@master
         with:
