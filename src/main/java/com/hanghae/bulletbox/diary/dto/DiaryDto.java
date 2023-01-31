@@ -1,7 +1,6 @@
 package com.hanghae.bulletbox.diary.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 import com.hanghae.bulletbox.diary.entity.Diary;
 import com.hanghae.bulletbox.member.dto.MemberDto;
@@ -77,6 +76,15 @@ public class DiaryDto {
                 .memberDto(memberDto)
                 .diaryContent(diaryContent)
                 .emotion(emotion)
+                .year(year)
+                .month(month)
+                .day(day)
+                .build();
+    }
+
+    public static DiaryDto toDiaryDto(MemberDto memberDto, Long year, Long month, Long day) {
+        return DiaryDto.builder()
+                .memberDto(memberDto)
                 .year(year)
                 .month(month)
                 .day(day)

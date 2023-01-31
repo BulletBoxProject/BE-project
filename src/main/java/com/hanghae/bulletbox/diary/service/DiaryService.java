@@ -47,9 +47,16 @@ public class DiaryService {
     public DiaryDto findByYearAndMonthAndDayAndMember(Long year, Long month, Long day, MemberDto memberDto) {
         Member member = Member.toMember(memberDto);
 
-        Diary diary = diaryRepository.findByMemberAndYearAndMonthAndDay(member, year, month, day).get();
+        Optional<Diary> diaryOptioanl = diaryRepository.findByMemberAndYearAndMonthAndDay(member, year, month, day);
 
-        DiaryDto diaryDto = DiaryDto.toDiaryDto(diary);
+        if(diaryOptioanl.isPresent()){
+            Diary diary = diaryOptioanl.get();
+            DiaryDto diaryDto = DiaryDto.toDiaryDto(diary);
+
+            return diaryDto;
+        }
+
+        DiaryDto diaryDto = DiaryDto.toDiaryDto(memberDto, year, month, day);
 
         return diaryDto;
     }
