@@ -24,9 +24,7 @@ else
   sleep 5
 fi
 
-cd /home/ubuntu/BulletBox
 sudo docker run -d -p 8080:8080 bulletbox
-
 #echo "$TIME_NOW > $JAR_FILE 파일 복사" >> $DEPLOY_LOG
 #cp $PROJECT_ROOT/build/libs/*.jar $JAR_FILE
 
