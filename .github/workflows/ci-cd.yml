@@ -72,6 +72,14 @@ jobs:
         with:
           arguments: clean build -x test
 
+      # 임시 저장
+      - name: Temporarily save build artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifact
+          path: build
+          retention-days: 1
+
       # AWS 인증 (IAM 사용자 Access Key, Secret Key 활용)
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -99,54 +107,54 @@ jobs:
             --s3-location bucket=$S3_BUCKET_NAME,key=$GITHUB_SHA.zip,bundleType=zip
 
   build-docker-image:
-  needs: BulletBox-ci-cd
-  name: Deploy Docker Image
-  runs-on: ubuntu-20.04
-  steps:
-    # 임시 저장 결과 로딩
-    - uses: actions/checkout@v2
-    - name: Retrieve built
-      uses: actions/download-artifact@v2
-      with:
-        name: build-artifact
-        path: build
+    needs: build
+    name: Deploy Docker Image
+    runs-on: ubuntu-20.04
+    steps:
+      # 임시 저장 결과 로딩
+      - uses: actions/checkout@v2
+      - name: Retrieve built
+        uses: actions/download-artifact@v2
+        with:
+          name: build-artifact
+          path: build
 
-    # 도커 허브 로그인
-    - name: Docker Hub Login
-      run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+      # 도커 허브 로그인
+      - name: Docker Hub Login
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
 
-    # 도커 이미지 빌드
-    - name: Building Docker Image
-      run: docker build --build-arg JAR_FILE=build/libs/\*.jar -t ${{ secrets.DOCKERHUB_USERNAME }}/bulletbox:web .
+      # 도커 이미지 빌드
+      - name: Building Docker Image
+        run: docker build --build-arg JAR_FILE=build/libs/\*.jar -t ${{ secrets.DOCKERHUB_USERNAME }}/bulletbox:web .
 
-    # 도커 이미지 푸시
-    - name: Publish Docker Image
-      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/bulletbox:web
+      # 도커 이미지 푸시
+      - name: Publish Docker Image
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/bulletbox:web
 
-    # docker-compose 파일 배포
-    - uses: actions/checkout@master
-    - name: copy file via ssh password
-    - uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ubuntu
-        key: ${{ secrets.KEY }}
-        port: 22
-        source: "docker-compose.yml"
-        target: "/home/ubuntu/"
-        
-    # 도커 compose up
-    - name: executing remote ssh commands using password
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ubuntu
-        key: ${{ secrets.KEY }}
-        port: 22
-        timeout: 90s # 기본값 30
-        script: |
-          sudo docker rm -f $(docker ps -qa)
-          sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/bulletbox:web
-          sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/bulletbox:redis
-          docker-compose up -d --remove-orphans
-          docker image prune -f
+      # docker-compose 파일 배포
+      - uses: actions/checkout@master
+      - name: copy file via ssh password
+      - uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          key: ${{ secrets.KEY }}
+          port: 22
+          source: "docker-compose.yml"
+          target: "/home/ubuntu/"
+
+      # 도커 compose up
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          key: ${{ secrets.KEY }}
+          port: 22
+          timeout: 90s # 기본값 30
+          script: |
+            sudo docker rm -f $(docker ps -qa)
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/bulletbox:web
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/bulletbox:redis
+            docker-compose up -d --remove-orphans
+            docker image prune -f

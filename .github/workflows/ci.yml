@@ -63,11 +63,3 @@ jobs:
         uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
         with:
           arguments: clean build
-
-      # 임시 저장
-      - name: Temporarily save build artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: build-artifact
-          path: build
-          retention-days: 1
