@@ -26,8 +26,8 @@ fi
 
 # docker image build
 cd /home/ubuntu/BulletBox
-sudo docker build -t bulletBox-spring .
-sudo docker run -d -p 8080:8080 bulletBox-spring
+sudo docker build -t bulletbox-spring .
+sudo docker run -d -p 8080:8080 bulletbox-spring
 #echo "$TIME_NOW > $JAR_FILE 파일 복사" >> $DEPLOY_LOG
 #cp $PROJECT_ROOT/build/libs/*.jar $JAR_FILE
 
