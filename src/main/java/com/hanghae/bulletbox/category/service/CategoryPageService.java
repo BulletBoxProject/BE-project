@@ -6,6 +6,7 @@ import com.hanghae.bulletbox.category.dto.ResponseDeleteCategoryDto;
 import com.hanghae.bulletbox.category.dto.ResponseShowCategoryDto;
 import com.hanghae.bulletbox.category.entity.Category;
 import com.hanghae.bulletbox.category.repository.CategoryRepository;
+import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,9 @@ public class CategoryPageService {
     public ResponseShowCategoryDto showCategory(CategoryDto categoryDto) {
 
         // 사용자의 카테고리 가져오기
-        Member member = categoryDto.getMember();
+        MemberDto memberDto = categoryDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+
         List<CategoryDto> categoryDtoList = new ArrayList<>();
         List<Category> categoryList = categoryRepository.findAllByMember(member);
 
@@ -53,7 +56,9 @@ public class CategoryPageService {
     public ResponseCreateCategoryDto createCategory(CategoryDto categoryDto) {
 
         // 카테고리 중복 검사
-        Member member = categoryDto.getMember();
+        MemberDto memberDto = categoryDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+
         String categoryName = categoryDto.getCategoryName();
 
         categoryRepository.findAllByMemberAndCategoryName(member, categoryName).ifPresent(
@@ -77,7 +82,9 @@ public class CategoryPageService {
     public void updateCategory(CategoryDto categoryDto) {
 
         // 카테고리 유효성 검사
-        Member member = categoryDto.getMember();
+        MemberDto memberDto = categoryDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+
         Long categoryId = categoryDto.getCategoryId();
 
         Category category = categoryRepository.findAllByMemberAndCategoryId(member, categoryId).orElseThrow(
@@ -95,7 +102,9 @@ public class CategoryPageService {
     public ResponseDeleteCategoryDto deleteCategory(CategoryDto categoryDto) {
 
         // 카테고리 존재 여부 확인
-        Member member = categoryDto.getMember();
+        MemberDto memberDto = categoryDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+
         Long categoryId = categoryDto.getCategoryId();
 
         Category category = categoryRepository.findAllByMemberAndCategoryId(member, categoryId).orElseThrow(
