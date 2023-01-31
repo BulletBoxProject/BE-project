@@ -3,7 +3,6 @@ package com.hanghae.bulletbox.todo.service;
 import com.hanghae.bulletbox.category.repository.CategoryRepository;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
-import com.hanghae.bulletbox.todo.dto.DailyDto;
 import com.hanghae.bulletbox.todo.dto.SearchTodoDto;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 import com.hanghae.bulletbox.todo.entity.Todo;
@@ -189,6 +188,20 @@ public class TodoService {
         checkMemberIsNotNull(member);
 
         List<Todo> todoList = todoRepository.findAllByMemberAndCategoryIdAndTodoYearAndTodoMonthAndTodoDay(member, categoryId, todoYear, todoMonth, todoDay);
+        List<TodoDto> todoDtoList = mapTodoListToTodoDtoList(todoList);
+
+        return todoDtoList;
+    }
+
+    // 해당 멤버의 이달의 할 일 찾아서 반환
+    @Transactional(readOnly = true)
+    public List<TodoDto> findAllDtoByMemberAndYearAndMonth(MemberDto memberDto, Long todoYear, Long todoMonth) {
+        Member member = Member.toMember(memberDto);
+
+        checkMemberIsNotNull(member);
+
+        List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonth(member, todoYear, todoMonth);
+
         List<TodoDto> todoDtoList = mapTodoListToTodoDtoList(todoList);
 
         return todoDtoList;

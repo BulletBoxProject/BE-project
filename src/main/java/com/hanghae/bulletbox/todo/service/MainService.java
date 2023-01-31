@@ -1,20 +1,14 @@
 package com.hanghae.bulletbox.todo.service;
 
 import com.hanghae.bulletbox.category.dto.CategoryDto;
-import com.hanghae.bulletbox.category.entity.Category;
-import com.hanghae.bulletbox.category.repository.CategoryRepository;
+import com.hanghae.bulletbox.category.service.CategoryService;
+import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.todo.dto.CalendarDto;
 import com.hanghae.bulletbox.todo.dto.DailyDto;
 import com.hanghae.bulletbox.todo.dto.ResponseShowCalendarDto;
-import com.hanghae.bulletbox.todo.dto.ResponseShowMainPageDto;
 import com.hanghae.bulletbox.todo.dto.ResponseShowDailyDto;
-import com.hanghae.bulletbox.member.dto.MemberDto;
-import com.hanghae.bulletbox.member.entity.Member;
+import com.hanghae.bulletbox.todo.dto.ResponseShowMainPageDto;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
-import com.hanghae.bulletbox.todo.entity.TodoMemo;
-import com.hanghae.bulletbox.todo.entity.Todo;
-import com.hanghae.bulletbox.todo.repository.TodoMemoRepository;
-import com.hanghae.bulletbox.todo.repository.TodoRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,131 +25,93 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MainService {
 
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
-    private final TodoRepository todoRepository;
+    private final TodoService todoService;
 
-    private final TodoMemoRepository todoMemoRepository;
+    private final TodoMemoService todoMemoService;
 
+    // 메인 페이지 조회
     @Transactional(readOnly = true)
     public ResponseShowMainPageDto showMainPage(TodoDto todoDto) {
         MemberDto memberDto = todoDto.getMemberDto();
-        Member member = Member.toMember(memberDto);
 
         // category 정보 가져오기
-        List<CategoryDto> categoryDtoList = new ArrayList<>();
-        List<Category> categoryList = categoryRepository.findAllByMember(member);
-        for (Category category : categoryList) {
+        List<CategoryDto> categoryDtoList = categoryService.findAllCategory(memberDto);
 
-            Long categoryId = category.getCategoryId();
-            String categoryName = category.getCategoryName();
-            String categoryColor = category.getCategoryColor();
-
-            categoryDtoList.add(CategoryDto.toCategoryDto(categoryId, categoryName, categoryColor));
-        }
-
-        // daily 정보 가져오기
-        List<DailyDto> dailyDtoList = new ArrayList<>();
-        // 메인 페이지 조회 시, 현재 연도, 월의 달력을 보여주기 위해 현재 날짜로 연월 설정
+        // 할 일 정보 가져오기
         Long todoYear = (long) LocalDate.now().getYear();
         Long todoMonth = (long) LocalDate.now().getMonthValue();
         Long todoDay = (long) LocalDate.now().getDayOfMonth();
-        List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonthAndTodoDay(member, todoYear, todoMonth, todoDay);
 
-        for (Todo todo : todoList) {
-            List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMemberAndTodo(member, todo);
+        List<TodoDto> todoDtoList = todoService.findAllDtoByMemberAndYearAndMonthAndDay(memberDto, todoYear, todoMonth, todoDay);
 
-            dailyDtoList.add(DailyDto.toDailyDto(todo, todoMemoList));
-        }
+        // 각 할 일들의 메모 조회해서 dailyDto에 담기
+        List<DailyDto> dailyDtoList = todoMemoService.makeDailyDtoListWithMemo(todoDtoList);
 
         // calendar 정보 가져오기
         // 메인 페이지 달력에서 일별 할 일의 개수를 세는 로직
-        todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonth(member, todoYear, todoMonth);
+        List<TodoDto> calendarTodoDtoList = todoService.findAllDtoByMemberAndYearAndMonth(memberDto, todoYear, todoMonth);
 
-        Map<Long, Long> countTodoPerDayMap = new HashMap<>();
-        List<CalendarDto> calendarDtoList = new ArrayList<>();
-
-        for (Todo todo : todoList) {
-            Long day = todo.getTodoDay();
-            boolean isContainsKeyOfDay = countTodoPerDayMap.containsKey(day);
-
-            // Map 의 key 값에 day 가 존재하는 지에 따라 구분
-            if (isContainsKeyOfDay) {
-                // Map key 값에 day 가 존재할 시, 해당 day 의 key 값의 value 를 불러와 +1
-                countTodoPerDayMap.replace(day, countTodoPerDayMap.get(day), countTodoPerDayMap.get(day) + 1L);
-            } else {
-                // Map key 값에 day 가 없을 시, 새로운 K, V 추가
-                countTodoPerDayMap.put(day, 1L);
-            }
-        }
-
-        // Map k, v 뽑아서 dto 변환 후, 응답 dtoList 추가
-        for (Map.Entry<Long, Long> val : countTodoPerDayMap.entrySet()) {
-            Long day = val.getKey();
-            Long count = val.getValue();
-            calendarDtoList.add(CalendarDto.toCalendar(day, count));
-        }
+        List<CalendarDto> calendarDtoList = makeCalendarDtoList(calendarTodoDtoList);
 
         return ResponseShowMainPageDto.toResponseShowMainPageDto(categoryDtoList, calendarDtoList ,dailyDtoList);
     }
 
+    // 달력 조회 날짜 변경 (월 단위)
     @Transactional(readOnly = true)
     public ResponseShowCalendarDto showCalendar(TodoDto todoDto) {
 
         MemberDto memberDto = todoDto.getMemberDto();
-        Member member = Member.toMember(memberDto);
 
         Long todoYear = todoDto.getTodoYear();
         Long todoMonth = todoDto.getTodoMonth();
-        List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonth(member, todoYear, todoMonth);
 
-        // 메인 페이지 달력에서 일별 할 일의 개수를 세는 로직
-        Map<Long, Long> countTodoPerDayMap = new HashMap<>();
-        List<CalendarDto> calendarDtoList = new ArrayList<>();
+        List<TodoDto> calendarTodoDtoList = todoService.findAllDtoByMemberAndYearAndMonth(memberDto, todoYear, todoMonth);
 
-        for (Todo todo : todoList) {
-            Long day = todo.getTodoDay();
-            boolean isContainsKeyOfDay = countTodoPerDayMap.containsKey(day);
-
-            // Map 의 key 값에 day 가 존재하는 지에 따라 구분
-            if (isContainsKeyOfDay) {
-                // Map key 값에 day 가 존재할 시, 해당 day 의 key 값의 value 를 불러와 +1
-                countTodoPerDayMap.replace(day, countTodoPerDayMap.get(day), countTodoPerDayMap.get(day) + 1L);
-            } else {
-                // Map key 값에 day 가 없을 시, 새로운 K, V 추가
-                countTodoPerDayMap.put(day, 1L);
-            }
-        }
-
-        // Map k, v 뽑아서 dto 변환 후, 응답 dtoList 추가
-        for (Map.Entry<Long, Long> val : countTodoPerDayMap.entrySet()) {
-            Long day = val.getKey();
-            Long count = val.getValue();
-            calendarDtoList.add(CalendarDto.toCalendar(day, count));
-        }
+        List<CalendarDto> calendarDtoList = makeCalendarDtoList(calendarTodoDtoList);
 
         return ResponseShowCalendarDto.toResponseChangeCalendarDto(calendarDtoList);
     }
 
     // 메인 페이지 내 데일리 로그 조회
     @Transactional(readOnly = true)
-    public ResponseShowDailyDto showDaily(TodoDto todoDto) {
+    public ResponseShowDailyDto showDaily(MemberDto memberDto, Long todoYear, Long todoMonth, Long todoDay) {
 
-        MemberDto memberDto = todoDto.getMemberDto();
-        Member member = Member.toMember(memberDto);
+        List<TodoDto> todoDtoList = todoService.findAllDtoByMemberAndYearAndMonthAndDay(memberDto, todoYear, todoMonth, todoDay);
 
-        Long todoYear = todoDto.getTodoYear();
-        Long todoMonth = todoDto.getTodoMonth();
-        Long todoDay = todoDto.getTodoDay();
-        List<Todo> todoList = todoRepository.findAllByMemberAndTodoYearAndTodoMonthAndTodoDay(member, todoYear, todoMonth, todoDay);
-        List<DailyDto> dailyDtoList = new ArrayList<>();
-
-        for (Todo todo : todoList) {
-            List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMemberAndTodo(member, todo);
-
-            dailyDtoList.add(DailyDto.toDailyDto(todo, todoMemoList));
-        }
+        // 각 할 일들의 메모 조회해서 dailyDto에 담기
+        List<DailyDto> dailyDtoList = todoMemoService.makeDailyDtoListWithMemo(todoDtoList);
 
         return ResponseShowDailyDto.toResponseShowDailyDto(dailyDtoList);
+    }
+
+    // 이번 달 날짜별 할 일 갯수 세서 리스트로 반환
+    private List<CalendarDto> makeCalendarDtoList(List<TodoDto> todoDtoList){
+        Map<Long, Long> countTodoPerDayMap = new HashMap<>();
+        List<CalendarDto> calendarDtoList = new ArrayList<>();
+
+        for (TodoDto todoDto : todoDtoList) {
+            Long day = todoDto.getTodoDay();
+            boolean isContainsKeyOfDay = countTodoPerDayMap.containsKey(day);
+
+            // Map 의 key 값에 day 가 존재하는 지에 따라 구분
+            if (isContainsKeyOfDay) {
+                // Map key 값에 day 가 존재할 시, 해당 day 의 key 값의 value 를 불러와 +1
+                countTodoPerDayMap.replace(day, countTodoPerDayMap.get(day), countTodoPerDayMap.get(day) + 1L);
+            } else {
+                // Map key 값에 day 가 없을 시, 새로운 K, V 추가
+                countTodoPerDayMap.put(day, 1L);
+            }
+        }
+
+        // Map k, v 뽑아서 dto 변환 후, 응답 dtoList 추가
+        for (Map.Entry<Long, Long> val : countTodoPerDayMap.entrySet()) {
+            Long day = val.getKey();
+            Long count = val.getValue();
+            calendarDtoList.add(CalendarDto.toCalendar(day, count));
+        }
+
+        return calendarDtoList;
     }
 }

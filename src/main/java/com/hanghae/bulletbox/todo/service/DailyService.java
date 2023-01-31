@@ -7,7 +7,6 @@ import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.todo.dto.DailyDto;
 import com.hanghae.bulletbox.todo.dto.ResponseDailyDto;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
-import com.hanghae.bulletbox.todo.dto.TodoMemoDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -50,7 +48,7 @@ public class DailyService {
         List<TodoDto> todoDtoList = todoService.findAllDtoByMemberAndYearAndMonthAndDay(memberDto, todoYear, todoMonth, todoDay);
 
         // 각 할 일들의 메모 조회해서 dailyDto에 담기
-        List<DailyDto> dailyDtoList = findAllMemoOfTodo(todoDtoList);
+        List<DailyDto> dailyDtoList = todoMemoService.makeDailyDtoListWithMemo(todoDtoList);
 
         ResponseDailyDto responseDailyDto = ResponseDailyDto.toResponseDailyDto(categoryDtoList, dailyDtoList);
 
@@ -66,24 +64,10 @@ public class DailyService {
         List<TodoDto> todoDtoList = todoService.findAllDtoByMemberAndCategoryIdAndYearAndMonthAndDay(todoDto);
 
         // 각 할 일들의 메모 조회해서 dailyDto에 담기
-        List<DailyDto> dailyDtoList = findAllMemoOfTodo(todoDtoList);
+        List<DailyDto> dailyDtoList = todoMemoService.makeDailyDtoListWithMemo(todoDtoList);
 
         ResponseCategoryDto responseCategoryDto = ResponseCategoryDto.toResponseCategoryDto(dailyDtoList);
 
         return responseCategoryDto;
-    }
-
-    // 각 할 일들의 메모 조회해서 dailyDto에 담기
-    private List<DailyDto> findAllMemoOfTodo(List<TodoDto> todoDtoList){
-        List<DailyDto> dailyDtoList = new ArrayList<>();
-
-        for(TodoDto todoDto: todoDtoList){
-            List<TodoMemoDto> todoMemoDtoList = todoMemoService.findAllMemoByTodo(todoDto);
-            DailyDto dailyDto = DailyDto.toDailyDto(todoDto, todoMemoDtoList);
-
-            dailyDtoList.add(dailyDto);
-        }
-
-        return dailyDtoList;
     }
 }

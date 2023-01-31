@@ -9,7 +9,6 @@ import com.hanghae.bulletbox.todo.dto.RequestLoadFavoriteDto;
 import com.hanghae.bulletbox.todo.dto.RequestUpdateTodoDto;
 import com.hanghae.bulletbox.todo.dto.ResponseDailyDto;
 import com.hanghae.bulletbox.todo.dto.ResponseLoadFavoriteDto;
-import com.hanghae.bulletbox.todo.dto.ResponseShowDailyDto;
 import com.hanghae.bulletbox.todo.dto.ResponseShowTodoCreatePageDto;
 import com.hanghae.bulletbox.todo.dto.ResponseTodoUpdatePageDto;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
