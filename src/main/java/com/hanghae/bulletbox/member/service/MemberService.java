@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.NoSuchElementException;
+import java.util.Random;
 
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.DIFFERENT_PASSWORD_MSG;
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.DUPLICATE_EMAIL_MSG;
@@ -37,6 +38,8 @@ public class MemberService {
     private final JwtUtil jwtUtil;
 
     private final RedisUtil redisUtil;
+
+    private String email;
 
     private void checkDuplicatedEmail(String email) {
         memberRepository.findByEmail(email).ifPresent(
@@ -99,4 +102,33 @@ public class MemberService {
     public void logout(Member member) {
         redisUtil.deleteData(member.getEmail());
     }
+
+    @Transactional
+    public void testLogin(HttpServletResponse response, MemberDto memberDto){
+
+        email = createEmail();
+        String nickname = "TestNickname";
+        String password = "TestPassword";
+        Member member = Member.toMember(email, nickname, password);
+        memberRepository.save(member);
+
+        issueTokens(response, email);
+    }
+
+    public String createEmail(){
+        Random random = new Random();
+        StringBuilder key = new StringBuilder();
+
+        for(int i = 0; i< 8; i++){
+            int index = random.nextInt(3);
+
+            switch (index) {
+                case 0 -> key.append((char) (int) random.nextInt(26) + 97);
+                case 1 -> key.append((char) (int) random.nextInt(26) + 65);
+                case 2 -> key.append(random.nextInt(9));
+            }
+        }
+        return email = key.toString();
+    }
+
 }
