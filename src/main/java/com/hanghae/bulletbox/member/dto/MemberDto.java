@@ -30,12 +30,15 @@ public class MemberDto {
     @Schema(description = "비밀번호", type = "String", example = "a!1234567", minLength = 8, maxLength = 25)
     private String password;
 
+    private Boolean firstLogin = false;
+
     @Builder(access = AccessLevel.PRIVATE)
-    private MemberDto(Long memberId, String email, String nickname, String password) {
+    private MemberDto(Long memberId, String email, String nickname, String password, Boolean firstLogin) {
         this.memberId = memberId;
         this.email = email;
         this.nickname = nickname;
         this.password = password;
+        this.firstLogin = firstLogin;
     }
 
     // Member를 MemberDto로
@@ -44,12 +47,22 @@ public class MemberDto {
         String email = member.getEmail();
         String password = member.getPassword();
         String nickname = member.getNickname();
+        Boolean firstLogin = member.getFirstLogin();
 
         return MemberDto.builder()
                 .memberId(memberId)
                 .email(email)
                 .password(password)
                 .nickname(nickname)
+                .firstLogin(firstLogin)
+                .build();
+    }
+
+    public static MemberDto toMemberDto(ResponseFirstLoginDto responseFirstLoginDto){
+        Boolean firstLogin = responseFirstLoginDto.getFirstLogin();
+
+        return MemberDto.builder()
+                .firstLogin(firstLogin)
                 .build();
     }
 
