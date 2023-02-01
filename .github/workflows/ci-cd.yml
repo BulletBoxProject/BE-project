@@ -112,6 +112,7 @@ jobs:
     name: Deploy Docker Image
     runs-on: ubuntu-20.04
     steps:
+
       # 임시 저장 결과 로딩
       - uses: actions/checkout@v2
       - name: Retrieve built
