@@ -6,6 +6,7 @@ import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.dto.RequestLoginDto;
 import com.hanghae.bulletbox.member.dto.RequestSignupDto;
 import com.hanghae.bulletbox.member.dto.VerifyCodeDto;
+import com.hanghae.bulletbox.member.service.KakaoService;
 import com.hanghae.bulletbox.member.service.MailService;
 import com.hanghae.bulletbox.member.service.MemberService;
 
@@ -15,6 +16,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -38,6 +41,8 @@ public class MemberController {
     private final MemberService memberService;
 
     private final MailService mailService;
+
+    private final KakaoService kakaoService;
 
     @Operation(tags = {"Member"}, summary = "회원가입")
     @ApiResponses(value = {
@@ -91,15 +96,21 @@ public class MemberController {
     }
 
     @PostMapping("/logout")
-    public Response<?> logout(@AuthenticationPrincipal UserDetailsImpl userDetails){
+    public Response<?> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         memberService.logout(userDetails.getMember());
         return Response.success(200, "로그아웃 성공", null);
     }
 
     @PostMapping("/auth/token")
-    public Response<?> reissueToken(HttpServletRequest request, HttpServletResponse response){
+    public Response<?> reissueToken(HttpServletRequest request, HttpServletResponse response) {
         memberService.reissueToken(request, response);
         return Response.success(200, "토큰 재발행 성공", null);
+    }
+
+    @GetMapping("/login/kakao")
+    public Response<?> kakaoLogin(@RequestParam String code, HttpServletResponse response) {
+        kakaoService.kakaoLogin(code, response);
+        return Response.success(200, "카카오 로그인 성공", null);
     }
 
 }

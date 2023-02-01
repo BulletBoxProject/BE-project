@@ -1,6 +1,7 @@
 package com.hanghae.bulletbox.member.entity;
 
 import com.hanghae.bulletbox.member.dto.MemberDto;
+import com.hanghae.bulletbox.member.type.SocialTypeEnum;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -9,6 +10,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,6 +37,9 @@ public class Member {
     @Column(nullable = false)
     private String password;
 
+    @Enumerated(value = EnumType.STRING)
+    private SocialTypeEnum socialType;
+
     @Builder(access = AccessLevel.PRIVATE)
     private Member(Long memberId, String email, String nickname, String password) {
         this.memberId = memberId;
@@ -42,14 +48,21 @@ public class Member {
         this.password = password;
     }
 
+    @Builder(access = AccessLevel.PRIVATE)
+    public Member(String email, String nickname, SocialTypeEnum socialType) {
+        this.email = email;
+        this.nickname = nickname;
+        this.socialType = socialType;
+    }
+
     // MemberDto를 Member로 변환
-    public static Member toMember(MemberDto memberDto){
+    public static Member toMember(MemberDto memberDto) {
         Long memberId = memberDto.getMemberId();
         String email = memberDto.getEmail();
         String password = memberDto.getPassword();
         String nickname = memberDto.getNickname();
 
-        if(memberId == null){
+        if (memberId == null) {
             throw new NoSuchElementException(NOT_FOUND_MEMBER_MSG.getMsg());
         }
 
@@ -67,5 +80,18 @@ public class Member {
                 .nickname(nickname)
                 .password(password)
                 .build();
+    }
+
+    public void socialUpdate(SocialTypeEnum type) {
+        this.socialType = type;
+    }
+
+    public  Member(String email, SocialTypeEnum socialType) {
+        this.email = email;
+        this.socialType = socialType;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
