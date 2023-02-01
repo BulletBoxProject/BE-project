@@ -1,6 +1,8 @@
 package com.hanghae.bulletbox.category.entity;
 
+import com.hanghae.bulletbox.category.dto.CategoryDto;
 import com.hanghae.bulletbox.common.entity.TimeStamped;
+import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 
 import lombok.AccessLevel;
@@ -37,7 +39,8 @@ public class Category extends TimeStamped {
     private String categoryColor;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private Category(Member member, String categoryName, String categoryColor) {
+    private Category(Long categoryId, Member member, String categoryName, String categoryColor) {
+        this.categoryId = categoryId;
         this.member = member;
         this.categoryName = categoryName;
         this.categoryColor = categoryColor;
@@ -45,6 +48,21 @@ public class Category extends TimeStamped {
 
     public static Category toCategory(Member member, String categoryName, String categoryColor) {
         return Category.builder()
+                .member(member)
+                .categoryName(categoryName)
+                .categoryColor(categoryColor)
+                .build();
+    }
+
+    public static Category toCategory(CategoryDto categoryDto){
+        MemberDto memberDto = categoryDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+        Long categoryId = categoryDto.getCategoryId();
+        String categoryName = categoryDto.getCategoryName();
+        String categoryColor = categoryDto.getCategoryColor();
+
+        return Category.builder()
+                .categoryId(categoryId)
                 .member(member)
                 .categoryName(categoryName)
                 .categoryColor(categoryColor)

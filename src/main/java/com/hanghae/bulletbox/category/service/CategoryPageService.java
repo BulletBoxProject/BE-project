@@ -4,17 +4,13 @@ import com.hanghae.bulletbox.category.dto.CategoryDto;
 import com.hanghae.bulletbox.category.dto.ResponseCreateCategoryDto;
 import com.hanghae.bulletbox.category.dto.ResponseDeleteCategoryDto;
 import com.hanghae.bulletbox.category.dto.ResponseShowCategoryDto;
-import com.hanghae.bulletbox.category.entity.Category;
-import com.hanghae.bulletbox.category.repository.CategoryRepository;
 import com.hanghae.bulletbox.member.dto.MemberDto;
-import com.hanghae.bulletbox.member.entity.Member;
 
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.DUPLICATE_CATEGORYNAME_MSG;
@@ -24,7 +20,7 @@ import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_
 @RequiredArgsConstructor
 public class CategoryPageService {
 
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
     // 카테고리 목록 조회
     @Transactional(readOnly = true)
@@ -32,20 +28,8 @@ public class CategoryPageService {
 
         // 사용자의 카테고리 가져오기
         MemberDto memberDto = categoryDto.getMemberDto();
-        Member member = Member.toMember(memberDto);
 
-        List<CategoryDto> categoryDtoList = new ArrayList<>();
-        List<Category> categoryList = categoryRepository.findAllByMember(member);
-
-        for (Category category : categoryList) {
-
-            Long categoryId = category.getCategoryId();
-            String categoryName = category.getCategoryName();
-            String categoryColor = category.getCategoryColor();
-
-            // Entity -> Dto 변환
-            categoryDtoList.add(CategoryDto.toCategoryDto(categoryId, categoryName, categoryColor));
-        }
+        List<CategoryDto> categoryDtoList = categoryService.findAllCategory(memberDto);
 
         // Dto -> 응답 Dto 변환 후, 리턴
         return ResponseShowCategoryDto.toResponseShowCategoryDto(categoryDtoList);
@@ -56,63 +40,47 @@ public class CategoryPageService {
     public ResponseCreateCategoryDto createCategory(CategoryDto categoryDto) {
 
         // 카테고리 중복 검사
-        MemberDto memberDto = categoryDto.getMemberDto();
-        Member member = Member.toMember(memberDto);
+        boolean isCategoryDuplicated = categoryService.isCategoryDuplicated(categoryDto);
 
-        String categoryName = categoryDto.getCategoryName();
-
-        categoryRepository.findAllByMemberAndCategoryName(member, categoryName).ifPresent(
-                m -> {
-                    throw new IllegalArgumentException(DUPLICATE_CATEGORYNAME_MSG.getMsg());
-                }
-        );
+        if(isCategoryDuplicated){
+            throw new IllegalArgumentException(DUPLICATE_CATEGORYNAME_MSG.getMsg());
+        }
 
         // DTO -> Entity 변환
         String categoryColor = categoryDto.getCategoryColor();
-        Category category = Category.toCategory(member, categoryName, categoryColor);
 
-        categoryRepository.save(category);
+        CategoryDto savedCategoryDto = categoryService.save(categoryDto);
 
-        Long categoryId = category.getCategoryId();
-
-        return ResponseCreateCategoryDto.toResponseCreateCategoryDto(categoryId, categoryName, categoryColor);
+        return ResponseCreateCategoryDto.toResponseCreateCategoryDto(savedCategoryDto);
     }
 
+    // 카테고리 수정
     @Transactional(readOnly = false)
     public void updateCategory(CategoryDto categoryDto) {
 
         // 카테고리 유효성 검사
-        MemberDto memberDto = categoryDto.getMemberDto();
-        Member member = Member.toMember(memberDto);
+        boolean isCategoryDuplicated = categoryService.isCategoryDuplicated(categoryDto);
 
-        Long categoryId = categoryDto.getCategoryId();
-
-        Category category = categoryRepository.findAllByMemberAndCategoryId(member, categoryId).orElseThrow(
-                () -> new IllegalArgumentException(NOT_FOUND_CATEGORY_MSG.getMsg())
-        );
+        if(isCategoryDuplicated){
+            throw new IllegalArgumentException(NOT_FOUND_CATEGORY_MSG.getMsg());
+        }
 
         // 카테고리 수정
-        String categoryName = categoryDto.getCategoryName();
-        String categoryColor = categoryDto.getCategoryColor();
-
-        category.update(categoryName, categoryColor);
+        categoryService.update(categoryDto);
     }
 
     @Transactional
     public ResponseDeleteCategoryDto deleteCategory(CategoryDto categoryDto) {
 
         // 카테고리 존재 여부 확인
-        MemberDto memberDto = categoryDto.getMemberDto();
-        Member member = Member.toMember(memberDto);
+        boolean isCategoryDuplicated = categoryService.isCategoryDuplicated(categoryDto);
 
-        Long categoryId = categoryDto.getCategoryId();
-
-        Category category = categoryRepository.findAllByMemberAndCategoryId(member, categoryId).orElseThrow(
-                () -> new IllegalArgumentException(NOT_FOUND_CATEGORY_MSG.getMsg())
-        );
+        if(isCategoryDuplicated){
+            throw new IllegalArgumentException(NOT_FOUND_CATEGORY_MSG.getMsg());
+        }
 
         // 카테고리 삭제
-        categoryRepository.delete(category);
+        Long categoryId = categoryService.deleteById(categoryDto);
 
         return ResponseDeleteCategoryDto.toResponseDeleteCategoryDto(categoryId);
     }

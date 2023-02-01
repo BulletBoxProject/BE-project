@@ -2,6 +2,7 @@ package com.hanghae.bulletbox.category.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import com.hanghae.bulletbox.category.entity.Category;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 
@@ -57,6 +58,21 @@ public class CategoryDto {
     public static CategoryDto toCategoryDto(MemberDto memberDto) {
         return CategoryDto.builder()
                 .memberDto(memberDto)
+                .build();
+    }
+
+    public static CategoryDto toCategoryDto(Category category){
+        Long categoryId = category.getCategoryId();
+        Member member = category.getMember();
+        MemberDto memberDto = MemberDto.toMemberDto(member);
+        String categoryName = category.getCategoryName();
+        String categoryColor = category.getCategoryColor();
+
+        return CategoryDto.builder()
+                .categoryId(categoryId)
+                .memberDto(memberDto)
+                .categoryName(categoryName)
+                .categoryColor(categoryColor)
                 .build();
     }
 
