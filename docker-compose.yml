@@ -9,15 +9,19 @@ services:
     depends_on:
       - redis
     networks:
-      - default
+      - web-net
 
   redis:
     image: gksrywls97/bulletbox:redis
-    command: redis-server
+    command: ["redis-server", "--bind", "redis", "--port", "6379"]
     container_name: redis
     labels:
       - "name=redis"
       - "mode=standalone"
     restart: always
     networks:
-      - default
+      - web-net
+
+  networks:
+    web-net:
+      driver: bridge
