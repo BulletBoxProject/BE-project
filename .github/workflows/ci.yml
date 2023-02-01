@@ -41,7 +41,7 @@ jobs:
       - run: echo "${{ secrets.MAIL }}" > ./src/main/resources/mail-security.properties
 
       # OAuth 필요한 파일 생성
-      - run: touch ./src/main/resources/application-security.oauth.properties
+      - run: touch ./src/main/resources/application-security-oauth.properties
       - run: echo "${{ secrets.OAUTH }}" > ./src/main/resources/application-security.oauth.properties
 
       # Gradle 캐싱
