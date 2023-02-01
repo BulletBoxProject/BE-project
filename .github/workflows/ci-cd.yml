@@ -133,6 +133,7 @@ jobs:
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/bulletbox:web
 
   docker-deploy:
+    needs: build-docker-image
     name: deploy
     runs-on: ubuntu-20.04
     steps:
