@@ -27,7 +27,11 @@ public class ResponseCreateCategoryDto {
         this.categoryColor = categoryColor;
     }
 
-    public static ResponseCreateCategoryDto toResponseCreateCategoryDto(Long categoryId, String categoryName, String categoryColor) {
+    public static ResponseCreateCategoryDto toResponseCreateCategoryDto(CategoryDto categoryDto) {
+        Long categoryId = categoryDto.getCategoryId();
+        String categoryName = categoryDto.getCategoryName();
+        String categoryColor = categoryDto.getCategoryColor();
+
         return ResponseCreateCategoryDto.builder()
                 .categoryId(categoryId)
                 .categoryName(categoryName)

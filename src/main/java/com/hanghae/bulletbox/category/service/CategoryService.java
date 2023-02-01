@@ -13,6 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.DUPLICATE_CATEGORYNAME_MSG;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_CATEGORY_MSG;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NO_AUTHORIZATION_MSG;
 
 @RequiredArgsConstructor
 @Service
@@ -39,4 +44,79 @@ public class CategoryService {
         return categoryDtoList;
     }
 
+    // 카테고리 중복 검사
+    @Transactional(readOnly = true)
+    public boolean isCategoryDuplicated(CategoryDto categoryDto) {
+        MemberDto memberDto = categoryDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+        String categoryName = categoryDto.getCategoryName();
+
+        Optional<Category> categoryOptional = categoryRepository.findAllByMemberAndCategoryName(member, categoryName);
+
+        return categoryOptional.isPresent();
+    }
+
+    @Transactional
+    public CategoryDto save(CategoryDto categoryDto) {
+
+        boolean categoryDuplicated = isCategoryDuplicated(categoryDto);
+
+        if(categoryDuplicated){
+            throw new IllegalArgumentException(DUPLICATE_CATEGORYNAME_MSG.getMsg());
+        }
+
+        Category category = Category.toCategory(categoryDto);
+
+        categoryRepository.save(category);
+
+        CategoryDto savedCategoryDto = CategoryDto.toCategoryDto(category);
+
+        return savedCategoryDto;
+    }
+
+    // 카테고리 수정하기
+    @Transactional
+    public void update(CategoryDto categoryDto) {
+        Long categoryId = categoryDto.getCategoryId();
+        String categoryName = categoryDto.getCategoryName();
+        String categoryColor = categoryDto.getCategoryColor();
+        MemberDto memberDto = categoryDto.getMemberDto();
+
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_CATEGORY_MSG.getMsg()));
+
+        // 같은 유저인지 확인
+        checkMember(memberDto, category);
+
+        category.update(categoryName, categoryColor);
+    }
+
+    // 카테고리 삭제
+    @Transactional
+    public Long deleteById(CategoryDto categoryDto) {
+        Long categoryId = categoryDto.getCategoryId();
+        MemberDto memberDto = categoryDto.getMemberDto();
+
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_CATEGORY_MSG.getMsg()));
+
+        // 같은 유저인지 확인
+        checkMember(memberDto, category);
+
+        categoryRepository.deleteById(categoryId);
+
+        return categoryId;
+    }
+
+    // 같은 유저인지 확인
+    private void checkMember(MemberDto memberDto, Category category){
+        Long requestMemberId = memberDto.getMemberId();
+
+        Member member = category.getMember();
+        Long memberId = member.getMemberId();
+
+        if(!memberId.equals(requestMemberId)){
+            throw new IllegalArgumentException(NO_AUTHORIZATION_MSG.getMsg());
+        }
+    }
 }

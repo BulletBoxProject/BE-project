@@ -7,6 +7,8 @@ public enum ExceptionMessage {
 
     NOT_FOUND_MEMBER_MSG(404, "존재하지 않는 사용자입니다."),
 
+    NO_AUTHORIZATION_MSG(401, "권한이 없습니다."),
+
     DUPLICATE_EMAIL_MSG(400, "이미 가입한 이메일입니다."),
 
     NOT_FOUND_EMAIL_MSG(400, "이메일 또는 비밀번호를 확인해주세요."),
