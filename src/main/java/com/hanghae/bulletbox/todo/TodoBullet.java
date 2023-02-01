@@ -16,6 +16,7 @@ public enum TodoBullet {
     MEMO("메모", "img_url"),
     TOBEDETERMINDED("미정", "img_url"),
     ROUTINE("루틴", "img_url"),
+    IMPORTANT("중요", "img_url"),
     EMPHASIS("강조", "img_url");
 
     private final String name;
