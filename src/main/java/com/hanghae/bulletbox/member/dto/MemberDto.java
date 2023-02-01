@@ -58,14 +58,6 @@ public class MemberDto {
                 .build();
     }
 
-    public static MemberDto toMemberDto(ResponseFirstLoginDto responseFirstLoginDto){
-        Boolean firstLogin = responseFirstLoginDto.getFirstLogin();
-
-        return MemberDto.builder()
-                .firstLogin(firstLogin)
-                .build();
-    }
-
     // 인증객체 userDetails의 Member를 MemberDto로
     public static MemberDto toMemberDto(UserDetailsImpl userDetails){
         Member member = userDetails.getMember();
