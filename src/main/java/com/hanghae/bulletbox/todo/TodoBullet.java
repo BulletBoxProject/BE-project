@@ -15,7 +15,7 @@ public enum TodoBullet {
     EXPERIENCE("경험", "img_url"),
     MEMO("메모", "img_url"),
     TOBEDETERMINDED("미정", "img_url"),
-    ROUTINE("루틴", "img_url"),
+    FAVORITE("루틴", "img_url"),
     IMPORTANT("중요", "img_url"),
     EMPHASIS("강조", "img_url");
 
