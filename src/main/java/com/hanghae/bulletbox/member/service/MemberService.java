@@ -2,6 +2,7 @@ package com.hanghae.bulletbox.member.service;
 
 import com.hanghae.bulletbox.common.redis.RedisUtil;
 import com.hanghae.bulletbox.common.security.jwt.JwtUtil;
+import com.hanghae.bulletbox.member.dto.ResponseFirstLoginDto;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.member.repository.MemberRepository;
@@ -60,9 +61,10 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public void login(MemberDto memberDto, HttpServletResponse response) {
+    public ResponseFirstLoginDto login(MemberDto memberDto, HttpServletResponse response) {
         String email = memberDto.getEmail();
         String password = memberDto.getPassword();
+        Boolean firstLogin = memberDto.getFirstLogin();
 
         Member member = memberRepository.findByEmail(email).orElseThrow(
                 () -> new NoSuchElementException(NOT_FOUND_EMAIL_MSG.getMsg())
@@ -72,7 +74,15 @@ public class MemberService {
             throw new NoSuchElementException(DIFFERENT_PASSWORD_MSG.getMsg());
         }
 
+        if (firstLogin = true) {
+            firstLogin = false;
+        }
+
+        firstLogin = true;
+
         issueTokens(response, memberDto.getEmail());
+
+        return ResponseFirstLoginDto.toResponseFirstLoginDto(memberDto.getFirstLogin());
     }
 
     @Transactional
@@ -91,7 +101,7 @@ public class MemberService {
         Claims info = jwtUtil.getUserInfoFromToken(token, true); //ATK에서 body가지고 옴
         String email = info.getSubject(); //가지고온 body에서 subject 빼오기 = email
         String refreshTokenFromRedis = redisUtil.getData(email);
-        if(!refreshTokenFromRequest.equals(refreshTokenFromRedis)){
+        if (!refreshTokenFromRequest.equals(refreshTokenFromRedis)) {
             throw new IllegalArgumentException(NOT_MATCH_REFRESH_TOKEN.getMsg());
         }
         jwtUtil.validateRefreshToken(request, email);
@@ -99,12 +109,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void logout(Member member) {
-        redisUtil.deleteData(member.getEmail());
-    }
-
-    @Transactional
-    public void testLogin(HttpServletResponse response, MemberDto memberDto){
+    public ResponseFirstLoginDto testLogin(HttpServletResponse response, MemberDto memberDto) {
 
         email = createEmail();
         String nickname = "TestNickname";
@@ -112,14 +117,24 @@ public class MemberService {
         Member member = Member.toMember(email, nickname, password);
         memberRepository.save(member);
 
+        Boolean firstLogin = memberDto.getFirstLogin();
+
+        if (firstLogin = true) {
+            firstLogin = false;
+        }
+
+        firstLogin = true;
+
         issueTokens(response, email);
+
+        return ResponseFirstLoginDto.toResponseFirstLoginDto(memberDto.getFirstLogin());
     }
 
-    public String createEmail(){
+    public String createEmail() {
         Random random = new Random();
         StringBuilder key = new StringBuilder();
 
-        for(int i = 0; i< 8; i++){
+        for (int i = 0; i < 8; i++) {
             int index = random.nextInt(3);
 
             switch (index) {
