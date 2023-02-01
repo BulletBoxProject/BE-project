@@ -106,7 +106,7 @@ public class TodoDto {
                 .todoContent(favoriteContent)
                 .categoryId(categoryId)
                 .categoryColor(categoryColor)
-                .todoBullet(TodoBullet.FAVORITE)
+                .todoBullet(TodoBullet.ROUTINE)
                 .todoYear(todoYear)
                 .todoMonth(todoMonth)
                 .todoDay(todoDay)
