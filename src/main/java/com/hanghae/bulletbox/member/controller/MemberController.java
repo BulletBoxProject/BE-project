@@ -122,5 +122,10 @@ public class MemberController {
         return Response.success(200, "구글 로그인 성공", null);
     }
 
+    @PostMapping("/login/test")
+    public Response<?> testLogin(HttpServletResponse response, MemberDto memberDto){
+        memberService.testLogin(response, memberDto);
+        return Response.success(200, "테스트 로그인 성공", null);
+    }
 }
 
