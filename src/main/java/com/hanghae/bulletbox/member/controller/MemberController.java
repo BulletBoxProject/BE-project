@@ -6,6 +6,7 @@ import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.dto.RequestLoginDto;
 import com.hanghae.bulletbox.member.dto.RequestSignupDto;
 import com.hanghae.bulletbox.member.dto.VerifyCodeDto;
+import com.hanghae.bulletbox.member.service.GoogleService;
 import com.hanghae.bulletbox.member.service.KakaoService;
 import com.hanghae.bulletbox.member.service.MailService;
 import com.hanghae.bulletbox.member.service.MemberService;
@@ -43,6 +44,8 @@ public class MemberController {
     private final MailService mailService;
 
     private final KakaoService kakaoService;
+
+    private final GoogleService googleService;
 
     @Operation(tags = {"Member"}, summary = "회원가입")
     @ApiResponses(value = {
@@ -111,6 +114,12 @@ public class MemberController {
     public Response<?> kakaoLogin(@RequestParam String code, HttpServletResponse response) {
         kakaoService.kakaoLogin(code, response);
         return Response.success(200, "카카오 로그인 성공", null);
+    }
+
+    @GetMapping("/login/google")
+    public Response<?> googleLogin(@RequestParam String code, HttpServletResponse response) {
+        googleService.googleLogin(code, response);
+        return Response.success(200, "구글 로그인 성공", null);
     }
 
 }
