@@ -1,7 +1,6 @@
 package com.hanghae.bulletbox.member.controller;
 
 import com.hanghae.bulletbox.common.response.Response;
-import com.hanghae.bulletbox.common.security.UserDetailsImpl;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.dto.RequestLoginDto;
 import com.hanghae.bulletbox.member.dto.RequestSignupDto;
@@ -16,7 +15,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -96,12 +94,6 @@ public class MemberController {
         MemberDto memberDto = MemberDto.toMemberDto(requestLoginDto);
         memberService.login(memberDto, httpServletResponse);
         return Response.success(200, "로그인이 완료되었습니다.", null);
-    }
-
-    @PostMapping("/logout")
-    public Response<?> logout(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        memberService.logout(userDetails.getMember());
-        return Response.success(200, "로그아웃 성공", null);
     }
 
     @PostMapping("/auth/token")

@@ -40,12 +40,16 @@ public class Member {
     @Enumerated(value = EnumType.STRING)
     private SocialTypeEnum socialType;
 
+    @Column(nullable = false)
+    private Boolean firstLogin = true;
+
     @Builder(access = AccessLevel.PRIVATE)
-    private Member(Long memberId, String email, String nickname, String password) {
+    private Member(Long memberId, String email, String nickname, String password, Boolean firstLogin) {
         this.memberId = memberId;
         this.email = email;
         this.nickname = nickname;
         this.password = password;
+        this.firstLogin = firstLogin;
     }
 
     @Builder(access = AccessLevel.PRIVATE)
@@ -61,6 +65,7 @@ public class Member {
         String email = memberDto.getEmail();
         String password = memberDto.getPassword();
         String nickname = memberDto.getNickname();
+        Boolean firstLogin = memberDto.getFirstLogin();
 
         if (memberId == null) {
             throw new NoSuchElementException(NOT_FOUND_MEMBER_MSG.getMsg());
@@ -71,6 +76,7 @@ public class Member {
                 .email(email)
                 .nickname(nickname)
                 .password(password)
+                .firstLogin(firstLogin)
                 .build();
     }
 
