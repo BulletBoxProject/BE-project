@@ -55,16 +55,7 @@ public class DiaryPageService {
     // 일기장 페이지 달력 조회 날짜 변경
     @Transactional(readOnly = true)
     public ResponseDiaryCalendarPageDto changeMonthOfDiaryPage(Long year, Long month, MemberDto memberDto) {
-        List<DiaryDto> diaryDtoList = diaryService.findAllDtoByYearAndMonthAndMember(year, month, memberDto);
-        List<MonthlyEmotionDto> emotions = new ArrayList<>();
-
-        for(DiaryDto diaryDto : diaryDtoList){
-            Long diaryDay = diaryDto.getDay();
-            String emotion = diaryDto.getEmotion();
-
-            MonthlyEmotionDto monthlyEmotionDto = MonthlyEmotionDto.toMonthlyEmotionDto(diaryDay, emotion);
-            emotions.add(monthlyEmotionDto);
-        }
+        List<MonthlyEmotionDto> emotions = findEmotionListOfMonth(year, month, memberDto);
 
         ResponseDiaryCalendarPageDto responseDiaryCalendarPageDto = ResponseDiaryCalendarPageDto.toResponseDiaryCalendarPageDto(emotions);
 
@@ -81,16 +72,42 @@ public class DiaryPageService {
 
     // 일기장 생성 및 수정
     @Transactional
-    public DiaryDto updateDiary(DiaryDto diaryDto) {
+    public ResponseDiaryPageDto updateDiary(DiaryDto diaryDto) {
         Long diaryId = diaryDto.getDiaryId();
+        Long year = diaryDto.getYear();
+        Long month = diaryDto.getMonth();
+        MemberDto memberDto = diaryDto.getMemberDto();
+
+        List<MonthlyEmotionDto> emotions = findEmotionListOfMonth(year, month, memberDto);
 
         if(diaryId == null){
             DiaryDto savedDiaryDto = diaryService.saveDiary(diaryDto);
-            return savedDiaryDto;
+            ResponseDiaryPageDto responseDiaryPageDto = ResponseDiaryPageDto.toResponseDiaryPageDto(emotions, savedDiaryDto);
+
+            return responseDiaryPageDto;
         }
 
         DiaryDto updatedDiaryDto = diaryService.updateDiary(diaryDto);
+        ResponseDiaryPageDto responseDiaryPageDto = ResponseDiaryPageDto.toResponseDiaryPageDto(emotions, updatedDiaryDto);
 
-        return updatedDiaryDto;
+        return responseDiaryPageDto;
     }
+
+    // 이 달의 emotion 찾아서 리스트로 반환환
+   @Transactional(readOnly = true)
+    protected List<MonthlyEmotionDto> findEmotionListOfMonth(Long year, Long month, MemberDto memberDto){
+       List<DiaryDto> diaryDtoList = diaryService.findAllDtoByYearAndMonthAndMember(year, month, memberDto);
+       List<MonthlyEmotionDto> emotions = new ArrayList<>();
+
+       // 이 달의 emotion 모아서 리스트로 만들기
+       for(DiaryDto diaryDtoOfMonth : diaryDtoList){
+           Long diaryDay = diaryDtoOfMonth.getDay();
+           String emotion = diaryDtoOfMonth.getEmotion();
+
+           MonthlyEmotionDto monthlyEmotionDto = MonthlyEmotionDto.toMonthlyEmotionDto(diaryDay, emotion);
+           emotions.add(monthlyEmotionDto);
+       }
+
+       return emotions;
+   }
 }
