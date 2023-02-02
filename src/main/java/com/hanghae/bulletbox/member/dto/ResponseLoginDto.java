@@ -7,17 +7,17 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ResponseFirstLoginDto {
+public class ResponseLoginDto {
 
-    private Boolean firstLogin = false;
+    private Boolean firstLogin = true;
 
     @Builder(access = AccessLevel.PRIVATE)
-    public ResponseFirstLoginDto(Boolean firstLogin) {
+    public ResponseLoginDto(Boolean firstLogin) {
         this.firstLogin = firstLogin;
     }
 
-    public static ResponseFirstLoginDto toResponseFirstLoginDto(Boolean firstLogin) {
-        return ResponseFirstLoginDto.builder()
+    public static ResponseLoginDto toResponseLoginDto(Boolean firstLogin) {
+        return ResponseLoginDto.builder()
                 .firstLogin(firstLogin)
                 .build();
     }
