@@ -3,8 +3,12 @@ package com.hanghae.bulletbox.category.service;
 import com.hanghae.bulletbox.category.dto.CategoryDto;
 import com.hanghae.bulletbox.category.entity.Category;
 import com.hanghae.bulletbox.category.repository.CategoryRepository;
+import com.hanghae.bulletbox.favorite.entity.Favorite;
+import com.hanghae.bulletbox.favorite.repository.FavoriteRepository;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
+import com.hanghae.bulletbox.todo.entity.Todo;
+import com.hanghae.bulletbox.todo.repository.TodoRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +28,10 @@ import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NO_AUTHORI
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+
+    private final TodoRepository todoRepository;
+
+    private final FavoriteRepository favoriteRepository;
 
     // 멤버로 해당 멤버의 전체 카테고리 조회
     @Transactional(readOnly = true)
@@ -96,6 +104,7 @@ public class CategoryService {
     public Long deleteById(CategoryDto categoryDto) {
         Long categoryId = categoryDto.getCategoryId();
         MemberDto memberDto = categoryDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
 
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_CATEGORY_MSG.getMsg()));
@@ -104,6 +113,18 @@ public class CategoryService {
         checkMember(memberDto, category);
 
         categoryRepository.deleteById(categoryId);
+
+        // 해당 카테고리를 사용하던 모든 Todo와 Routine 찾아서 null로 변경
+        List<Todo> todoList = todoRepository.findAllByMemberAndCategoryId(member, categoryId);
+        List<Favorite> favoriteList = favoriteRepository.findAllByMemberAndCategoryId(member, categoryId);
+
+        for(Todo todo : todoList){
+            todo.updateCategory(null, null);
+        }
+
+        for(Favorite favorite : favoriteList)
+            favorite.updateCategory(null, null, null);
+
 
         return categoryId;
     }

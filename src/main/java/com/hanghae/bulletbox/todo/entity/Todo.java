@@ -151,4 +151,9 @@ public class Todo extends TimeStamped {
     public void setCategoryId(Long categoryId) {
         this.categoryId = categoryId;
     }
+
+    public void updateCategory(Long categoryId, String categoryColor) {
+        this.categoryId = categoryId;
+        this.categoryColor = categoryColor;
+    }
 }

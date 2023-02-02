@@ -86,4 +86,10 @@ public class Favorite {
         categoryName = favoriteDto.getCategoryName();
         categoryColor = favoriteDto.getCategoryColor();
     }
+
+    public void updateCategory(Long categoryId, String categoryColor, String categoryName) {
+        this.categoryId = categoryId;
+        this.categoryName = categoryName;
+        this.categoryColor = categoryColor;
+    }
 }
