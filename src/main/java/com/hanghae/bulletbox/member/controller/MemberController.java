@@ -103,14 +103,14 @@ public class MemberController {
     }
 
     @GetMapping("/login/kakao")
-    public Response<?> kakaoLogin(@RequestParam String code, HttpServletResponse response, MemberDto memberDto) {
-        kakaoService.kakaoLogin(code, response, memberDto);
+    public Response<?> kakaoLogin(@RequestParam String code, HttpServletResponse response) {
+        kakaoService.kakaoLogin(code, response);
         return Response.success(200, "카카오 로그인 성공", null);
     }
 
     @GetMapping("/login/google")
-    public Response<?> googleLogin(@RequestParam String code, HttpServletResponse response, MemberDto memberDto) {
-        googleService.googleLogin(code, response, memberDto);
+    public Response<?> googleLogin(@RequestParam String code, HttpServletResponse response) {
+        googleService.googleLogin(code, response);
         return Response.success(200, "구글 로그인 성공", null);
     }
 

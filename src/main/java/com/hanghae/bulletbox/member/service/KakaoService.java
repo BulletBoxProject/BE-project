@@ -48,17 +48,16 @@ public class KakaoService {
 
 
     @Transactional
-    public ResponseLoginDto kakaoLogin(String code, HttpServletResponse response, MemberDto memberDto) {
+    public ResponseLoginDto kakaoLogin(String code, HttpServletResponse response) {
         try {
             String token = getToken(code);
             Member loginMember = getKakaoMemberInfo(token);
             Member member = memberRepository.findByEmail(loginMember.getEmail()).orElse(null);
 
-            Boolean firstLogin = memberDto.getFirstLogin();
             if (member == null) {
                 member = signupSocialMember(loginMember);
             }
-
+            Boolean firstLogin = member.getFirstLogin();
             if (firstLogin = true) {
                 firstLogin = false;
                 member.socialUpdate(SocialTypeEnum.KAKAO);

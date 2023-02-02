@@ -41,7 +41,7 @@ public class Member {
     private SocialTypeEnum socialType;
 
     @Column(nullable = false)
-    private Boolean firstLogin;
+    private Boolean firstLogin = true;
 
     @Builder(access = AccessLevel.PRIVATE)
     private Member(Long memberId, String email, String nickname, String password, Boolean firstLogin) {

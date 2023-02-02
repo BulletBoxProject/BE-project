@@ -51,15 +51,15 @@ public class GoogleService {
     private String googleRedirectUrl;
 
     @Transactional
-    public ResponseLoginDto googleLogin(String code, HttpServletResponse response, MemberDto memberDto) {
+    public ResponseLoginDto googleLogin(String code, HttpServletResponse response) {
         try {
             String token = getToken(code);
             Member loginMember = getGoogleMemberInfo(token);
             Member member = memberRepository.findByEmail(loginMember.getEmail()).orElse(null);
-            Boolean firstLogin = memberDto.getFirstLogin();
             if (member == null) {
                 member = signupSocialMember(loginMember);
             }
+            Boolean firstLogin = member.getFirstLogin();
             if (firstLogin = true) {
                 firstLogin = false;
                 member.socialUpdate(SocialTypeEnum.KAKAO);
