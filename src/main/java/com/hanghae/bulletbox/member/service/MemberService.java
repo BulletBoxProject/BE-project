@@ -2,7 +2,7 @@ package com.hanghae.bulletbox.member.service;
 
 import com.hanghae.bulletbox.common.redis.RedisUtil;
 import com.hanghae.bulletbox.common.security.jwt.JwtUtil;
-import com.hanghae.bulletbox.member.dto.ResponseFirstLoginDto;
+import com.hanghae.bulletbox.member.dto.ResponseLoginDto;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.member.repository.MemberRepository;
@@ -61,7 +61,7 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseFirstLoginDto login(MemberDto memberDto, HttpServletResponse response) {
+    public ResponseLoginDto login(MemberDto memberDto, HttpServletResponse response) {
         String email = memberDto.getEmail();
         String password = memberDto.getPassword();
         Boolean firstLogin = memberDto.getFirstLogin();
@@ -76,13 +76,15 @@ public class MemberService {
 
         if (firstLogin = true) {
             firstLogin = false;
-        }
 
-        firstLogin = true;
+            issueTokens(response, memberDto.getEmail());
+
+            return ResponseLoginDto.toResponseLoginDto(true);
+        }
 
         issueTokens(response, memberDto.getEmail());
 
-        return ResponseFirstLoginDto.toResponseFirstLoginDto(memberDto.getFirstLogin());
+        return ResponseLoginDto.toResponseLoginDto(false);
     }
 
     @Transactional
@@ -109,7 +111,7 @@ public class MemberService {
     }
 
     @Transactional
-    public ResponseFirstLoginDto testLogin(HttpServletResponse response, MemberDto memberDto) {
+    public ResponseLoginDto testLogin(HttpServletResponse response, MemberDto memberDto) {
 
         email = createEmail();
         String nickname = "TestNickname";
@@ -121,13 +123,15 @@ public class MemberService {
 
         if (firstLogin = true) {
             firstLogin = false;
+
+            issueTokens(response, memberDto.getEmail());
+
+            return ResponseLoginDto.toResponseLoginDto(true);
         }
 
-        firstLogin = true;
+        issueTokens(response, memberDto.getEmail());
 
-        issueTokens(response, email);
-
-        return ResponseFirstLoginDto.toResponseFirstLoginDto(memberDto.getFirstLogin());
+        return ResponseLoginDto.toResponseLoginDto(false);
     }
 
     public String createEmail() {
