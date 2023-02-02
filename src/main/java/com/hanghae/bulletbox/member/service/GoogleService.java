@@ -136,6 +136,7 @@ public class GoogleService {
         if (member == null) {
             String password = UUID.randomUUID().toString();
             String encodedPassword = passwordEncoder.encode(password);
+            socialMember.setFirstLogin(true);
             socialMember.setPassword(encodedPassword);
             member = memberRepository.save(socialMember);
         }
