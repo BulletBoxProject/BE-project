@@ -124,13 +124,11 @@ public class MemberService {
         if (firstLogin = true) {
             firstLogin = false;
 
-            issueTokens(response, memberDto.getEmail());
-
+            issueTokens(response, email);
             return ResponseLoginDto.toResponseLoginDto(true);
         }
 
-        issueTokens(response, memberDto.getEmail());
-
+        issueTokens(response, email);
         return ResponseLoginDto.toResponseLoginDto(false);
     }
 
