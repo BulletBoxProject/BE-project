@@ -137,6 +137,7 @@ public class KakaoService {
             String password = UUID.randomUUID().toString();
             String encodedPassword = passwordEncoder.encode(password);
             socialMember.setPassword(encodedPassword);
+            socialMember.setFirstLogin(true);
             member = memberRepository.save(socialMember);
         }
         member.socialUpdate(SocialTypeEnum.KAKAO);
