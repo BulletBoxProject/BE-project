@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.hanghae.bulletbox.common.security.jwt.JwtUtil;
+import com.hanghae.bulletbox.member.dto.MemberDto;
+import com.hanghae.bulletbox.member.dto.ResponseLoginDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.member.repository.MemberRepository;
 import com.hanghae.bulletbox.member.type.SocialTypeEnum;
@@ -49,19 +51,26 @@ public class GoogleService {
     private String googleRedirectUrl;
 
     @Transactional
-    public void googleLogin(String code, HttpServletResponse response) {
+    public ResponseLoginDto googleLogin(String code, HttpServletResponse response, MemberDto memberDto) {
         try {
             String token = getToken(code);
             Member loginMember = getGoogleMemberInfo(token);
             Member member = memberRepository.findByEmail(loginMember.getEmail()).orElse(null);
-
+            Boolean firstLogin = memberDto.getFirstLogin();
             if (member == null) {
                 member = signupSocialMember(loginMember);
+            }
+            if (firstLogin = true) {
+                firstLogin = false;
+                member.socialUpdate(SocialTypeEnum.KAKAO);
+                response.addHeader(JwtUtil.AUTHORIZATION_ACCESS, jwtUtil.createAccessToken(member.getEmail()));
+                response.addHeader(JwtUtil.AUTHORIZATION_REFRESH, jwtUtil.createRefreshToken());
+                return ResponseLoginDto.toResponseLoginDto(true);
             }
             member.socialUpdate(SocialTypeEnum.KAKAO);
             response.addHeader(JwtUtil.AUTHORIZATION_ACCESS, jwtUtil.createAccessToken(member.getEmail()));
             response.addHeader(JwtUtil.AUTHORIZATION_REFRESH, jwtUtil.createRefreshToken());
-            return;
+            return ResponseLoginDto.toResponseLoginDto(false);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException(SOCIAL_LOGIN_ERROR.getMsg());
         }
