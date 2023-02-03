@@ -85,6 +85,7 @@ public class Todo extends TimeStamped {
         categoryColor = todoDto.getCategoryColor();
         todoBullet = todoDto.getTodoBullet();
         todoContent = todoDto.getTodoContent();
+        time = todoDto.getTime();
         todoYear = todoDto.getTodoYear();
         todoMonth = getTodoMonth();
         todoDay = getTodoDay();
