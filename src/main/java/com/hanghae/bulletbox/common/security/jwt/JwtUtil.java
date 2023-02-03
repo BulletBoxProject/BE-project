@@ -1,6 +1,7 @@
 package com.hanghae.bulletbox.common.security.jwt;
 
 import com.hanghae.bulletbox.common.security.UserDetailsServiceImpl;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
-
 import javax.servlet.http.HttpServletRequest;
 
 import java.security.Key;
@@ -103,7 +103,7 @@ public class JwtUtil {
     }
 
     // AccessToken 검증
-    public boolean validateAccessToken(HttpServletRequest request, String accessToken) {
+    public boolean validateAccessToken(HttpServletRequest request) {
         try {
             // String 형태인 토큰을 Thread-safe 하게 parse 하기 위해 AccessToken 가져와 JWS 로 파싱
             Jwts.parserBuilder().setSigningKey(accessTokenKey).build().parseClaimsJws(request.getHeader(AUTHORIZATION_ACCESS).substring(7));

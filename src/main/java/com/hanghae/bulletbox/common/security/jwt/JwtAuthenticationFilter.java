@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.INVALID_TOKEN_MSG;
 import static com.hanghae.bulletbox.common.security.jwt.JwtUtil.AUTHORIZATION_ACCESS;
 import static com.hanghae.bulletbox.common.security.jwt.JwtUtil.AUTHORIZATION_REFRESH;
 
@@ -38,10 +39,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-//        if (!jwtUtil.validateAccessToken(token)) {
-//            // 핸들러 추가해야함.
-//            return;
-//        }
+        if (!jwtUtil.validateAccessToken(request)) {
+            throw new IllegalArgumentException(INVALID_TOKEN_MSG.getMsg());
+        }
 
         // 사용자 인증
         Claims claims = jwtUtil.getUserInfoFromToken(token, false);
