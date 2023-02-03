@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.hanghae.bulletbox.common.security.jwt.JwtUtil;
-import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.dto.ResponseLoginDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.member.repository.MemberRepository;
@@ -40,8 +39,6 @@ public class GoogleService {
     private final PasswordEncoder passwordEncoder;
 
     private final MemberRepository memberRepository;
-
-    private final RestTemplate restTemplate;
 
     @Value("${app.google.clientId}")
     private String googleClientId;
@@ -87,7 +84,8 @@ public class GoogleService {
 
         HttpEntity<MultiValueMap<String, String>> googleTokenRequest =
                 new HttpEntity<>(body, headers);
-        ResponseEntity<String> response = restTemplate.exchange(
+        RestTemplate rt = new RestTemplate();
+        ResponseEntity<String> response = rt.exchange(
                 "https://www.googleapis.com/oauth2/v4/token",
                 HttpMethod.POST,
                 googleTokenRequest,
@@ -106,7 +104,8 @@ public class GoogleService {
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         HttpEntity<MultiValueMap<String, String>> googleMemberInfoRequest = new HttpEntity<>(headers);
-        ResponseEntity<String> response = restTemplate.exchange(
+        RestTemplate rt = new RestTemplate();
+        ResponseEntity<String> response = rt.exchange(
                 "https://www.googleapis.com/oauth2/v1/userinfo",
                 HttpMethod.GET,
                 googleMemberInfoRequest,

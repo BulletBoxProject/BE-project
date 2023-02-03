@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.hanghae.bulletbox.common.security.jwt.JwtUtil;
-import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.dto.ResponseLoginDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.member.repository.MemberRepository;
@@ -41,8 +40,6 @@ public class KakaoService {
 
     private final MemberRepository memberRepository;
 
-    private final RestTemplate restTemplate;
-
     @Value("${kakao.client.id}")
     private String kakaoClientId;
     @Value("${kakao.redirect.uri}")
@@ -76,7 +73,7 @@ public class KakaoService {
         }
     }
 
-    private String getToken(String code) throws JsonProcessingException {
+    private String getToken(String code)throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
@@ -88,7 +85,8 @@ public class KakaoService {
 
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest =
                 new HttpEntity<>(body, headers);
-        ResponseEntity<String> response = restTemplate.exchange(
+        RestTemplate rt = new RestTemplate();
+        ResponseEntity<String> response = rt.exchange(
                 "https://kauth.kakao.com/oauth/token",
                 HttpMethod.POST,
                 kakaoTokenRequest,
@@ -107,7 +105,8 @@ public class KakaoService {
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         HttpEntity<MultiValueMap<String, String>> kakaoMemberInfoRequest = new HttpEntity<>(headers);
-        ResponseEntity<String> response = restTemplate.exchange(
+        RestTemplate rt = new RestTemplate();
+        ResponseEntity<String> response = rt.exchange(
                 "https://kapi.kakao.com/v2/user/me",
                 HttpMethod.POST,
                 kakaoMemberInfoRequest,
@@ -127,7 +126,7 @@ public class KakaoService {
                 .get("email");
         String email = jsonEmail == null ? id + "kakao.com" : jsonEmail.asText();
 
-        return new Member(email, nickname, SocialTypeEnum.KAKAO);
+        return new Member(email, nickname , SocialTypeEnum.KAKAO);
     }
 
     private Member signupSocialMember(Member socialMember) {
