@@ -2,15 +2,15 @@ package com.hanghae.bulletbox.common.config;
 
 import com.hanghae.bulletbox.common.security.jwt.JwtAuthenticationFilter;
 import com.hanghae.bulletbox.common.security.jwt.JwtUtil;
+import com.hanghae.bulletbox.common.security.jwt.exception.JwtExceptionHandlerFilter;
 
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -46,11 +46,17 @@ public class WebSecurityConfig {
                 .and()
                 // 로그인 인증, 인가
                 .authorizeRequests()
+                .antMatchers(HttpMethod.POST, "/api/members/**").permitAll() // 로그인, 회원가입 uri 인증 제외
+                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll() // pre-flight 요청 허용
                 // swagger
-                .anyRequest().permitAll()
+                .antMatchers("/v2/**", "/swagger**").permitAll()
+                .antMatchers("/webjars/**", "/swagger-ui.html").permitAll()
+                .antMatchers("/swagger-resources/**").permitAll()
+                .anyRequest().authenticated() // 위에 적힌 permitAll 을 제외한 어떤 요청이든 인증 진행
                 .and()
                 // JWT Filter 등록
-                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtExceptionHandlerFilter(), JwtAuthenticationFilter.class);
         return http.build();
     }
 
