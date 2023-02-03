@@ -41,11 +41,10 @@ public class GoogleService {
 
     private final MemberRepository memberRepository;
 
+    private final RestTemplate restTemplate;
+
     @Value("${app.google.clientId}")
     private String googleClientId;
-
-    @Value("${app.google.client.secret}")
-    private String googleClientSecret;
 
     @Value("${app.google.redirect.uri}")
     private String googleRedirectUrl;
@@ -84,13 +83,11 @@ public class GoogleService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", googleClientId);
         body.add("redirect_uri", googleRedirectUrl);
-        body.add("client_secret", googleClientSecret);
         body.add("code", code);
 
         HttpEntity<MultiValueMap<String, String>> googleTokenRequest =
                 new HttpEntity<>(body, headers);
-        RestTemplate rt = new RestTemplate();
-        ResponseEntity<String> response = rt.exchange(
+        ResponseEntity<String> response = restTemplate.exchange(
                 "https://www.googleapis.com/oauth2/v4/token",
                 HttpMethod.POST,
                 googleTokenRequest,
@@ -109,8 +106,7 @@ public class GoogleService {
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         HttpEntity<MultiValueMap<String, String>> googleMemberInfoRequest = new HttpEntity<>(headers);
-        RestTemplate rt = new RestTemplate();
-        ResponseEntity<String> response = rt.exchange(
+        ResponseEntity<String> response = restTemplate.exchange(
                 "https://www.googleapis.com/oauth2/v1/userinfo",
                 HttpMethod.GET,
                 googleMemberInfoRequest,

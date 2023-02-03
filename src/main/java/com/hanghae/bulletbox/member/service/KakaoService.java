@@ -41,6 +41,8 @@ public class KakaoService {
 
     private final MemberRepository memberRepository;
 
+    private final RestTemplate restTemplate;
+
     @Value("${kakao.client.id}")
     private String kakaoClientId;
     @Value("${kakao.redirect.uri}")
@@ -74,7 +76,7 @@ public class KakaoService {
         }
     }
 
-    private String getToken(String code)throws JsonProcessingException {
+    private String getToken(String code) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
@@ -86,8 +88,7 @@ public class KakaoService {
 
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest =
                 new HttpEntity<>(body, headers);
-        RestTemplate rt = new RestTemplate();
-        ResponseEntity<String> response = rt.exchange(
+        ResponseEntity<String> response = restTemplate.exchange(
                 "https://kauth.kakao.com/oauth/token",
                 HttpMethod.POST,
                 kakaoTokenRequest,
@@ -106,8 +107,7 @@ public class KakaoService {
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
         HttpEntity<MultiValueMap<String, String>> kakaoMemberInfoRequest = new HttpEntity<>(headers);
-        RestTemplate rt = new RestTemplate();
-        ResponseEntity<String> response = rt.exchange(
+        ResponseEntity<String> response = restTemplate.exchange(
                 "https://kapi.kakao.com/v2/user/me",
                 HttpMethod.POST,
                 kakaoMemberInfoRequest,
@@ -127,7 +127,7 @@ public class KakaoService {
                 .get("email");
         String email = jsonEmail == null ? id + "kakao.com" : jsonEmail.asText();
 
-        return new Member(email, nickname , SocialTypeEnum.KAKAO);
+        return new Member(email, nickname, SocialTypeEnum.KAKAO);
     }
 
     private Member signupSocialMember(Member socialMember) {
