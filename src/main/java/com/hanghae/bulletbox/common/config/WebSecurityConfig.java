@@ -47,6 +47,7 @@ public class WebSecurityConfig {
                 // 로그인 인증, 인가
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/api/members/**").permitAll() // 로그인, 회원가입 uri 인증 제외
+                .antMatchers(HttpMethod.GET, "/api/members/**").permitAll() // 로그인, 회원가입 uri 인증 제외
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll() // pre-flight 요청 허용
                 // swagger
                 .antMatchers("/v2/**", "/swagger**").permitAll()
