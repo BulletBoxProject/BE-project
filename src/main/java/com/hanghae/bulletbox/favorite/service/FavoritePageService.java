@@ -48,10 +48,7 @@ public class FavoritePageService {
             responseFavoriteMemoDtoList.add(FavoriteMemoDto.toFavoriteMemoDto(favoriteMemoId, favoriteMemoContent));
         }
 
-        Long favoriteId = favoriteDto.getFavoriteId();
-        String favoriteContent = favoriteDto.getFavoriteContent();
-
-        return ResponseCreateFavoriteTodoDto.toResponseCreateFavoriteTodoDto(favoriteId, favoriteContent, responseFavoriteMemoDtoList);
+        return ResponseCreateFavoriteTodoDto.toResponseCreateFavoriteTodoDto(favoriteDto, responseFavoriteMemoDtoList);
     }
 
     // 루틴 조회
