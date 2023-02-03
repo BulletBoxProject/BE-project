@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.hanghae.bulletbox.common.security.jwt.JwtUtil;
-import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.dto.ResponseLoginDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.member.repository.MemberRepository;

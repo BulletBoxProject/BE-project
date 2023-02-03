@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.hanghae.bulletbox.common.security.jwt.JwtUtil;
-import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.dto.ResponseLoginDto;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.member.repository.MemberRepository;
@@ -44,9 +43,6 @@ public class GoogleService {
     @Value("${app.google.clientId}")
     private String googleClientId;
 
-    @Value("${app.google.client.secret}")
-    private String googleClientSecret;
-
     @Value("${app.google.redirect.uri}")
     private String googleRedirectUrl;
 
@@ -84,7 +80,6 @@ public class GoogleService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", googleClientId);
         body.add("redirect_uri", googleRedirectUrl);
-        body.add("client_secret", googleClientSecret);
         body.add("code", code);
 
         HttpEntity<MultiValueMap<String, String>> googleTokenRequest =
