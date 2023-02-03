@@ -43,6 +43,9 @@ public class GoogleService {
     @Value("${app.google.clientId}")
     private String googleClientId;
 
+    @Value("${app.google.client.secret}")
+    private String googleClientSecret;
+
     @Value("${app.google.redirect.uri}")
     private String googleRedirectUrl;
 
@@ -79,6 +82,7 @@ public class GoogleService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", googleClientId);
+        body.add("client_secret", googleClientSecret);
         body.add("redirect_uri", googleRedirectUrl);
         body.add("code", code);
 
