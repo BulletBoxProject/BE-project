@@ -45,7 +45,7 @@ public class MemberController {
 
     private final GoogleService googleService;
 
-    @Operation(tags = {"Member"}, summary = "회원가입" )
+    @Operation(tags = {"Member"}, summary = "회원가입")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "회원가입이 완료되었습니다."),
             @ApiResponse(responseCode = "400", description = "이미 가입된 이메일입니다.")
