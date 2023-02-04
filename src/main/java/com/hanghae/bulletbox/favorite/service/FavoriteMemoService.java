@@ -108,7 +108,7 @@ public class FavoriteMemoService {
 
     // 루틴의 메모 업데이트 (For dirty checking)
     @Transactional
-    public void updateFavoriteMemo(FavoriteMemoDto favoriteMemoDto) {
+    public FavoriteMemoDto updateFavoriteMemo(FavoriteMemoDto favoriteMemoDto) {
 
         Long favoriteMemoId = favoriteMemoDto.getFavoriteMemoId();
         MemberDto memberDto = favoriteMemoDto.getMemberDto();
@@ -120,10 +120,12 @@ public class FavoriteMemoService {
 
         // Dto의 메모 내용과 엔티티의 메모 내용이 같을 경우, 수정이 진행되지 않았기 때문에 해당 메서드를 진행할 이유가 없음. => return;
         if (favoriteMemo.getFavoriteMemoContent().equals(favoriteMemoContent)) {
-            return;
+            return FavoriteMemoDto.toFavoriteMemoDto(favoriteMemo);
         }
 
         favoriteMemo.update(favoriteMemoDto);
+
+        return FavoriteMemoDto.toFavoriteMemoDto(favoriteMemo);
     }
 
     // member, favoriteIdMemo 를 기준으로 루틴의 메모 조회

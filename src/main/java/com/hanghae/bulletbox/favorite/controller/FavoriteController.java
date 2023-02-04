@@ -7,6 +7,7 @@ import com.hanghae.bulletbox.favorite.dto.RequestCreateFavoriteTodoDto;
 import com.hanghae.bulletbox.favorite.dto.RequestUpdateFavoriteTodoDto;
 import com.hanghae.bulletbox.favorite.dto.ResponseCreateFavoriteTodoDto;
 import com.hanghae.bulletbox.favorite.dto.ResponseShowFavoriteTodoPageDto;
+import com.hanghae.bulletbox.favorite.dto.ResponseUpdateFavoriteDto;
 import com.hanghae.bulletbox.favorite.service.FavoritePageService;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 
@@ -65,15 +66,15 @@ public class FavoriteController {
     }
 
     @PutMapping("/{favoriteId}")
-    public Response<?> updateFavoriteTodo(@PathVariable Long favoriteId,
-                                          @RequestBody RequestUpdateFavoriteTodoDto requestUpdateFavoriteTodoDto,
-                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Response<ResponseUpdateFavoriteDto> updateFavoriteTodo(@PathVariable Long favoriteId,
+                                                                  @RequestBody RequestUpdateFavoriteTodoDto requestUpdateFavoriteTodoDto,
+                                                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
         FavoritePageDto favoritePageDto = FavoritePageDto.toFavoritePageDto(favoriteId, requestUpdateFavoriteTodoDto, memberDto);
 
-        favoritePageService.updateFavoriteTodo(favoritePageDto);
+        ResponseUpdateFavoriteDto responseUpdateFavoriteDto = favoritePageService.updateFavoriteTodo(favoritePageDto);
 
-        return Response.success(200, "루틴 수정을 성공했습니다.", null);
+        return Response.success(200, "루틴 수정을 성공했습니다.", responseUpdateFavoriteDto);
     }
 }

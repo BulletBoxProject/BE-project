@@ -115,7 +115,7 @@ public class FavoriteService {
 
     // 루틴 업데이트 (For dirty checking)
     @Transactional
-    public void updateFavorite(FavoriteDto favoriteDto) {
+    public FavoriteDto updateFavorite(FavoriteDto favoriteDto) {
 
         Long favoriteId = favoriteDto.getFavoriteId();
         MemberDto memberDto = favoriteDto.getMemberDto();
@@ -129,6 +129,8 @@ public class FavoriteService {
         checkFavoriteTodoIsSafe(favorite);
 
         favorite.update(favoriteDto);
+
+        return FavoriteDto.toFavoriteDto(favorite);
     }
 
     // favoriteId, member 를 기준으로 루틴 조회
