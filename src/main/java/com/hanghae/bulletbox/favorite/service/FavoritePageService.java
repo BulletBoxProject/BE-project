@@ -113,11 +113,6 @@ public class FavoritePageService {
             if (favoriteMemoContent == null) {
                 favoriteMemoService.deleteFavoriteMemoById(favoriteMemoId);
 
-                favoriteMemoId = favoriteMemoDto.getFavoriteMemoId();
-                favoriteMemoContent = favoriteMemoDto.getFavoriteMemoContent();
-
-                responseFavoriteMemoDtoList.add(FavoriteMemoDto.toFavoriteMemoDto(favoriteMemoId, favoriteMemoContent));
-
                 continue;
             }
 
