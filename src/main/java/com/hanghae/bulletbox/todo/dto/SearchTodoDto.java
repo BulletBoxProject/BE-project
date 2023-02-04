@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
-import com.hanghae.bulletbox.todo.TodoBullet;
 import com.hanghae.bulletbox.todo.entity.Todo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -35,7 +34,7 @@ public class SearchTodoDto {
     private String categoryColor;
 
     @Schema(description = "Bullet 종류", example = "Todo", type = "Enum")
-    private TodoBullet todoBullet;
+    private String todoBulletName;
 
     @Schema(description = "할 일 내용", example = "할 일 내용", type = "String")
     private String todoContent;
@@ -56,12 +55,12 @@ public class SearchTodoDto {
     private List<TodoMemoDto> todoMemos;
 
     @Builder(access = AccessLevel.PRIVATE)
-    public SearchTodoDto(Long todoId, MemberDto memberDto, Long categoryId, String categoryColor, TodoBullet todoBullet, String todoContent, Long todoYear, Long todoMonth, Long todoDay, String time, List<TodoMemoDto> todoMemos) {
+    public SearchTodoDto(Long todoId, MemberDto memberDto, Long categoryId, String categoryColor, String todoBulletName, String todoContent, Long todoYear, Long todoMonth, Long todoDay, String time, List<TodoMemoDto> todoMemos) {
         this.todoId = todoId;
         this.memberDto = memberDto;
         this.categoryId = categoryId;
         this.categoryColor = categoryColor;
-        this.todoBullet = todoBullet;
+        this.todoBulletName = todoBulletName;
         this.todoContent = todoContent;
         this.todoYear = todoYear;
         this.todoMonth = todoMonth;
@@ -86,7 +85,7 @@ public class SearchTodoDto {
         Long todoDay = todo.getTodoDay();
         Long categoryId = todo.getCategoryId();
         String categoryColor = todo.getCategoryColor();
-        TodoBullet todoBullet = todo.getTodoBullet();
+        String todoBulletName = todo.getTodoBullet().getName();
         String time = todo.getTime();
 
         return SearchTodoDto.builder()
@@ -98,7 +97,7 @@ public class SearchTodoDto {
                 .todoDay(todoDay)
                 .categoryId(categoryId)
                 .categoryColor(categoryColor)
-                .todoBullet(todoBullet)
+                .todoBulletName(todoBulletName)
                 .time(time)
                 .build();
     }

@@ -128,7 +128,8 @@ public class Todo extends TimeStamped {
         Long todoId = searchTodoDto.getTodoId();
         Long categoryId = searchTodoDto.getCategoryId();
         String categoryColor = searchTodoDto.getCategoryColor();
-        TodoBullet todoBullet = searchTodoDto.getTodoBullet();
+        String todoBulletName = searchTodoDto.getTodoBulletName();
+        TodoBullet todoBullet = TodoBullet.valueOfName(todoBulletName);
         String todoContent = searchTodoDto.getTodoContent();
         Long todoYear = searchTodoDto.getTodoYear();
         Long todoMonth = searchTodoDto.getTodoMonth();
