@@ -24,6 +24,7 @@ import java.util.Random;
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.DIFFERENT_PASSWORD_MSG;
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.DUPLICATE_EMAIL_MSG;
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_EMAIL_MSG;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_MEMBER_MSG;
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_MATCH_REFRESH_TOKEN;
 import static com.hanghae.bulletbox.common.security.jwt.JwtUtil.AUTHORIZATION_ACCESS;
 import static com.hanghae.bulletbox.common.security.jwt.JwtUtil.AUTHORIZATION_REFRESH;
@@ -74,14 +75,6 @@ public class MemberService {
             throw new NoSuchElementException(DIFFERENT_PASSWORD_MSG.getMsg());
         }
 
-        if (firstLogin = true) {
-            firstLogin = false;
-
-            issueTokens(response, memberDto.getEmail());
-
-            return ResponseLoginDto.toResponseLoginDto(true);
-        }
-
         issueTokens(response, memberDto.getEmail());
 
         return ResponseLoginDto.toResponseLoginDto(false);
@@ -114,19 +107,10 @@ public class MemberService {
     public ResponseLoginDto testLogin(HttpServletResponse response, MemberDto memberDto) {
 
         email = createEmail();
-        String nickname = "TestNickname";
+        String nickname = "체험하기 계정";
         String password = "TestPassword";
         Member member = Member.toMember(email, nickname, password);
         memberRepository.save(member);
-
-        Boolean firstLogin = memberDto.getFirstLogin();
-
-        if (firstLogin = true) {
-            firstLogin = false;
-
-            issueTokens(response, email);
-            return ResponseLoginDto.toResponseLoginDto(true);
-        }
 
         issueTokens(response, email);
         return ResponseLoginDto.toResponseLoginDto(false);
@@ -148,4 +132,14 @@ public class MemberService {
         return email = key.toString();
     }
 
+    // 더티 체킹으로 첫 로그인 여부 반영
+    @Transactional
+    public void updateFirstLogin(MemberDto memberDto) {
+        Long memberId = memberDto.getMemberId();
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchElementException(NOT_FOUND_MEMBER_MSG.getMsg()));
+
+        member.updateFirstLogin(false);
+    }
 }

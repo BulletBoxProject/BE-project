@@ -3,6 +3,7 @@ package com.hanghae.bulletbox.todo.service;
 import com.hanghae.bulletbox.category.dto.CategoryDto;
 import com.hanghae.bulletbox.category.service.CategoryService;
 import com.hanghae.bulletbox.member.dto.MemberDto;
+import com.hanghae.bulletbox.member.service.MemberService;
 import com.hanghae.bulletbox.todo.dto.CalendarDto;
 import com.hanghae.bulletbox.todo.dto.DailyDto;
 import com.hanghae.bulletbox.todo.dto.ResponseShowCalendarDto;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,8 +33,10 @@ public class MainService {
 
     private final TodoMemoService todoMemoService;
 
+    private final MemberService memberService;
+
     // 메인 페이지 조회
-    @Transactional(readOnly = true)
+    @Transactional
     public ResponseShowMainPageDto showMainPage(TodoDto todoDto) {
         MemberDto memberDto = todoDto.getMemberDto();
 
@@ -55,7 +59,16 @@ public class MainService {
 
         List<CalendarDto> calendarDtoList = makeCalendarDtoList(calendarTodoDtoList);
 
-        return ResponseShowMainPageDto.toResponseShowMainPageDto(categoryDtoList, calendarDtoList ,dailyDtoList);
+        // 첫 로그인 여부 확인
+        Boolean firstLogin = memberDto.getFirstLogin();
+
+        if(firstLogin.equals(true)){
+            memberService.updateFirstLogin(memberDto);
+
+            return ResponseShowMainPageDto.toResponseShowMainPageDto(categoryDtoList, calendarDtoList, dailyDtoList, true);
+        }
+
+        return ResponseShowMainPageDto.toResponseShowMainPageDto(categoryDtoList, calendarDtoList ,dailyDtoList, false);
     }
 
     // 달력 조회 날짜 변경 (월 단위)

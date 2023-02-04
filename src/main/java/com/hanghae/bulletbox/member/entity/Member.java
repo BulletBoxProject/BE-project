@@ -103,4 +103,8 @@ public class Member {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public void updateFirstLogin(boolean firstLogin) {
+        this.firstLogin = firstLogin;
+    }
 }
