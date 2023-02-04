@@ -25,18 +25,22 @@ public class ResponseShowMainPageDto {
     @Schema(description = "할 일 정보")
     private List<DailyDto> daily;
 
+    private boolean firstLogin;
+
     @Builder(access = AccessLevel.PROTECTED)
-    private ResponseShowMainPageDto(List<CategoryDto> categories, List<CalendarDto> calendar, List<DailyDto> daily) {
+    private ResponseShowMainPageDto(List<CategoryDto> categories, List<CalendarDto> calendar, List<DailyDto> daily, boolean firstLogin) {
         this.categories = categories;
         this.calendar = calendar;
         this.daily = daily;
+        this.firstLogin = firstLogin;
     }
 
-    public static ResponseShowMainPageDto toResponseShowMainPageDto(List<CategoryDto> categories, List<CalendarDto> calendar, List<DailyDto> daily) {
+    public static ResponseShowMainPageDto toResponseShowMainPageDto(List<CategoryDto> categories, List<CalendarDto> calendar, List<DailyDto> daily, boolean firstLogin) {
         return ResponseShowMainPageDto.builder()
                 .categories(categories)
                 .calendar(calendar)
                 .daily(daily)
+                .firstLogin(firstLogin)
                 .build();
     }
 }
