@@ -87,8 +87,8 @@ public class Todo extends TimeStamped {
         todoContent = todoDto.getTodoContent();
         time = todoDto.getTime();
         todoYear = todoDto.getTodoYear();
-        todoMonth = getTodoMonth();
-        todoDay = getTodoDay();
+        todoMonth = todoDto.getTodoMonth();
+        todoDay = todoDto.getTodoDay();
     }
 
     // TodoDto를 Todo로 변환
