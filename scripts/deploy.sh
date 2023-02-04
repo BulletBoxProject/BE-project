@@ -20,6 +20,7 @@ else
   sleep 5
 fi
 
-
 # docker 컨테이너 실행
+sudo docker rm -f $(docker ps -qa)
+sudo docker run -d -p 8080:8080 gksrywls97/bulletbox:web
 #sudo docker run -d -p 8080:8080 bulletbox             # -d(detach): 백그라운드 실행(nohup 처럼), -p(publish): 호스트 포트:도커 컨테이너 포트 -> 포트포워딩

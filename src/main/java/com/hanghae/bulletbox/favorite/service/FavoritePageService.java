@@ -5,6 +5,7 @@ import com.hanghae.bulletbox.favorite.dto.FavoriteMemoDto;
 import com.hanghae.bulletbox.favorite.dto.FavoritePageDto;
 import com.hanghae.bulletbox.favorite.dto.ResponseCreateFavoriteTodoDto;
 import com.hanghae.bulletbox.favorite.dto.ResponseShowFavoriteTodoPageDto;
+import com.hanghae.bulletbox.favorite.dto.ResponseUpdateFavoriteDto;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 
 import lombok.RequiredArgsConstructor;
@@ -92,16 +93,18 @@ public class FavoritePageService {
 
     // 루틴 수정
     @Transactional
-    public void updateFavoriteTodo(FavoritePageDto favoritePageDto) {
+    public ResponseUpdateFavoriteDto updateFavoriteTodo(FavoritePageDto favoritePageDto) {
 
         // 루틴 업데이트 진행
         FavoriteDto favoriteDto = FavoriteDto.toFavoriteDto(favoritePageDto);
-        favoriteService.updateFavorite(favoriteDto);
+        favoriteDto = favoriteService.updateFavorite(favoriteDto);
 
         MemberDto memberDto = favoritePageDto.getMemberDto();
 
         // 루틴의 메모 업데이트 진행
         List<FavoriteMemoDto> updateMemoList = favoritePageDto.getFavoriteMemos();
+        List<FavoriteMemoDto> responseFavoriteMemoDtoList = new ArrayList<>();
+
         for (FavoriteMemoDto favoriteMemoDto : updateMemoList) {
             Long favoriteMemoId = favoriteMemoDto.getFavoriteMemoId();
             String favoriteMemoContent = favoriteMemoDto.getFavoriteMemoContent();
@@ -109,6 +112,11 @@ public class FavoritePageService {
             // 루틴의 메모가 삭제됐을 경우, favoriteMemoContent == null -> favoriteMemoId를 통해 해당 favoriteMemo 삭제
             if (favoriteMemoContent == null) {
                 favoriteMemoService.deleteFavoriteMemoById(favoriteMemoId);
+
+                favoriteMemoId = favoriteMemoDto.getFavoriteMemoId();
+                favoriteMemoContent = favoriteMemoDto.getFavoriteMemoContent();
+
+                responseFavoriteMemoDtoList.add(FavoriteMemoDto.toFavoriteMemoDto(favoriteMemoId, favoriteMemoContent));
 
                 continue;
             }
@@ -120,7 +128,12 @@ public class FavoritePageService {
                 favoriteMemoDto.setFavoriteMemoContent(favoriteMemoContent);
 
                 // 메모 저장
-                favoriteMemoService.saveFavoriteMemo(favoriteMemoDto);
+                favoriteMemoDto = favoriteMemoService.saveFavoriteMemo(favoriteMemoDto);
+
+                favoriteMemoId = favoriteMemoDto.getFavoriteMemoId();
+                favoriteMemoContent = favoriteMemoDto.getFavoriteMemoContent();
+
+                responseFavoriteMemoDtoList.add(FavoriteMemoDto.toFavoriteMemoDto(favoriteMemoId, favoriteMemoContent));
 
                 continue;
             }
@@ -128,7 +141,15 @@ public class FavoritePageService {
             // 기존 루틴의 메모가 수정됐을 경우, update 진행
             favoriteMemoDto.setMemberDto(memberDto);
             favoriteMemoDto.setFavoriteDto(favoriteDto);
-            favoriteMemoService.updateFavoriteMemo(favoriteMemoDto);
+
+            favoriteMemoDto = favoriteMemoService.updateFavoriteMemo(favoriteMemoDto);
+
+            favoriteMemoId = favoriteMemoDto.getFavoriteMemoId();
+            favoriteMemoContent = favoriteMemoDto.getFavoriteMemoContent();
+
+            responseFavoriteMemoDtoList.add(FavoriteMemoDto.toFavoriteMemoDto(favoriteMemoId, favoriteMemoContent));
         }
+
+        return ResponseUpdateFavoriteDto.toResponseUpdateFavoriteDto(favoriteDto, responseFavoriteMemoDtoList);
     }
 }
