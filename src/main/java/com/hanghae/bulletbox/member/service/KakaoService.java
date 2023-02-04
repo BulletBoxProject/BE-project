@@ -56,14 +56,7 @@ public class KakaoService {
             if (member == null) {
                 member = signupSocialMember(loginMember);
             }
-            Boolean firstLogin = member.getFirstLogin();
-            if (firstLogin = true) {
-                firstLogin = false;
-                member.socialUpdate(SocialTypeEnum.KAKAO);
-                response.addHeader(JwtUtil.AUTHORIZATION_ACCESS, jwtUtil.createAccessToken(member.getEmail()));
-                response.addHeader(JwtUtil.AUTHORIZATION_REFRESH, jwtUtil.createRefreshToken());
-                return ResponseLoginDto.toResponseLoginDto(true);
-            }
+
             member.socialUpdate(SocialTypeEnum.KAKAO);
             response.addHeader(JwtUtil.AUTHORIZATION_ACCESS, jwtUtil.createAccessToken(member.getEmail()));
             response.addHeader(JwtUtil.AUTHORIZATION_REFRESH, jwtUtil.createRefreshToken());
