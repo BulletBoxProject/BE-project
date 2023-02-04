@@ -7,6 +7,8 @@ import com.hanghae.bulletbox.favorite.entity.Favorite;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,22 +19,30 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Schema(description = "루틴 Dto")
 public class FavoriteDto {
 
     @JsonIgnore
+    @Schema(description = "유저 Dto")
     private MemberDto memberDto;
 
+    @Schema(description = "루틴 ID", example = "1", type = "Long")
     private Long favoriteId;
 
+    @Schema(description = "루틴 내용", example = "루틴 내용", type = "String")
     private String favoriteContent;
 
+    @Schema(description = "카테고리 ID", example = "1", type = "Long")
     private Long categoryId;
 
+    @Schema(description = "카테고리 이름", example = "카테고리 이름", type = "String")
     @JsonIgnore
     private String categoryName;
 
+    @Schema(description = "카테고리 색상", example = "#123456", type = "String")
     private String categoryColor;
 
+    @Schema(description = "루틴 메모", type = "List")
     private List<FavoriteMemoDto> favoriteMemos;
 
     @Builder(access = AccessLevel.PRIVATE)

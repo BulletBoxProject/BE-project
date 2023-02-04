@@ -30,6 +30,7 @@ public class MemberDto {
     @Schema(description = "비밀번호", type = "String", example = "a!1234567", minLength = 8, maxLength = 25)
     private String password;
 
+    @Schema(description = "첫 로그인 판별 여부", type = "Boolean", example = "true")
     private Boolean firstLogin = true;
 
     @Builder(access = AccessLevel.PRIVATE)

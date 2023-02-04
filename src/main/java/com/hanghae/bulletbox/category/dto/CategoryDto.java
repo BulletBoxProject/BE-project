@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(name = "CategoryDto", description = "CategoryPageService 범용 DTO")
+@Schema(description = "Category Dto")
 public class CategoryDto {
 
     @Schema(description = "카테고리 ID", example = "1", type = "Long")

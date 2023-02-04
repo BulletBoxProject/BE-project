@@ -5,12 +5,16 @@ import com.hanghae.bulletbox.common.security.UserDetailsImpl;
 import com.hanghae.bulletbox.favorite.dto.FavoritePageDto;
 import com.hanghae.bulletbox.favorite.dto.RequestCreateFavoriteTodoDto;
 import com.hanghae.bulletbox.favorite.dto.RequestUpdateFavoriteTodoDto;
-import com.hanghae.bulletbox.favorite.dto.ResponseCreateFavoriteTodoDto;
-import com.hanghae.bulletbox.favorite.dto.ResponseShowFavoriteTodoPageDto;
+import com.hanghae.bulletbox.favorite.dto.ResponseCreateFavoriteDto;
+import com.hanghae.bulletbox.favorite.dto.ResponseShowFavoritePageDto;
 import com.hanghae.bulletbox.favorite.dto.ResponseUpdateFavoriteDto;
 import com.hanghae.bulletbox.favorite.service.FavoritePageService;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,33 +30,52 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/favorites")
 @RequiredArgsConstructor
+@Tag(name = "Favorite", description = "루틴 API")
 public class FavoriteController {
 
     private final FavoritePageService favoritePageService;
 
+    @Operation(tags = {"Favorite"}, summary = "루틴 생성")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "루틴 생성을 성공했습니다."),
+            @ApiResponse(responseCode = "404-1", description = "존재하지 않는 사용자입니다."),
+            @ApiResponse(responseCode = "404-2", description = "루틴이 존재하지 않습니다.")
+    })
     @PostMapping
-    public Response<ResponseCreateFavoriteTodoDto> createFavoriteTodo(@RequestBody RequestCreateFavoriteTodoDto requestCreateFavoriteTodoDto,
-                                                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Response<ResponseCreateFavoriteDto> createFavoriteTodo(@RequestBody RequestCreateFavoriteTodoDto requestCreateFavoriteTodoDto,
+                                                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
         FavoritePageDto favoritePageDto = FavoritePageDto.toFavoritePageDto(requestCreateFavoriteTodoDto, memberDto);
 
-        ResponseCreateFavoriteTodoDto responseCreateFavoriteTodoDto = favoritePageService.createFavoriteTodo(favoritePageDto);
+        ResponseCreateFavoriteDto responseCreateFavoriteTodoDto = favoritePageService.createFavorite(favoritePageDto);
 
         return Response.success(201, "루틴 생성을 성공하였습니다.", responseCreateFavoriteTodoDto);
     }
 
+    @Operation(tags = {"Favorite"}, summary = "루틴 페이지 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "루틴 페이지 조회를 성공했습니다."),
+            @ApiResponse(responseCode = "404-1", description = "존재하지 않는 사용자입니다."),
+            @ApiResponse(responseCode = "404-2", description = "루틴이 존재하지 않습니다.")
+    })
     @GetMapping
-    public Response<ResponseShowFavoriteTodoPageDto> showFavoriteTodoPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Response<ResponseShowFavoritePageDto> showFavoriteTodoPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
         FavoritePageDto favoritePageDto = FavoritePageDto.toFavoritePageDto(memberDto);
 
-        ResponseShowFavoriteTodoPageDto responseShowFavoriteTodoPageDto = favoritePageService.showFavoriteTodoPage(favoritePageDto);
+        ResponseShowFavoritePageDto responseShowFavoritePageDto = favoritePageService.showFavoritePage(favoritePageDto);
 
-        return Response.success(200, "루틴 페이지 조회를 성공했습니다.", responseShowFavoriteTodoPageDto);
+        return Response.success(200, "루틴 페이지 조회를 성공했습니다.", responseShowFavoritePageDto);
     }
 
+    @Operation(tags = {"Favorite"}, summary = "루틴 삭제")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "루틴 삭제를 성공했습니다."),
+            @ApiResponse(responseCode = "404-1", description = "존재하지 않는 사용자입니다."),
+            @ApiResponse(responseCode = "404-2", description = "루틴이 존재하지 않습니다.")
+    })
     @DeleteMapping("/{favoriteId}")
     public Response<?> deleteFavoriteTodo(@PathVariable Long favoriteId,
                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -65,6 +88,13 @@ public class FavoriteController {
         return Response.success(200, "루틴 삭제를 성공했습니다.", null);
     }
 
+    @Operation(tags = {"Favorite"}, summary = "루틴 수정")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "루틴 수정을 성공했습니다."),
+            @ApiResponse(responseCode = "404-1", description = "존재하지 않는 사용자입니다."),
+            @ApiResponse(responseCode = "404-2", description = "루틴이 존재하지 않습니다."),
+            @ApiResponse(responseCode = "404-3", description = "카테고리가 존재하지 않습니다."),
+    })
     @PutMapping("/{favoriteId}")
     public Response<ResponseUpdateFavoriteDto> updateFavoriteTodo(@PathVariable Long favoriteId,
                                                                   @RequestBody RequestUpdateFavoriteTodoDto requestUpdateFavoriteTodoDto,

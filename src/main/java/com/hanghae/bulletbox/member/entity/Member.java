@@ -35,6 +35,7 @@ public class Member {
     @Column(nullable = false)
     private String nickname;
 
+    @Setter
     @Column(nullable = false)
     private String password;
 
@@ -98,10 +99,6 @@ public class Member {
     public  Member(String email, SocialTypeEnum socialType) {
         this.email = email;
         this.socialType = socialType;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public void updateFirstLogin(boolean firstLogin) {

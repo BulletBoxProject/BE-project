@@ -32,35 +32,40 @@ public class TodoService {
 
     // 자신의 카테고리 중 카테고리 id가 있는지 조회
     @Transactional(readOnly = true)
-    protected void checkMemberHasCategoryId(Long categoryId, Member member){
+    protected void checkMemberHasCategoryId(Long categoryId, Member member) {
+
         categoryRepository.findByCategoryIdAndMember(categoryId, member)
                 .orElseThrow(() -> new NoSuchElementException(NOT_FOUND_CATEGORY_MSG.getMsg()));
     }
 
     // Member가 빈 값인지 확인
-    private void checkMemberIsNotNull(Member member){
-        if(member == null){
+    private void checkMemberIsNotNull(Member member) {
+
+        if (member == null) {
             throw new NoSuchElementException(NOT_FOUND_MEMBER_MSG.getMsg());
         }
     }
 
     // Todo의 유효성 검사 (멤버 확인, 입력된 카테고리 번호가 내 카테고리 중에서 있는지 확인)
-    private void checkTodoIsSafe(Todo todo){
+    private void checkTodoIsSafe(Todo todo) {
+
         Member member = todo.getMember();
         Long categoryId = todo.getCategoryId();
 
         checkMemberIsNotNull(member);
 
-        if(categoryId == null){
+        if (categoryId == null) {
             return;
         }
+
         checkMemberHasCategoryId(categoryId, member);
     }
 
 
     // 할 일 생성
     @Transactional
-    public TodoDto saveTodo(TodoDto todoDto){
+    public TodoDto saveTodo(TodoDto todoDto) {
+
         Todo todo = Todo.toTodo(todoDto);
 
         checkTodoIsSafe(todo);
@@ -71,7 +76,8 @@ public class TodoService {
     }
 
     // todo리스트를 todoDto 리스트로 만들어서 반환
-    private List<TodoDto> mapTodoListToTodoDtoList(List<Todo> todoList){
+    private List<TodoDto> mapTodoListToTodoDtoList(List<Todo> todoList) {
+
         List<TodoDto> todoDtoList = new ArrayList<>();
 
         for(Todo todo : todoList) {
@@ -86,7 +92,8 @@ public class TodoService {
 
     // todoId로 할 일 찾기
     @Transactional(readOnly = true)
-    protected Todo findByTodoIdAndMember(Long todoId, Member member){
+    protected Todo findByTodoIdAndMember(Long todoId, Member member) {
+
         Todo todo = todoRepository.findByTodoIdAndMember(todoId, member)
                 .orElseThrow(() -> new NoSuchElementException(TODO_NOT_FOUND_MSG.getMsg()));
 
@@ -96,6 +103,7 @@ public class TodoService {
     // todoId로 할 일 찾아서 반환하기
     @Transactional(readOnly = true)
     public TodoDto findDtoByTodoIdAndMember(Long todoId, MemberDto memberDto) {
+
         Member member = Member.toMember(memberDto);
         Todo todo = findByTodoIdAndMember(todoId, member);
         
@@ -107,13 +115,14 @@ public class TodoService {
     // 할 일 삭제하기
     @Transactional
     public void deleteTodo(TodoDto todoDto) {
+
         Long todoId = todoDto.getTodoId();
         MemberDto memberDto = todoDto.getMemberDto();
         Member member = Member.toMember(memberDto);
 
         checkMemberIsNotNull(member);
 
-        if(todoId == null){
+        if (todoId == null) {
             throw new NoSuchElementException(TODO_NOT_FOUND_MSG.getMsg());
         }
 
@@ -123,6 +132,7 @@ public class TodoService {
     // 할 일 업데이트하기
     @Transactional
     public void updateTodo(TodoDto todoDto) {
+
         MemberDto memberDto = todoDto.getMemberDto();
         Member member = Member.toMember(memberDto);
 
@@ -178,6 +188,7 @@ public class TodoService {
     // 특정 날짜의 데일리 로그 할 일 카테고리별로 조회하기
     @Transactional(readOnly = true)
     public List<TodoDto> findAllDtoByMemberAndCategoryIdAndYearAndMonthAndDay(TodoDto todoDto) {
+
         MemberDto memberDto = todoDto.getMemberDto();
         Member member = Member.toMember(memberDto);
         Long todoYear = todoDto.getTodoYear();
@@ -196,6 +207,7 @@ public class TodoService {
     // 해당 멤버의 이달의 할 일 찾아서 반환
     @Transactional(readOnly = true)
     public List<TodoDto> findAllDtoByMemberAndYearAndMonth(MemberDto memberDto, Long todoYear, Long todoMonth) {
+
         Member member = Member.toMember(memberDto);
 
         checkMemberIsNotNull(member);

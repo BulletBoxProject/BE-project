@@ -36,7 +36,7 @@ public class MailService {
     private String authNum;
 
 
-    public MimeMessage createMessage(String to)throws MessagingException, UnsupportedEncodingException{
+    public MimeMessage createMessage(String to) throws MessagingException, UnsupportedEncodingException {
 
         MimeMessage message = javaMailSender.createMimeMessage();
 
@@ -61,7 +61,8 @@ public class MailService {
         return message;
     }
 
-    public String createCode(){
+    public String createCode() {
+
         Random random = new Random();
         StringBuilder key = new StringBuilder();
 
@@ -74,12 +75,13 @@ public class MailService {
                 case 2 -> key.append(random.nextInt(9));
             }
         }
+
         return authNum = key.toString();
     }
 
-    public void sendSimpleMessage(String email) throws Exception{
+    public void sendSimpleMessage(String email) throws Exception {
 
-        if(memberRepository.findByEmail(email).isPresent()){
+        if (memberRepository.findByEmail(email).isPresent()) {
             throw new IllegalArgumentException(DUPLICATE_EMAIL_MSG.getMsg());
         }
 
@@ -91,9 +93,9 @@ public class MailService {
         authNum = createCode();
 
         MimeMessage message = createMessage(email);
-        try{
+        try {
             javaMailSender.send(message);
-        }catch (MailException e){
+        } catch (MailException e) {
             e.printStackTrace();
             throw new IllegalArgumentException(FAILED_TO_SEND_MAIL.getMsg());
         }
@@ -103,7 +105,9 @@ public class MailService {
 
     @Transactional
     public void verifyCode(String email, String code) {
+
         String authCode = redisUtil.getData(email);
+
         if (!authCode.equals(code)) {
             throw new IllegalStateException(DIFFERENT_CODE_MSG.getMsg());
         }

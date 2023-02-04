@@ -39,6 +39,7 @@ public class DailyTodoService {
     // 데일리 로그 할 일 추가 페이지 조회
     @Transactional(readOnly = true)
     public ResponseShowTodoCreatePageDto showTodoCreatePage(DailyTodoDto dailyTodoDto) {
+
         MemberDto memberDto = dailyTodoDto.getMemberDto();
         Long year = dailyTodoDto.getYear();
         Long month = dailyTodoDto.getMonth();
@@ -86,6 +87,7 @@ public class DailyTodoService {
     // 할 일 수정 페이지 조회하기
     @Transactional(readOnly = true)
     public ResponseTodoUpdatePageDto showTodoUpdatePage(Long todoId, MemberDto memberDto) {
+
         // 카테고리 조회하기
         List<CategoryDto> categoryDtoList = categoryService.findAllCategory(memberDto);
 
@@ -106,6 +108,7 @@ public class DailyTodoService {
     // 할 일 수정하기
     @Transactional
     public void updateTodo(DailyTodoDto dailyTodoDto) {
+
         // 할 일 업데이트 하기
         TodoDto todoDto = TodoDto.toTodoDto(dailyTodoDto);
 
@@ -115,18 +118,18 @@ public class DailyTodoService {
         List<TodoMemoDto> memos = dailyTodoDto.getMemos();
         MemberDto memberDto = dailyTodoDto.getMemberDto();
 
-        for(TodoMemoDto todoMemoDto : memos){
+        for (TodoMemoDto todoMemoDto : memos) {
             Long todoMemoId = todoMemoDto.getTodoMemoId();
             String todoMemoContent = todoMemoDto.getTodoMemoContent();
 
             // 있었는데 없어진 메모 삭제
-            if(todoMemoContent == null){
+            if (todoMemoContent == null) {
                 todoMemoService.deleteTodoMemoById(todoMemoId);
                 continue;
             }
 
             // 새로 생긴 메모 생성
-            if(todoMemoId == null){
+            if (todoMemoId == null) {
                 todoMemoDto.setTodoDto(todoDto);
                 todoMemoDto.setMemberDto(memberDto);
                 todoMemoService.saveTodoMemo(todoMemoDto);
@@ -141,7 +144,7 @@ public class DailyTodoService {
     // 루틴 불러와서 할 일로 저장하기
     @Transactional
     public ResponseLoadFavoriteDto loadFavorite(Long favoriteId, DailyTodoDto dailyTodoDto) {
-        MemberDto memberDto = dailyTodoDto.getMemberDto();
+
         Long year = dailyTodoDto.getYear();
         Long month = dailyTodoDto.getMonth();
         Long day = dailyTodoDto.getDay();

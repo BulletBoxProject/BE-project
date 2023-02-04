@@ -3,8 +3,8 @@ package com.hanghae.bulletbox.favorite.service;
 import com.hanghae.bulletbox.favorite.dto.FavoriteDto;
 import com.hanghae.bulletbox.favorite.dto.FavoriteMemoDto;
 import com.hanghae.bulletbox.favorite.dto.FavoritePageDto;
-import com.hanghae.bulletbox.favorite.dto.ResponseCreateFavoriteTodoDto;
-import com.hanghae.bulletbox.favorite.dto.ResponseShowFavoriteTodoPageDto;
+import com.hanghae.bulletbox.favorite.dto.ResponseCreateFavoriteDto;
+import com.hanghae.bulletbox.favorite.dto.ResponseShowFavoritePageDto;
 import com.hanghae.bulletbox.favorite.dto.ResponseUpdateFavoriteDto;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 
@@ -26,10 +26,11 @@ public class FavoritePageService {
 
     // 루틴 생성
     @Transactional
-    public ResponseCreateFavoriteTodoDto createFavoriteTodo(FavoritePageDto favoritePageDto) {
+    public ResponseCreateFavoriteDto createFavorite(FavoritePageDto favoritePageDto) {
 
         FavoriteDto favoriteDto = FavoriteDto.toFavoriteDto(favoritePageDto);
-        favoriteDto = favoriteService.saveFavoriteTodo(favoriteDto);
+
+        favoriteDto = favoriteService.saveFavorite(favoriteDto);
 
         List<FavoriteMemoDto> favoriteMemoDtoList = favoritePageDto.getFavoriteMemos();
         MemberDto memberDto = favoriteDto.getMemberDto();
@@ -49,12 +50,12 @@ public class FavoritePageService {
             responseFavoriteMemoDtoList.add(FavoriteMemoDto.toFavoriteMemoDto(favoriteMemoId, favoriteMemoContent));
         }
 
-        return ResponseCreateFavoriteTodoDto.toResponseCreateFavoriteTodoDto(favoriteDto, responseFavoriteMemoDtoList);
+        return ResponseCreateFavoriteDto.toResponseCreateFavoriteDto(favoriteDto, responseFavoriteMemoDtoList);
     }
 
     // 루틴 조회
     @Transactional(readOnly = true)
-    public ResponseShowFavoriteTodoPageDto showFavoriteTodoPage(FavoritePageDto favoritePageDto) {
+    public ResponseShowFavoritePageDto showFavoritePage(FavoritePageDto favoritePageDto) {
 
         MemberDto memberDto = favoritePageDto.getMemberDto();
 
@@ -64,7 +65,7 @@ public class FavoritePageService {
             favoriteDto.setFavoriteMemos(favoriteMemoDtoList);
         }
 
-        return ResponseShowFavoriteTodoPageDto.toResponseShowFavoriteTodoPageDto(favoriteDtoList);
+        return ResponseShowFavoritePageDto.toResponseShowFavoritePageDto(favoriteDtoList);
     }
 
     // 루틴 삭제

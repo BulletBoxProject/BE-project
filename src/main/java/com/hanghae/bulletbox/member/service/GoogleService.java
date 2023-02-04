@@ -51,17 +51,21 @@ public class GoogleService {
 
     @Transactional
     public ResponseLoginDto googleLogin(String code, HttpServletResponse response) {
+
         try {
             String token = getToken(code);
             Member loginMember = getGoogleMemberInfo(token);
             Member member = memberRepository.findByEmail(loginMember.getEmail()).orElse(null);
+
             if (member == null) {
                 member = signupSocialMember(loginMember);
             }
 
             member.socialUpdate(SocialTypeEnum.KAKAO);
+
             response.addHeader(JwtUtil.AUTHORIZATION_ACCESS, jwtUtil.createAccessToken(member.getEmail()));
             response.addHeader(JwtUtil.AUTHORIZATION_REFRESH, jwtUtil.createRefreshToken());
+
             return ResponseLoginDto.toResponseLoginDto(false);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException(SOCIAL_LOGIN_ERROR.getMsg());
@@ -69,6 +73,7 @@ public class GoogleService {
     }
 
     private String getToken(String code) throws JsonProcessingException {
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/x-www-form-urlencoded");
 
@@ -79,8 +84,7 @@ public class GoogleService {
         body.add("redirect_uri", googleRedirectUrl);
         body.add("code", code);
 
-        HttpEntity<MultiValueMap<String, String>> googleTokenRequest =
-                new HttpEntity<>(body, headers);
+        HttpEntity<MultiValueMap<String, String>> googleTokenRequest = new HttpEntity<>(body, headers);
         RestTemplate rt = new RestTemplate();
         ResponseEntity<String> response = rt.exchange(
                 "https://www.googleapis.com/oauth2/v4/token",
@@ -92,10 +96,12 @@ public class GoogleService {
         String responseBody = response.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
+
         return jsonNode.get("access_token").asText();
     }
 
     private Member getGoogleMemberInfo(String accessToken) throws JsonProcessingException {
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -114,24 +120,27 @@ public class GoogleService {
         JsonNode jsonNode = objectMapper.readTree(responseBody);
 
         String id = jsonNode.get("id").asText();
-
         String nickname = jsonNode.get("name").asText();
-
         String email = jsonNode.get("email").asText();
 
         return new Member(email, nickname, SocialTypeEnum.GOOGLE);
     }
 
     private Member signupSocialMember(Member socialMember) {
+
         String socialEmail = socialMember.getEmail();
         Member member = memberRepository.findByEmail(socialEmail).orElse(null);
+
         if (member == null) {
             String password = UUID.randomUUID().toString();
             String encodedPassword = passwordEncoder.encode(password);
+
             socialMember.setFirstLogin(true);
             socialMember.setPassword(encodedPassword);
+
             member = memberRepository.save(socialMember);
         }
+
         member.socialUpdate(SocialTypeEnum.GOOGLE);
 
         return member;

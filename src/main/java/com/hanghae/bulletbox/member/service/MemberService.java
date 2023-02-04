@@ -44,6 +44,7 @@ public class MemberService {
     private String email;
 
     private void checkDuplicatedEmail(String email) {
+
         memberRepository.findByEmail(email).ifPresent(
                 m -> {
                     throw new IllegalArgumentException(DUPLICATE_EMAIL_MSG.getMsg());
@@ -52,20 +53,22 @@ public class MemberService {
 
     @Transactional
     public void signup(MemberDto memberDto) {
+
         String email = memberDto.getEmail();
         String encodedPassword = passwordEncoder.encode(memberDto.getPassword());
 
         checkDuplicatedEmail(email);
 
         Member member = Member.toMember(memberDto.getEmail(), memberDto.getNickname(), encodedPassword);
+
         memberRepository.save(member);
     }
 
     @Transactional(readOnly = true)
     public ResponseLoginDto login(MemberDto memberDto, HttpServletResponse response) {
+
         String email = memberDto.getEmail();
         String password = memberDto.getPassword();
-        Boolean firstLogin = memberDto.getFirstLogin();
 
         Member member = memberRepository.findByEmail(email).orElseThrow(
                 () -> new NoSuchElementException(NOT_FOUND_EMAIL_MSG.getMsg())
@@ -82,24 +85,31 @@ public class MemberService {
 
     @Transactional
     public void issueTokens(HttpServletResponse response, String email) {
+
         String accessToken = jwtUtil.createAccessToken(email);
         String refreshToken = jwtUtil.createRefreshToken();
+
         response.addHeader(AUTHORIZATION_ACCESS, accessToken);
         response.addHeader(AUTHORIZATION_REFRESH, refreshToken);
+
         redisUtil.setDataExpire(email, refreshToken, 2 * 60 * 60 * 1000L);
     }
 
     @Transactional
     public void reissueToken(HttpServletRequest request, HttpServletResponse response) {
-        String refreshTokenFromRequest = request.getHeader(AUTHORIZATION_REFRESH); //요청헤더에서 온 RTK
-        String token = jwtUtil.resolveToken(request, AUTHORIZATION_ACCESS); //요청헤더에서 온 ATK(bearer 제외)
-        Claims info = jwtUtil.getUserInfoFromToken(token, true); //ATK에서 body가지고 옴
-        String email = info.getSubject(); //가지고온 body에서 subject 빼오기 = email
+
+        String refreshTokenFromRequest = request.getHeader(AUTHORIZATION_REFRESH); // 요청헤더에서 온 RTK
+        String token = jwtUtil.resolveToken(request, AUTHORIZATION_ACCESS); // 요청헤더에서 온 ATK(bearer 제외)
+        Claims info = jwtUtil.getUserInfoFromToken(token, true); // ATK에서 body가지고 옴
+        String email = info.getSubject(); // 가지고온 body에서 subject 빼오기 = email
         String refreshTokenFromRedis = redisUtil.getData(email);
+
         if (!refreshTokenFromRequest.equals(refreshTokenFromRedis)) {
             throw new IllegalArgumentException(NOT_MATCH_REFRESH_TOKEN.getMsg());
         }
+
         jwtUtil.validateRefreshToken(request, email);
+
         issueTokens(response, email);
     }
 
@@ -110,13 +120,16 @@ public class MemberService {
         String nickname = "체험하기 계정";
         String password = "TestPassword";
         Member member = Member.toMember(email, nickname, password);
+
         memberRepository.save(member);
 
         issueTokens(response, email);
+
         return ResponseLoginDto.toResponseLoginDto(false);
     }
 
     public String createEmail() {
+
         Random random = new Random();
         StringBuilder key = new StringBuilder();
 
@@ -129,12 +142,14 @@ public class MemberService {
                 case 2 -> key.append(random.nextInt(9));
             }
         }
+
         return email = key.toString();
     }
 
     // 더티 체킹으로 첫 로그인 여부 반영
     @Transactional
     public void updateFirstLogin(MemberDto memberDto) {
+
         Long memberId = memberDto.getMemberId();
 
         Member member = memberRepository.findById(memberId)

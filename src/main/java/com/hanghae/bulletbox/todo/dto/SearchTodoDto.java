@@ -23,7 +23,7 @@ public class SearchTodoDto {
     @Schema(description = "할 일 ID", example = "1", type = "Long")
     private Long todoId;
 
-    @Schema(description = "회원 DTO", example = "1", type = "MemberDto")
+    @Schema(description = "회원 DtO")
     @JsonIgnore
     private MemberDto memberDto;
 

@@ -29,6 +29,7 @@ public class DailyService {
     // 데일리 로그 페이지 조회
     @Transactional(readOnly = true)
     public ResponseDailyDto showDailyPage(MemberDto memberDto) {
+
         Long todoYear = (long) LocalDate.now().getYear();
         Long todoMonth = (long) LocalDate.now().getMonthValue();
         Long todoDay = (long) LocalDate.now().getDayOfMonth();
@@ -41,6 +42,7 @@ public class DailyService {
     // 데일리 로그 조회 날짜 변경
     @Transactional(readOnly = true)
     public ResponseDailyDto showDailyPageChangeDay(MemberDto memberDto, Long todoYear, Long todoMonth, Long todoDay) {
+
         // 해당 멤버의 카테고리들 조회
         List<CategoryDto> categoryDtoList = categoryService.findAllCategory(memberDto);
 
@@ -58,6 +60,7 @@ public class DailyService {
     // 데일리 로그 카테고리별 조회
     @Transactional(readOnly = true)
     public ResponseCategoryDto showDailyByCategory(TodoDto todoDto){
+
         MemberDto memberDto = todoDto.getMemberDto();
 
         // 카테고리에 해당하는 Todo들 정보 찾기

@@ -24,6 +24,7 @@ public class DiaryPageService {
     // 일기장 페이지 조회
     @Transactional(readOnly = true)
     public ResponseDiaryPageDto showDiaryPage(MemberDto memberDto) {
+
         Long year = (long) LocalDate.now().getYear();
         Long month = (long) LocalDate.now().getMonthValue();
         Long day = (long) LocalDate.now().getDayOfMonth();
@@ -38,7 +39,7 @@ public class DiaryPageService {
             String emotion = diaryDto.getEmotion();
 
             // 오늘의 일기일 경우
-            if(day.equals(diaryDay)){
+            if (day.equals(diaryDay)) {
                 diaryOfToday = diaryDto;
             }
 
@@ -55,6 +56,7 @@ public class DiaryPageService {
     // 일기장 페이지 달력 조회 날짜 변경
     @Transactional(readOnly = true)
     public ResponseDiaryCalendarPageDto changeMonthOfDiaryPage(Long year, Long month, MemberDto memberDto) {
+
         List<MonthlyEmotionDto> emotions = findEmotionListOfMonth(year, month, memberDto);
 
         ResponseDiaryCalendarPageDto responseDiaryCalendarPageDto = ResponseDiaryCalendarPageDto.toResponseDiaryCalendarPageDto(emotions);
@@ -65,6 +67,7 @@ public class DiaryPageService {
     // 일기장 조회 날짜 변경
     @Transactional(readOnly = true)
     public DiaryDto showDiaryOfAnotherDay(Long year, Long month, Long day, MemberDto memberDto) {
+
         DiaryDto diaryDto = diaryService.findByYearAndMonthAndDayAndMember(year, month, day, memberDto);
 
         return diaryDto;
@@ -73,6 +76,7 @@ public class DiaryPageService {
     // 일기장 생성 및 수정
     @Transactional
     public ResponseDiaryPageDto updateDiary(DiaryDto diaryDto) {
+
         Long diaryId = diaryDto.getDiaryId();
         Long year = diaryDto.getYear();
         Long month = diaryDto.getMonth();
@@ -80,7 +84,7 @@ public class DiaryPageService {
 
         List<MonthlyEmotionDto> emotions = findEmotionListOfMonth(year, month, memberDto);
 
-        if(diaryId == null){
+        if (diaryId == null) {
             DiaryDto savedDiaryDto = diaryService.saveDiary(diaryDto);
             ResponseDiaryPageDto responseDiaryPageDto = ResponseDiaryPageDto.toResponseDiaryPageDto(emotions, savedDiaryDto);
 
@@ -95,7 +99,8 @@ public class DiaryPageService {
 
     // 이 달의 emotion 찾아서 리스트로 반환환
    @Transactional(readOnly = true)
-    protected List<MonthlyEmotionDto> findEmotionListOfMonth(Long year, Long month, MemberDto memberDto){
+    protected List<MonthlyEmotionDto> findEmotionListOfMonth(Long year, Long month, MemberDto memberDto) {
+
        List<DiaryDto> diaryDtoList = diaryService.findAllDtoByYearAndMonthAndMember(year, month, memberDto);
        List<MonthlyEmotionDto> emotions = new ArrayList<>();
 

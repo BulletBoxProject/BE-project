@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(name = "MyPageDto", description = "마이 페이지의 Service 범용 DTO")
+@Schema(description = "마이 페이지 Dto")
 public class MyPageDto {
 
     @Schema(description = "이메일", type = "String")

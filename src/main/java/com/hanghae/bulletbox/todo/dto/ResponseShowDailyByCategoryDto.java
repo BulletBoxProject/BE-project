@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ResponseShowDailyByCategoryDto {
 
-    @Schema(description = "메인 페이지 데일리 로그 정보")
+    @Schema(description = "메인 페이지 데일리 로그 정보", type = "List")
     private List<DailyDto> daily;
 
     private ResponseShowDailyByCategoryDto(List<DailyDto> dailyDtoList) {

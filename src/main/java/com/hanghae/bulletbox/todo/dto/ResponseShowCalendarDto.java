@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ResponseShowCalendarDto {
 
-    @Schema(description = "매인 페이지 달력의 정보")
+    @Schema(description = "매인 페이지 달력의 정보", type = "List")
     private List<CalendarDto> calendar;
 
     @Builder(access = AccessLevel.PRIVATE)

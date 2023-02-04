@@ -7,6 +7,11 @@ import com.hanghae.bulletbox.todo.dto.ResponseSearchTodoDto;
 import com.hanghae.bulletbox.todo.dto.SearchPageDto;
 import com.hanghae.bulletbox.todo.service.SearchTodoService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,10 +23,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/todos")
 @RequiredArgsConstructor
+@Tag(name = "Todo", description = "할 일 API")
 public class TodoController {
 
     private final SearchTodoService searchTodoService;
 
+    @Operation(tags = {"Todo"}, summary = "메인 페이지 조회")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "할 일 검색을 성공했습니다."),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자입니다.")
+    })
     @GetMapping("/search")
     public Response<ResponseSearchTodoDto> searchTodo(@RequestParam String todoContent,
                                                       @AuthenticationPrincipal UserDetailsImpl userDetails) {

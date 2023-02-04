@@ -13,10 +13,11 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class VerifyCodeDto {
 
-    @Schema(description = "인증 코드")
+    @Schema(description = "인증 코드", type = "String")
     @NotNull
     private String verifyCode;
 
+    @Schema(description = "이메일", example = "email@email.com", type = "String")
     private String email;
 
     public VerifyCodeDto(String email, String verifyCode) {

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(name = "ResponseShowMyPageDto", description = "마이 페이지 조회 API 응답 DTO")
+@Schema(description = "마이 페이지 조회 응답 DTO")
 public class ResponseShowMyPageDto {
 
     @Schema(description = "이메일", type = "String")

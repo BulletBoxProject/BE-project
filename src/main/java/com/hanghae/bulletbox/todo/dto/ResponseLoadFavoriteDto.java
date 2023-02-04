@@ -2,6 +2,8 @@ package com.hanghae.bulletbox.todo.dto;
 
 import com.hanghae.bulletbox.todo.TodoBullet;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,20 +13,28 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Schema(description = "루틴 불러오기 응답 Dto")
 public class ResponseLoadFavoriteDto {
 
+    @Schema(description = "할 일 ID", type = "Long", example = "1")
     private Long todoId;
 
+    @Schema(description = "카테고리 ID", type = "Long", example = "1")
     private Long categoryId;
 
+    @Schema(description = "카테고리 색상", type = "String", example = "#000000")
     private String categoryColor;
 
+    @Schema(description = "Bullet 이름", type = "String", example = "Todo")
     private String todoBulletName;
 
+    @Schema(description = "Bullet 이미지", type = "String", example = "img_url...")
     private String todoBulletImgUrl;
 
+    @Schema(description = "할 일 내용", type = "String", example = "할 일 내용")
     private String todoContent;
 
+    @Schema(description = "할 일의 메모 변수", type = "List")
     private List<TodoMemoDto> todoMemos;
 
     @Builder(access = AccessLevel.PRIVATE)

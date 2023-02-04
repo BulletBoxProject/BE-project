@@ -1,6 +1,6 @@
 package com.hanghae.bulletbox.diary.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,10 +11,13 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Schema(description = "일기장 페이지 조회 응답 DTO")
 public class ResponseDiaryPageDto {
 
+    @Schema(description = "일기장 페이지 조회 응답 변수", type = "List")
     private List<MonthlyEmotionDto> emotions;
 
+    @Schema(description = "일기장 서비스 범용 Dto")
     private DiaryDto diary;
 
     @Builder

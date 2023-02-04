@@ -1,6 +1,7 @@
 package com.hanghae.bulletbox.category.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(name = "ResponseCreateCategoryDto", description = "카테고리 생성 응답 DTO")
+@Schema(description = "카테고리 생성 응답 Dto")
 public class ResponseCreateCategoryDto {
 
     @Schema(description = "카테고리 ID", example = "1", type = "Long")

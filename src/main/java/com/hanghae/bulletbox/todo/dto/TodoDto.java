@@ -24,7 +24,7 @@ public class TodoDto {
     @Schema(description = "할 일 ID", example = "1", type = "Long")
     private Long todoId;
 
-    @Schema(description = "회원 DTO", example = "1", type = "MemberDto")
+    @Schema(description = "회원 Dto")
     private MemberDto memberDto;
 
     @Schema(description = "카테고리 ID", example = "1", type = "Long")

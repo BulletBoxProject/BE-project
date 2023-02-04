@@ -29,10 +29,9 @@ public class MyPageController {
 
     private final MyPageService myPageService;
 
-    @Operation(tags = {"MyPage"}, summary = "마이 페이지 조회 API")
+    @Operation(tags = {"MyPage"}, summary = "마이 페이지 조회")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "마이 페이지 조회를 성공했습니다."),
-            @ApiResponse(responseCode = "400", description = ".")
+            @ApiResponse(responseCode = "200", description = "마이 페이지 조회를 성공했습니다.")
     })
     @GetMapping
     public Response<ResponseShowMyPageDto> showMyPage(@ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {

@@ -35,7 +35,8 @@ public class CategoryService {
 
     // 멤버로 해당 멤버의 전체 카테고리 조회
     @Transactional(readOnly = true)
-    public List<CategoryDto> findAllCategory(MemberDto memberDto){
+    public List<CategoryDto> findAllCategory(MemberDto memberDto) {
+
         Member member = Member.toMember(memberDto);
 
         List<CategoryDto> categoryDtoList = new ArrayList<>();
@@ -49,12 +50,14 @@ public class CategoryService {
             // Entity -> Dto 변환
             categoryDtoList.add(CategoryDto.toCategoryDto(categoryId, categoryName, categoryColor));
         }
+
         return categoryDtoList;
     }
 
     // 카테고리 중복 검사
     @Transactional(readOnly = true)
     public boolean isCategoryDuplicated(CategoryDto categoryDto) {
+
         MemberDto memberDto = categoryDto.getMemberDto();
         Member member = Member.toMember(memberDto);
         String categoryName = categoryDto.getCategoryName();
@@ -69,7 +72,7 @@ public class CategoryService {
 
         boolean categoryDuplicated = isCategoryDuplicated(categoryDto);
 
-        if(categoryDuplicated){
+        if (categoryDuplicated) {
             throw new IllegalArgumentException(DUPLICATE_CATEGORYNAME_MSG.getMsg());
         }
 
@@ -85,6 +88,7 @@ public class CategoryService {
     // 카테고리 수정하기
     @Transactional
     public void update(CategoryDto categoryDto) {
+
         Long categoryId = categoryDto.getCategoryId();
         String categoryName = categoryDto.getCategoryName();
         String categoryColor = categoryDto.getCategoryColor();
@@ -102,6 +106,7 @@ public class CategoryService {
     // 카테고리 삭제
     @Transactional
     public Long deleteById(CategoryDto categoryDto) {
+
         Long categoryId = categoryDto.getCategoryId();
         MemberDto memberDto = categoryDto.getMemberDto();
         Member member = Member.toMember(memberDto);
@@ -118,25 +123,26 @@ public class CategoryService {
         List<Todo> todoList = todoRepository.findAllByMemberAndCategoryId(member, categoryId);
         List<Favorite> favoriteList = favoriteRepository.findAllByMemberAndCategoryId(member, categoryId);
 
-        for(Todo todo : todoList){
+        for (Todo todo : todoList) {
             todo.updateCategory(null, null);
         }
 
-        for(Favorite favorite : favoriteList)
+        for (Favorite favorite : favoriteList) {
             favorite.updateCategory(null, null, null);
-
+        }
 
         return categoryId;
     }
 
     // 같은 유저인지 확인
-    private void checkMember(MemberDto memberDto, Category category){
+    private void checkMember(MemberDto memberDto, Category category) {
+
         Long requestMemberId = memberDto.getMemberId();
 
         Member member = category.getMember();
         Long memberId = member.getMemberId();
 
-        if(!memberId.equals(requestMemberId)){
+        if (!memberId.equals(requestMemberId)) {
             throw new IllegalArgumentException(NO_AUTHORIZATION_MSG.getMsg());
         }
     }

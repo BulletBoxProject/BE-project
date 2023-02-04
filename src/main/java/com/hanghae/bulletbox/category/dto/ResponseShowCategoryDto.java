@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Schema(name = "ResponseShowCategoryDto", description = "카테고리 목록 조회 응답 DTO")
+@Schema(description = "카테고리 목록 조회 응답 Dto")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ResponseShowCategoryDto {
 
-    @Schema(description = "CategoryDto로부터 받은 데이터를 담는 변수")
+    @Schema(description = "카테고리 목록 조회 응답 변수", type = "List")
     private List<CategoryDto> categories;
 
     @Builder(access = AccessLevel.PRIVATE)
