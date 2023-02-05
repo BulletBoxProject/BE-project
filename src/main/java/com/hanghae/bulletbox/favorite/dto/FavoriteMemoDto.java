@@ -8,6 +8,8 @@ import com.hanghae.bulletbox.favorite.entity.FavoriteMemo;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,19 +17,26 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@Schema(description = "루틴 메모 Dto")
 public class FavoriteMemoDto {
 
+    @Schema(description = "루틴 메모 ID", example = "1", type = "Long")
     private Long FavoriteMemoId;
 
+    @Setter
+    @Schema(description = "루틴 메모 내용", example = "루틴 메모 내용", type = "String")
     private String FavoriteMemoContent;
 
     @JsonIgnore
+    @Setter
+    @Schema(description = "유저 Dto")
     private MemberDto memberDto;
 
     @JsonIgnore
+    @Setter
+    @Schema(description = "루틴 Dto")
     private FavoriteDto favoriteDto;
 
     @Builder(access = AccessLevel.PRIVATE)

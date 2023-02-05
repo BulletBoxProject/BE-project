@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(name = "RequestUpdateCategoryDto", description = "카테고리 수정 응답 DTO")
+@Schema(description = "카테고리 수정 응답 Dto")
 public class RequestUpdateCategoryDto {
 
     @Schema(description = "카테고리 이름", example = "직장", type = "String")

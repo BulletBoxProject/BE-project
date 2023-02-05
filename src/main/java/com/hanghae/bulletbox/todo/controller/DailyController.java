@@ -16,9 +16,9 @@ import com.hanghae.bulletbox.todo.service.DailyService;
 import com.hanghae.bulletbox.todo.service.DailyTodoService;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import lombok.RequiredArgsConstructor;
@@ -36,8 +36,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import springfox.documentation.annotations.ApiIgnore;
-
 @Tag(name = "Daily", description = "데일리 로그 API")
 @RestController
 @RequiredArgsConstructor
@@ -50,11 +48,10 @@ public class DailyController {
 
     @Operation(tags = {"Daily"}, summary = "데일리 로그 조회")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "데일리 페이지 조회를 성공했습니다."),
-            @ApiResponse(code = 400, message = "존재하지 않는 사용자입니다.")
+            @ApiResponse(responseCode = "200", description = "데일리 페이지 조회를 성공했습니다.")
     })
     @GetMapping
-    public Response<ResponseDailyDto> showDailyPage(@ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Response<ResponseDailyDto> showDailyPage(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
 
@@ -63,16 +60,16 @@ public class DailyController {
         return Response.success(200, "데일리 페이지 조회를 성공했습니다.", responseDailyDto);
     }
 
-    @Operation(tags = {"Daily"}, summary = "데일리 로그 조회 날짜 변경")
+    @Operation(tags = {"Daily"}, summary = "데일리 로그 조회 날짜 변경 API")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "데일리 로그 조회 날짜 변경을 성공했습니다."),
-            @ApiResponse(code = 400, message = "존재하지 않는 사용자입니다.")
+            @ApiResponse(responseCode = "200", description = "데일리 로그 조회 날짜 변경을 성공했습니다."),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자입니다.")
     })
     @GetMapping("/{todoYear}/{todoMonth}/{todoDay}")
     public Response<ResponseDailyDto> showDailyPageChangeDay(@PathVariable Long todoYear,
-                                                                 @PathVariable Long todoMonth,
-                                                                 @PathVariable Long todoDay,
-                                                                 @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                                             @PathVariable Long todoMonth,
+                                                             @PathVariable Long todoDay,
+                                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
 
@@ -82,17 +79,17 @@ public class DailyController {
     }
 
 
-    @Operation(tags = {"Daily"}, summary = "카테고리별 데일리 로그 조회")
+    @Operation(tags = {"Daily"}, summary = "카테고리별 데일리 로그 조회 API")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "카테고리별 데일리 로그 조회를 성공했습니다."),
-            @ApiResponse(code = 400, message = "존재하지 않는 사용자입니다.")
+            @ApiResponse(responseCode = "200", description = "카테고리별 데일리 로그 조회를 성공했습니다."),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자입니다.")
     })
     @GetMapping("/{todoYear}/{todoMonth}/{todoDay}/{categoryId}")
     public Response<ResponseCategoryDto> showDailyByCategory(@PathVariable Long todoYear,
                                                              @PathVariable Long todoMonth,
                                                              @PathVariable Long todoDay,
                                                              @PathVariable Long categoryId,
-                                                             @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
 
@@ -104,6 +101,11 @@ public class DailyController {
     }
 
     // 할 일 추가 페이지 조회
+    @Operation(tags = {"Daily"}, summary = "할 일 추가 페이지 조회 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "할 일 추가 페이지 조회를 성공했습니다."),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자입니다.")
+    })
     @GetMapping("/todo")
     public Response<ResponseShowTodoCreatePageDto> showTodoCreatePage(@RequestParam(value = "year") Long year,
                                                                       @RequestParam(value = "month") Long month,
@@ -112,16 +114,24 @@ public class DailyController {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
         DailyTodoDto dailyTodoDto = DailyTodoDto.toDailyTodoDto(memberDto, year, month, day);
+
         ResponseShowTodoCreatePageDto responseShowTodoCreatePageDto = dailyTodoService.showTodoCreatePage(dailyTodoDto);
 
         return Response.success(200, "할 일 추가 페이지 조회를 성공했습니다.", responseShowTodoCreatePageDto);
     }
 
     // 할 일 추가하기
+    @Operation(tags = {"Daily"}, summary = "할 일 추가 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "할 일을 생성하였습니다."),
+            @ApiResponse(responseCode = "404-1", description = "존재하지 않는 사용자입니다."),
+            @ApiResponse(responseCode = "404-2", description = "할 일이 존재하지 않습니다."),
+            @ApiResponse(responseCode = "404-3", description = "존재하지 않는 카테고리입니다.")
+    })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/todo")
     public Response<?> createTodo(@RequestBody RequestCreateTodoDto requestCreateTodoDto,
-                                  @AuthenticationPrincipal UserDetailsImpl userDetails){
+                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
@@ -133,9 +143,16 @@ public class DailyController {
     }
 
     // 할 일 삭제하기
+    @Operation(tags = {"Daily"}, summary = "할 일 삭제 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "할 일을 삭제하였습니다."),
+            @ApiResponse(responseCode = "404-1", description = "존재하지 않는 사용자입니다."),
+            @ApiResponse(responseCode = "404-2", description = "할 일이 존재하지 않습니다."),
+            @ApiResponse(responseCode = "404-3", description = "존재하지 않는 카테고리입니다.")
+    })
     @DeleteMapping("/todo/{todoId}")
     public Response<?> deleteTodo(@PathVariable Long todoId,
-                                  @AuthenticationPrincipal UserDetailsImpl userDetails){
+                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
 
@@ -145,9 +162,13 @@ public class DailyController {
     }
 
     // 할 일 수정 페이지 조회하기
+    @Operation(tags = {"Daily"}, summary = "할 일 수정 페이지 조회 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "할 일 수정 페이지를 조회했습니다.")
+    })
     @GetMapping("/todo/{todoId}")
     public Response<ResponseTodoUpdatePageDto> showTodoUpdatePage(@PathVariable Long todoId,
-                                                                  @AuthenticationPrincipal UserDetailsImpl userDetails){
+                                                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
 
@@ -158,9 +179,16 @@ public class DailyController {
     }
 
     // 할 일 수정하기
+    @Operation(tags = {"Daily"}, summary = "할 일 수정 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "할 일이 수정되었습니다."),
+            @ApiResponse(responseCode = "404-1", description = "존재하지 않는 사용자입니다."),
+            @ApiResponse(responseCode = "404-2", description = "할 일이 존재하지 않습니다."),
+            @ApiResponse(responseCode = "404-3", description = "존재하지 않는 카테고리입니다."),
+    })
     @PutMapping("/todo")
     public Response<?> updateTodo(@RequestBody RequestUpdateTodoDto requestUpdateTodoDto,
-                                  @AuthenticationPrincipal UserDetailsImpl userDetails){
+                                  @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
 
@@ -172,10 +200,17 @@ public class DailyController {
     }
 
     // 루틴 불러오기
+    @Operation(tags = {"Daily"}, summary = "루틴 불러오기 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "루틴을 오늘의 할 일에 담았습니다."),
+            @ApiResponse(responseCode = "404-1", description = "존재하지 않는 사용자입니다."),
+            @ApiResponse(responseCode = "404-2", description = "루틴이 존재하지 않습니다."),
+            @ApiResponse(responseCode = "404-3", description = "존재하지 않는 카테고리입니다."),
+    })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/favorites")
     public Response<ResponseLoadFavoriteDto> loadFavorite(@RequestBody RequestLoadFavoriteDto requestLoadFavoriteDto,
-                                                          @AuthenticationPrincipal UserDetailsImpl userDetails){
+                                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
         Long year = requestLoadFavoriteDto.getYear();

@@ -33,23 +33,26 @@ public class TodoMemoService {
     private final TodoRepository todoRepository;
 
     // Member가 빈 값인지 확인
-    private void checkMemberIsNotNull(Member member){
-        if(member == null){
+    private void checkMemberIsNotNull(Member member) {
+        if (member == null) {
             throw new NoSuchElementException(NOT_FOUND_MEMBER_MSG.getMsg());
         }
     }
 
     // todo가 해당 유저의 todo인지 검사
     @Transactional(readOnly = true)
-    protected void checkMemberHasTodoId(Member member, Todo todo){
+    protected void checkMemberHasTodoId(Member member, Todo todo) {
+
         Long todoId = todo.getTodoId();
+
         todoRepository.findByTodoIdAndMember(todoId, member)
                 .orElseThrow(() -> new NoSuchElementException(TODO_NOT_FOUND_MSG.getMsg()));
     }
 
     // memoId로 메모 찾기
     @Transactional(readOnly = true)
-    protected TodoMemo findTodoMemoById(Long todoMemoId){
+    protected TodoMemo findTodoMemoById(Long todoMemoId) {
+
         TodoMemo todoMemo = todoMemoRepository.findById(todoMemoId)
                 .orElseThrow(() -> new NoSuchElementException(TODO_MEMO_NOT_FOUND_MSG.getMsg()));
 
@@ -58,7 +61,8 @@ public class TodoMemoService {
 
     // todo로 메모 찾기
     @Transactional(readOnly = true)
-    public List<TodoMemoDto> findAllMemoByTodo(TodoDto todoDto){
+    public List<TodoMemoDto> findAllMemoByTodo(TodoDto todoDto) {
+
         Todo todo = Todo.toTodo(todoDto);
         MemberDto memberDto = todoDto.getMemberDto();
         Member member = Member.toMember(memberDto);
@@ -70,7 +74,7 @@ public class TodoMemoService {
 
     // todo로 메모 찾기 (검색용)
     @Transactional(readOnly = true)
-    public List<TodoMemoDto> findAllMemoByTodo(SearchTodoDto searchTodoDto){
+    public List<TodoMemoDto> findAllMemoByTodo(SearchTodoDto searchTodoDto) {
 
         Todo todo = Todo.toTodo(searchTodoDto);
         MemberDto memberDto = searchTodoDto.getMemberDto();
@@ -83,13 +87,14 @@ public class TodoMemoService {
 
     // 할 일 메모 생성
     @Transactional
-    public TodoMemoDto saveTodoMemo(TodoMemoDto todoMemoDto){
+    public TodoMemoDto saveTodoMemo(TodoMemoDto todoMemoDto) {
+
         TodoMemo todoMemo = TodoMemo.toTodoMemo(todoMemoDto);
         Member member = todoMemo.getMember();
         Todo todo = todoMemo.getTodo();
         String todoMemoContent = todoMemo.getTodoMemoContent();
 
-        if(todoMemoContent == null){
+        if (todoMemoContent == null) {
             return todoMemoDto;
         }
 
@@ -106,6 +111,7 @@ public class TodoMemoService {
     // 할 일의 하위 메모들 삭제
     @Transactional
     public void deleteTodoMemosOfTodo(TodoDto todoDto) {
+
         MemberDto memberDto = todoDto.getMemberDto();
         Member member = Member.toMember(memberDto);
         Todo todo = Todo.toTodo(todoDto);
@@ -119,19 +125,20 @@ public class TodoMemoService {
     // 메모 id로 메모 삭제
     @Transactional
     public void deleteTodoMemoById(Long todoMemoId) {
+
         todoMemoRepository.deleteById(todoMemoId);
     }
 
     // todoMemo 수정
     @Transactional
     public void updateTodoMemo(TodoMemoDto todoMemoDto) {
+
         Long todoMemoId = todoMemoDto.getTodoMemoId();
-        String todoMemoContent = todoMemoDto.getTodoMemoContent();
 
         TodoMemo todoMemo = findTodoMemoById(todoMemoId);
 
         // 수정된 내용이 없으면 update를 쿼리를 날리지 않도록 함
-        if(todoMemo.getTodoMemoContent().equals(todoMemoDto.getTodoMemoContent())){
+        if (todoMemo.getTodoMemoContent().equals(todoMemoDto.getTodoMemoContent())) {
             return;
         }
 
@@ -141,6 +148,7 @@ public class TodoMemoService {
     // 할 일의 메모 찾아서 DailyDtoList로 반환
     @Transactional(readOnly = true)
     public List<DailyDto> makeDailyDtoListWithMemo(List<TodoDto> todoDtoList){
+
         List<DailyDto> dailyDtoList = new ArrayList<>();
 
         for(TodoDto todoDto: todoDtoList){
@@ -156,6 +164,7 @@ public class TodoMemoService {
     // 메모 찾아서 메모 리스트로 반환하기
     @Transactional(readOnly = true)
     protected List<TodoMemoDto> findAllMemoDtoOfTodo(Member member, Todo todo){
+
         List<TodoMemo> todoMemoList = todoMemoRepository.findAllByMemberAndTodo(member, todo);
         List<TodoMemoDto> todoMemoDtoList = new ArrayList<>();
 

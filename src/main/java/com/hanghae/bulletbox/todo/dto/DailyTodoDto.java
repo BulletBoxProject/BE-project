@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.todo.TodoBullet;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,30 +17,43 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Getter
 @NoArgsConstructor
+@Schema(description = "데일리 로그 서비스 Dto")
 public class DailyTodoDto {
 
+    @Schema(description = "유저 Dto")
     private MemberDto memberDto;
 
+    @Schema(description = "할 일 ID", type = "Long", example = "1")
     private Long todoId;
 
-    private String todoContent;
-
-    private String todoBulletName;
-
-    private String todoBulletImgUrl;
-
-    private String time;
-
+    @Schema(description = "카테고리 ID", type = "Long", example = "1")
     private Long categoryId;
 
+    @Schema(description = "카테고리 색상", type = "String", example = "#000000")
     private String categoryColor;
 
+    @Schema(description = "Bullet 이름", type = "String", example = "Todo")
+    private String todoBulletName;
+
+    @Schema(description = "Bullet 이미지", type = "String", example = "img_url...")
+    private String todoBulletImgUrl;
+
+    @Schema(description = "할 일 내용", type = "String", example = "할 일 내용")
+    private String todoContent;
+
+    @Schema(description = "할 일에 기록된 시간", type = "String", example = "14:00")
+    private String time;
+
+    @Schema(description = "연도", example = "2023", type = "Long")
     private Long year;
 
+    @Schema(description = "월", example = "12", type = "Long")
     private Long month;
 
+    @Schema(description = "날짜", example = "12", type = "Long")
     private Long day;
 
+    @Schema(description = "할 일의 메모 변수", type = "List")
     private List<TodoMemoDto> memos;
 
     @Builder(access = AccessLevel.PRIVATE)

@@ -1,8 +1,6 @@
 package com.hanghae.bulletbox.todo.dto;
 
 import com.hanghae.bulletbox.todo.TodoBullet;
-import com.hanghae.bulletbox.todo.entity.TodoMemo;
-import com.hanghae.bulletbox.todo.entity.Todo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

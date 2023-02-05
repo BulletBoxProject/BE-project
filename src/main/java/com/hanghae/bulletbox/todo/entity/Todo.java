@@ -9,10 +9,7 @@ import com.hanghae.bulletbox.todo.TodoBullet;
 import com.hanghae.bulletbox.todo.dto.SearchTodoDto;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,6 +26,7 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Todo extends TimeStamped {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long todoId;
@@ -38,6 +36,7 @@ public class Todo extends TimeStamped {
     @JoinColumn(name = "MEMBER_ID", nullable = false)
     private Member member;
 
+    @Setter
     @Column(nullable = true)
     private Long categoryId;
 
@@ -148,10 +147,6 @@ public class Todo extends TimeStamped {
                 .todoDay(todoDay)
                 .time(time)
                 .build();
-    }
-
-    public void setCategoryId(Long categoryId) {
-        this.categoryId = categoryId;
     }
 
     public void updateCategory(Long categoryId, String categoryColor) {

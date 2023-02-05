@@ -43,7 +43,7 @@ public class FavoriteService {
     }
 
     // FavoriteTodo 유효성 검사
-    private void checkFavoriteTodoIsSafe(Favorite favorite){
+    private void checkFavoriteIsSafe(Favorite favorite){
         Member member = favorite.getMember();
         Long categoryId = favorite.getCategoryId();
 
@@ -58,11 +58,11 @@ public class FavoriteService {
 
     // 루틴 생성
     @Transactional
-    public FavoriteDto saveFavoriteTodo(FavoriteDto favoriteDto) {
+    public FavoriteDto saveFavorite(FavoriteDto favoriteDto) {
 
         Favorite favorite = Favorite.toFavorite(favoriteDto);
 
-        checkFavoriteTodoIsSafe(favorite);
+        checkFavoriteIsSafe(favorite);
 
         favoriteRepository.save(favorite);
 
@@ -126,7 +126,7 @@ public class FavoriteService {
         Long categoryId = favoriteDto.getCategoryId();
         favorite.setCategoryId(categoryId);
 
-        checkFavoriteTodoIsSafe(favorite);
+        checkFavoriteIsSafe(favorite);
 
         favorite.update(favoriteDto);
 
@@ -142,6 +142,7 @@ public class FavoriteService {
 
     // favoriteId로 루틴 조회
     public FavoriteDto findDtoById(Long favoriteId) {
+
         Favorite favorite = favoriteRepository.findById(favoriteId)
                 .orElseThrow(() -> new NoSuchElementException(NOT_FOUND_FAVORITE_MSG.getMsg()));
 

@@ -48,6 +48,7 @@ public class KakaoService {
 
     @Transactional
     public ResponseLoginDto kakaoLogin(String code, HttpServletResponse response) {
+
         try {
             String token = getToken(code);
             Member loginMember = getKakaoMemberInfo(token);
@@ -58,15 +59,18 @@ public class KakaoService {
             }
 
             member.socialUpdate(SocialTypeEnum.KAKAO);
+
             response.addHeader(JwtUtil.AUTHORIZATION_ACCESS, jwtUtil.createAccessToken(member.getEmail()));
             response.addHeader(JwtUtil.AUTHORIZATION_REFRESH, jwtUtil.createRefreshToken());
+
             return ResponseLoginDto.toResponseLoginDto(false);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException(SOCIAL_LOGIN_ERROR.getMsg());
         }
     }
 
-    private String getToken(String code)throws JsonProcessingException {
+    private String getToken(String code) throws JsonProcessingException {
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
@@ -76,8 +80,7 @@ public class KakaoService {
         body.add("redirect_uri", kakaoRedirectUri);
         body.add("code", code);
 
-        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest =
-                new HttpEntity<>(body, headers);
+        HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);
         RestTemplate rt = new RestTemplate();
         ResponseEntity<String> response = rt.exchange(
                 "https://kauth.kakao.com/oauth/token",
@@ -89,10 +92,12 @@ public class KakaoService {
         String responseBody = response.getBody();
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
+
         return jsonNode.get("access_token").asText();
     }
 
     private Member getKakaoMemberInfo(String accessToken) throws JsonProcessingException {
+
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -111,27 +116,28 @@ public class KakaoService {
         JsonNode jsonNode = objectMapper.readTree(responseBody);
 
         String id = jsonNode.get("id").asText();
-
-        String nickname = jsonNode.get("properties")
-                .get("nickname").asText();
-
-        JsonNode jsonEmail = jsonNode.get("kakao_account")
-                .get("email");
+        String nickname = jsonNode.get("properties").get("nickname").asText();
+        JsonNode jsonEmail = jsonNode.get("kakao_account").get("email");
         String email = jsonEmail == null ? id + "kakao.com" : jsonEmail.asText();
 
         return new Member(email, nickname , SocialTypeEnum.KAKAO);
     }
 
     private Member signupSocialMember(Member socialMember) {
+
         String socialEmail = socialMember.getEmail();
         Member member = memberRepository.findByEmail(socialEmail).orElse(null);
+
         if (member == null) {
             String password = UUID.randomUUID().toString();
             String encodedPassword = passwordEncoder.encode(password);
+
             socialMember.setPassword(encodedPassword);
             socialMember.setFirstLogin(true);
+
             member = memberRepository.save(socialMember);
         }
+
         member.socialUpdate(SocialTypeEnum.KAKAO);
 
         return member;

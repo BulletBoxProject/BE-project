@@ -28,8 +28,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import springfox.documentation.annotations.ApiIgnore;
-
 @Tag(name = "Category", description = "카테고리 API")
 @RequiredArgsConstructor
 @RequestMapping("/api/categories")
@@ -44,10 +42,9 @@ public class CategoryController {
             @ApiResponse(responseCode = "400", description = "존재하지 않는 사용자입니다.")
     })
     @GetMapping
-    public Response<ResponseShowCategoryDto> showCategory(@ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Response<ResponseShowCategoryDto> showCategory(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
-
         CategoryDto categoryDto = CategoryDto.toCategoryDto(memberDto);
 
         ResponseShowCategoryDto responseShowCategoryDto = categoryService.showCategory(categoryDto);
@@ -57,17 +54,17 @@ public class CategoryController {
 
     @Operation(tags = {"Category"}, summary = "카테고리 생성")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "카테고리 생성을 성공했습니다."),
-            @ApiResponse(responseCode = "400", description = "이미 존재하는 카테고리입니다.")
+            @ApiResponse(responseCode = "201", description = "카테고리 생성을 성공했습니다."),
+            @ApiResponse(responseCode = "400-1", description = "존재하지 않는 사용자입니다."),
+            @ApiResponse(responseCode = "400-2", description = "이미 존재하는 카테고리입니다.")
     })
     @PostMapping()
     public Response<ResponseCreateCategoryDto> createCategory(@RequestBody RequestCreateCategoryDto requestCreateCategoryDto,
-                                                              @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
 
         String categoryName = requestCreateCategoryDto.getCategoryName();
-
         String categoryColor = requestCreateCategoryDto.getCategoryColor();
 
         CategoryDto categoryDto = CategoryDto.toCategoryDto(categoryName, categoryColor, memberDto);
@@ -80,12 +77,13 @@ public class CategoryController {
     @Operation(tags = {"Category"}, summary = "카테고리 수정")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "카테고리 수정을 성공했습니다."),
-            @ApiResponse(responseCode = "400", description = "이미 존재하지 않는 카테고리입니다.")
+            @ApiResponse(responseCode = "400", description = "존재하지 않는 사용자입니다."),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 카테고리입니다.")
     })
     @PutMapping("/{categoryId}")
     public Response<?> updateCategory(@PathVariable Long categoryId,
-                                   @RequestBody RequestUpdateCategoryDto requestUpdateCategoryDto,
-                                   @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                      @RequestBody RequestUpdateCategoryDto requestUpdateCategoryDto,
+                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
 
@@ -93,6 +91,7 @@ public class CategoryController {
         String categoryColor = requestUpdateCategoryDto.getCategoryColor();
 
         CategoryDto categoryDto = CategoryDto.toCategoryDto(memberDto, categoryId, categoryName, categoryColor);
+
         categoryService.updateCategory(categoryDto);
 
         return Response.success(200, "카테고리 수정을 성공했습니다.", null);
@@ -101,14 +100,15 @@ public class CategoryController {
     @Operation(tags = {"Category"}, summary = "카테고리 삭제")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "카테고리 삭제를 성공했습니다."),
-            @ApiResponse(responseCode = "400", description = "존재하지 않는 카테고리입니다.")
+            @ApiResponse(responseCode = "400", description = "존재하지 않는 사용자입니다."),
+            @ApiResponse(responseCode = "401", description = "권한이 없습니다."),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 카테고리입니다.")
     })
     @DeleteMapping("/{categoryId}")
     public Response<ResponseDeleteCategoryDto> deleteCategory(@PathVariable Long categoryId,
-                                                              @ApiIgnore @AuthenticationPrincipal UserDetailsImpl userDetails) {
+                                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
-
         CategoryDto categoryDto = CategoryDto.toCategoryDto(memberDto, categoryId);
 
         ResponseDeleteCategoryDto responseDeleteCategoryDto = categoryService.deleteCategory(categoryDto);

@@ -39,8 +39,10 @@ public class FavoriteMemoService {
 
     // favorite 유효성 검사(member 매칭 유무)
     @Transactional(readOnly = true)
-    protected void checkMemberHasFavoriteId(Member member, Favorite favorite){
+    protected void checkMemberHasFavoriteId(Member member, Favorite favorite) {
+
         Long favoriteId = favorite.getFavoriteId();
+
         favoriteRepository.findByFavoriteIdAndMember(favoriteId, member)
                 .orElseThrow(() -> new NoSuchElementException(NOT_FOUND_FAVORITE_MSG.getMsg()));
     }
@@ -139,6 +141,7 @@ public class FavoriteMemoService {
     // Favorite으로 루틴의 메모 리스트 조회
     @Transactional(readOnly = true)
     public List<FavoriteMemoDto> findAllDtoByFavorite(FavoriteDto favoriteDto) {
+
         Favorite favorite = Favorite.toFavorite(favoriteDto);
         MemberDto memberDto = favoriteDto.getMemberDto();
         Member member = Member.toMember(memberDto);

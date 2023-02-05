@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static com.hanghae.bulletbox.common.exception.ExceptionMessage.DIARY_NOT_FOUND_MSG;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_DIARY_MSG;
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.DUPLICATE_DIARY_MSG;
 
 @RequiredArgsConstructor
@@ -28,6 +28,7 @@ public class DiaryService {
     // 연,월,멤버로 diary 찾아서 dto로 반환
     @Transactional(readOnly = true)
     public List<DiaryDto> findAllDtoByYearAndMonthAndMember(Long year, Long month, MemberDto memberDto) {
+
         Member member = Member.toMember(memberDto);
 
         List<Diary> diaryList = diaryRepository.findAllByMemberAndYearAndMonth(member, year, month);
@@ -45,6 +46,7 @@ public class DiaryService {
     // 연,월,일,멤버로 diary 찾아서 반환하기
     @Transactional(readOnly = true)
     public DiaryDto findByYearAndMonthAndDayAndMember(Long year, Long month, Long day, MemberDto memberDto) {
+
         Member member = Member.toMember(memberDto);
 
         Optional<Diary> diaryOptioanl = diaryRepository.findByMemberAndYearAndMonthAndDay(member, year, month, day);
@@ -64,6 +66,7 @@ public class DiaryService {
     // 일기장 저장
     @Transactional
     public DiaryDto saveDiary(DiaryDto diaryDto) {
+
         Long year = diaryDto.getYear();
         Long month = diaryDto.getMonth();
         Long day = diaryDto.getDay();
@@ -89,10 +92,11 @@ public class DiaryService {
     // 일기장 수정
     @Transactional
     public DiaryDto updateDiary(DiaryDto diaryDto) {
+
         Long diaryId = diaryDto.getDiaryId();
 
         Diary diary = diaryRepository.findById(diaryId)
-                .orElseThrow(() -> new NoSuchElementException(DIARY_NOT_FOUND_MSG.getMsg()));
+                .orElseThrow(() -> new NoSuchElementException(NOT_FOUND_DIARY_MSG.getMsg()));
 
         diary.updateAll(diaryDto);
 

@@ -19,9 +19,10 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseShowDailyDto {
 
+    @Schema(description = "메인 페이지 카테고리 정보 담는 변수", type = "List")
     private List<CategoryDto> categories;
 
-    @Schema(description = "메인 페이지 데일리 로그 정보")
+    @Schema(description = "메인 페이지 데일리 로그 정보 담는 변수", type = "List")
     private List<DailyDto> daily;
 
     @Builder(access = AccessLevel.PRIVATE)

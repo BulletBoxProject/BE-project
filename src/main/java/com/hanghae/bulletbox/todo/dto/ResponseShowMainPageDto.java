@@ -11,20 +11,21 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Schema(name = "ResponseShowMainPageDto", description = "메인 페이지 응답 Dto")
+@Schema(description = "메인 페이지 응답 Dto")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ResponseShowMainPageDto {
 
-    @Schema(description = "카테고리 정보")
+    @Schema(description = "카테고리 정보 담는 변수", type = "List")
     private List<CategoryDto> categories;
 
-    @Schema(description = "달력 정보")
+    @Schema(description = "달력 정보 담는 변수", type = "List")
     private List<CalendarDto> calendar;
 
-    @Schema(description = "할 일 정보")
+    @Schema(description = "할 일 정보 담는 변수", type = "List")
     private List<DailyDto> daily;
 
+    @Schema(description = "첫 로그인 판별 여부", example = "true" , type = "String")
     private boolean firstLogin;
 
     @Builder(access = AccessLevel.PROTECTED)

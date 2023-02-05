@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(name = "RequestCreateCategoryDto", description = "카테고리 생성 요청 DTO")
+@Schema(description = "카테고리 생성 요청 Dto")
 public class RequestCreateCategoryDto {
 
     @Schema(description = "카테고리 이름", example = "직장", type = "String")

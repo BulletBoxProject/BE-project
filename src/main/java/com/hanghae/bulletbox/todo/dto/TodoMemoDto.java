@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TodoMemoDto {
 
@@ -23,9 +22,11 @@ public class TodoMemoDto {
 
     private String todoMemoContent;
 
+    @Setter
     @JsonIgnore
     private MemberDto memberDto;
 
+    @Setter
     @JsonIgnore
     private TodoDto todoDto;
 

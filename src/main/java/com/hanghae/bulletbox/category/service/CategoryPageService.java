@@ -36,18 +36,15 @@ public class CategoryPageService {
     }
 
     // 카테고리 생성
-    @Transactional(readOnly = false)
+    @Transactional
     public ResponseCreateCategoryDto createCategory(CategoryDto categoryDto) {
 
         // 카테고리 중복 검사
         boolean isCategoryDuplicated = categoryService.isCategoryDuplicated(categoryDto);
 
-        if(isCategoryDuplicated){
+        if (isCategoryDuplicated) {
             throw new IllegalArgumentException(DUPLICATE_CATEGORYNAME_MSG.getMsg());
         }
-
-        // DTO -> Entity 변환
-        String categoryColor = categoryDto.getCategoryColor();
 
         CategoryDto savedCategoryDto = categoryService.save(categoryDto);
 
@@ -55,13 +52,13 @@ public class CategoryPageService {
     }
 
     // 카테고리 수정
-    @Transactional(readOnly = false)
+    @Transactional
     public void updateCategory(CategoryDto categoryDto) {
 
         // 카테고리 유효성 검사
         boolean isCategoryDuplicated = categoryService.isCategoryDuplicated(categoryDto);
 
-        if(isCategoryDuplicated){
+        if (isCategoryDuplicated) {
             throw new IllegalArgumentException(NOT_FOUND_CATEGORY_MSG.getMsg());
         }
 
@@ -75,7 +72,7 @@ public class CategoryPageService {
         // 카테고리 존재 여부 확인
         boolean isCategoryDuplicated = categoryService.isCategoryDuplicated(categoryDto);
 
-        if(isCategoryDuplicated){
+        if (isCategoryDuplicated) {
             throw new IllegalArgumentException(NOT_FOUND_CATEGORY_MSG.getMsg());
         }
 

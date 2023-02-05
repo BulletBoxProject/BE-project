@@ -38,6 +38,7 @@ public class MainService {
     // 메인 페이지 조회
     @Transactional
     public ResponseShowMainPageDto showMainPage(TodoDto todoDto) {
+
         MemberDto memberDto = todoDto.getMemberDto();
 
         // category 정보 가져오기
@@ -101,6 +102,7 @@ public class MainService {
 
     // 이번 달 날짜별 할 일 갯수 세서 리스트로 반환
     private List<CalendarDto> makeCalendarDtoList(List<TodoDto> todoDtoList){
+
         Map<Long, Long> countTodoPerDayMap = new HashMap<>();
         List<CalendarDto> calendarDtoList = new ArrayList<>();
 
@@ -122,6 +124,7 @@ public class MainService {
         for (Map.Entry<Long, Long> val : countTodoPerDayMap.entrySet()) {
             Long day = val.getKey();
             Long count = val.getValue();
+
             calendarDtoList.add(CalendarDto.toCalendar(day, count));
         }
 
