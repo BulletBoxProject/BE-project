@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  web:
+    container_name: web-green
+    image: gksrywls97/bulletbox:web
+    ports:
+      - 8081:8080
+    depends_on:
+      - redis
+    networks:
+      - web-net
+
+  redis:
+    image: gksrywls97/bulletbox:redis
+    command: redis-server --appendonly yes --replica-read-only no
+    container_name: redis
+    ports:
+      - 6379:6379
+    labels:
+      - "name=redis"
+      - "mode=standalone"
+    restart: always
+    networks:
+      - web-net
+
+networks:
+  web-net:
+    driver: bridge
