@@ -149,7 +149,7 @@ jobs:
           key: ${{ secrets.KEY }}
           port: 22
           source: "docker-compose.yml"
-          target: "/home/ubuntu/BulletBox"
+          target: "/home/ubuntu/"
 
       # 도커 compose up
       - name: executing remote ssh commands using password
