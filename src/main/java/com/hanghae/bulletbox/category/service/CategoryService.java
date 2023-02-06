@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.DUPLICATE_CATEGORYNAME_MSG;
@@ -61,6 +62,16 @@ public class CategoryService {
         MemberDto memberDto = categoryDto.getMemberDto();
         Member member = Member.toMember(memberDto);
         String categoryName = categoryDto.getCategoryName();
+        Long categoryId = categoryDto.getCategoryId();
+
+        Category category = categoryRepository.findAllByMemberAndCategoryId(member, categoryId).orElseThrow(
+                () -> new NoSuchElementException(NOT_FOUND_CATEGORY_MSG.getMsg())
+        );
+
+        // 카테고리의 색상만 변경할 경우, 기존의 카테고리 이름과 요청 온 카테고리 이름을 비교 -> 같으면 false 리턴
+        if (categoryName.equals(category.getCategoryName())) {
+            return false;
+        }
 
         Optional<Category> categoryOptional = categoryRepository.findAllByMemberAndCategoryName(member, categoryName);
 
