@@ -56,7 +56,7 @@ public class CategoryPageService {
     public void updateCategory(CategoryDto categoryDto) {
 
         // 카테고리 유효성 검사
-        boolean isCategoryDuplicated = categoryService.isCategoryDuplicated(categoryDto);
+        boolean isCategoryDuplicated = categoryService.isUpdateCategoryDuplicated(categoryDto);
 
         if (isCategoryDuplicated) {
             throw new IllegalArgumentException(DUPLICATE_CATEGORYNAME_MSG.getMsg());

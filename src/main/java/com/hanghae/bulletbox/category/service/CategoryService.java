@@ -62,6 +62,19 @@ public class CategoryService {
         MemberDto memberDto = categoryDto.getMemberDto();
         Member member = Member.toMember(memberDto);
         String categoryName = categoryDto.getCategoryName();
+
+        Optional<Category> categoryOptional = categoryRepository.findAllByMemberAndCategoryName(member, categoryName);
+
+        return categoryOptional.isPresent();
+    }
+
+    // 카테고리 중복 검사 (수정)
+    @Transactional(readOnly = true)
+    public boolean isUpdateCategoryDuplicated(CategoryDto categoryDto) {
+
+        MemberDto memberDto = categoryDto.getMemberDto();
+        Member member = Member.toMember(memberDto);
+        String categoryName = categoryDto.getCategoryName();
         Long categoryId = categoryDto.getCategoryId();
 
         Category category = categoryRepository.findAllByMemberAndCategoryId(member, categoryId).orElseThrow(
