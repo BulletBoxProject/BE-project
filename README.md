@@ -32,7 +32,7 @@
 
 ## 6.기술적 의사결정
 <details>
-<summary>6-1.builder/static</summary>
+<summary>6-1.builder/static </summary>
 <div markdown="1">       
 
 builder , static
@@ -41,7 +41,7 @@ builder , static
 </details>
 
 <details>
-<summary>6-2.파사드 패턴</summary>
+<summary>6-2.파사드 패턴 </summary>
 <div markdown="1">       
 
 파사드 패턴
@@ -51,7 +51,7 @@ builder , static
 </details>
 
 <details>
-<summary>6-3.계층 별 Dto 분리</summary>
+<summary>6-3.계층 별 Dto 분리 </summary>
 <div markdown="1">       
 
 계층 별 Dto 분리
@@ -60,7 +60,7 @@ builder , static
 </details>
 
 <details>
-<summary>6-4.성능 개선c</summary>
+<summary>6-4.성능 개선 </summary>
 <div markdown="1">       
 
 성능 개선
