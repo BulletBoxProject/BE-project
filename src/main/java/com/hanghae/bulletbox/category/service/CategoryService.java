@@ -94,7 +94,7 @@ public class CategoryService {
     @Transactional
     public CategoryDto save(CategoryDto categoryDto) {
 
-        boolean categoryDuplicated = isUpdateCategoryDuplicated(categoryDto);
+        boolean categoryDuplicated = isCategoryDuplicated(categoryDto);
 
         if (categoryDuplicated) {
             throw new IllegalArgumentException(DUPLICATE_CATEGORYNAME_MSG.getMsg());
