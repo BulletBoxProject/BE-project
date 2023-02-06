@@ -44,7 +44,7 @@
 ### 2-2. 패키지 구조
 
 ## 3.코드 컨벤션
-### [🔍 NOTION 문서](https://www.notion.so/c453f0e24a254c46b0dfc43e40e5cdbc)
+### [🔍 NOTION 문서](https://www.notion.so/Back-end-Code-Convention-36a10590e9fe4614b6d429cf11c1188e)
 
 ## 4.ERD
 
