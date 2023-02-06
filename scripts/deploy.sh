@@ -8,6 +8,8 @@ DEPLOY_LOG="$PROJECT_ROOT/deploy.log"
 
 TIME_NOW=$(date +%c)
 
+cd $PROJETC_ROOT
+
 DOCKER_NAME=$(docker ps -qa)
 echo "$TIME_NOW > 현재 구동중인 컨테이너는 $DOCKER_NAME 입니다." >> $DEPLOY_LOG
 docker-compose down
