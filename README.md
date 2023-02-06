@@ -28,6 +28,13 @@
 
 
 ## 5.API 명세
+<details>
+<summary>API 명세서 </summary>
+<div markdown="1">       
+![20230206_204331](https://user-images.githubusercontent.com/114788315/216963712-6f20ee03-0738-49c3-98ca-a49a4d117136.png)
+
+</div>
+</details>
 ### [📜 API 명세](http://bulletbox.store:8080/swagger-ui/index.html#/)
 
 ## 6.기술적 의사결정
