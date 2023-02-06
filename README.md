@@ -39,6 +39,7 @@ builder , static
 
 </div>
 </details>
+
 ### <details>
 <summary>6-2.파사드 패턴</summary>
 <div markdown="1">       
@@ -48,6 +49,7 @@ builder , static
 
 </div>
 </details>
+
 ### <details>
 <summary>6-3.계층 별 Dto 분리</summary>
 <div markdown="1">       
@@ -56,6 +58,7 @@ builder , static
 
 </div>
 </details>
+
 ### <details>
 <summary>6-4.성능 개선c</summary>
 <div markdown="1">       
