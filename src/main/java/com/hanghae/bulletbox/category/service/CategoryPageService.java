@@ -59,7 +59,7 @@ public class CategoryPageService {
         boolean isCategoryDuplicated = categoryService.isCategoryDuplicated(categoryDto);
 
         if (isCategoryDuplicated) {
-            throw new IllegalArgumentException(NOT_FOUND_CATEGORY_MSG.getMsg());
+            throw new IllegalArgumentException(DUPLICATE_CATEGORYNAME_MSG.getMsg());
         }
 
         // 카테고리 수정
