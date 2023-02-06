@@ -31,7 +31,7 @@
 ### [📜 API 명세](http://bulletbox.store:8080/swagger-ui/index.html#/)
 
 ## 6.기술적 의사결정
-### <details>
+<details>
 <summary>6-1.builder/static</summary>
 <div markdown="1">       
 
@@ -40,7 +40,7 @@ builder , static
 </div>
 </details>
 
-### <details>
+<details>
 <summary>6-2.파사드 패턴</summary>
 <div markdown="1">       
 
@@ -50,7 +50,7 @@ builder , static
 </div>
 </details>
 
-### <details>
+<details>
 <summary>6-3.계층 별 Dto 분리</summary>
 <div markdown="1">       
 
@@ -59,7 +59,7 @@ builder , static
 </div>
 </details>
 
-### <details>
+<details>
 <summary>6-4.성능 개선c</summary>
 <div markdown="1">       
 
