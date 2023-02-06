@@ -133,36 +133,36 @@ jobs:
       - name: Publish Docker Image
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/bulletbox:web
 
-  docker-deploy:
-    needs: build-docker-image
-    name: deploy
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@master
-
-      # docker-compose 파일 배포
-      - name: copy file via ssh password
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ubuntu
-          key: ${{ secrets.KEY }}
-          port: 22
-          source: "docker-compose.yml"
-          target: "/home/ubuntu/"
-
-      # 도커 compose up
-      - name: executing remote ssh commands using password
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ubuntu
-          key: ${{ secrets.KEY }}
-          port: 22
-          timeout: 90s # 기본값 30
-          script: |
-            sudo docker rm -f $(docker ps -qa)
-            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/bulletbox:web
-            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/bulletbox:redis
-            docker-compose up -d --remove-orphans
-            docker image prune -f
+#  docker-deploy:
+#    needs: build-docker-image
+#    name: deploy
+#    runs-on: ubuntu-20.04
+#    steps:
+#      - uses: actions/checkout@master
+#
+#      # docker-compose 파일 배포
+#      - name: copy file via ssh password
+#        uses: appleboy/scp-action@master
+#        with:
+#          host: ${{ secrets.HOST }}
+#          username: ubuntu
+#          key: ${{ secrets.KEY }}
+#          port: 22
+#          source: "docker-compose.yml"
+#          target: "/home/ubuntu/"
+#
+#      # 도커 compose up
+#      - name: executing remote ssh commands using password
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ secrets.HOST }}
+#          username: ubuntu
+#          key: ${{ secrets.KEY }}
+#          port: 22
+#          timeout: 90s # 기본값 30
+#          script: |
+#            sudo docker rm -f $(docker ps -qa)
+#            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/bulletbox:web
+#            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/bulletbox:redis
+#            docker-compose up -d --remove-orphans
+#            docker image prune -f
