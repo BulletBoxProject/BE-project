@@ -76,3 +76,9 @@ builder , static
 
 </div>
 </details>
+
+
+## 👥팀원소개
+[김민호](https://github.com/minokim1080)
+[한교진](https://github.com/hangj97)
+[전재경](https://github.com/Jaekyeong1)
