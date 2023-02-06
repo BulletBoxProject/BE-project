@@ -35,6 +35,7 @@
 
 </div>
 </details>
+
 ### [📜 API 명세](http://bulletbox.store:8080/swagger-ui/index.html#/)
 
 ## 6.기술적 의사결정
