@@ -47,20 +47,15 @@ public class Member extends TimeStamped {
     @Column(nullable = false)
     private Boolean firstLogin;
 
+
     @Builder(access = AccessLevel.PRIVATE)
-    private Member(Long memberId, String email, String nickname, String password, Boolean firstLogin) {
+    private Member(Long memberId, String email, String nickname, String password, SocialTypeEnum socialType, Boolean firstLogin) {
         this.memberId = memberId;
         this.email = email;
         this.nickname = nickname;
         this.password = password;
-        this.firstLogin = firstLogin;
-    }
-
-    @Builder(access = AccessLevel.PRIVATE)
-    public Member(String email, String nickname, SocialTypeEnum socialType) {
-        this.email = email;
-        this.nickname = nickname;
         this.socialType = socialType;
+        this.firstLogin = firstLogin;
     }
 
     // MemberDto를 Member로 변환
@@ -69,7 +64,9 @@ public class Member extends TimeStamped {
         String email = memberDto.getEmail();
         String password = memberDto.getPassword();
         String nickname = memberDto.getNickname();
+        SocialTypeEnum socialType = memberDto.getSocialTypeEnum();
         Boolean firstLogin = memberDto.getFirstLogin();
+
 
         if (memberId == null) {
             throw new NoSuchElementException(NOT_FOUND_MEMBER_MSG.getMsg());
@@ -80,16 +77,8 @@ public class Member extends TimeStamped {
                 .email(email)
                 .nickname(nickname)
                 .password(password)
+                .socialType(socialType)
                 .firstLogin(firstLogin)
-                .build();
-    }
-
-    public static Member toMember(String email, String nickname, String password) {
-        return Member.builder()
-                .email(email)
-                .nickname(nickname)
-                .password(password)
-                .firstLogin(true)
                 .build();
     }
 

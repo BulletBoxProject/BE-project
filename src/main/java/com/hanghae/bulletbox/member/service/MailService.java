@@ -1,7 +1,6 @@
 package com.hanghae.bulletbox.member.service;
 
 import com.hanghae.bulletbox.common.redis.RedisUtil;
-import com.hanghae.bulletbox.member.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,9 +28,9 @@ public class MailService {
 
     private final JavaMailSender javaMailSender;
 
-    private final MemberRepository memberRepository;
-
     private final RedisUtil redisUtil;
+
+    private final MemberService memberService;
 
     private String authNum;
 
@@ -61,7 +60,7 @@ public class MailService {
         return message;
     }
 
-    public String createCode() {
+    private String createCode() {
 
         Random random = new Random();
         StringBuilder key = new StringBuilder();
@@ -79,9 +78,10 @@ public class MailService {
         return authNum = key.toString();
     }
 
+    @Transactional(readOnly = true)
     public void sendSimpleMessage(String email) throws Exception {
 
-        if (memberRepository.findByEmail(email).isPresent()) {
+        if (memberService.checkDuplicatedEmail(email)) {
             throw new IllegalArgumentException(DUPLICATE_EMAIL_MSG.getMsg());
         }
 

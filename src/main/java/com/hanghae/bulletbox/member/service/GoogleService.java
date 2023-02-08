@@ -5,10 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.hanghae.bulletbox.common.security.jwt.JwtUtil;
-import com.hanghae.bulletbox.member.dto.ResponseLoginDto;
-import com.hanghae.bulletbox.member.entity.Member;
-import com.hanghae.bulletbox.member.repository.MemberRepository;
-import com.hanghae.bulletbox.member.type.SocialTypeEnum;
+import com.hanghae.bulletbox.member.dto.MemberDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,7 +14,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
@@ -26,9 +22,9 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.UUID;
-
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.SOCIAL_LOGIN_ERROR;
+import static com.hanghae.bulletbox.member.type.SocialTypeEnum.GOOGLE;
+
 
 @Service
 @RequiredArgsConstructor
@@ -36,9 +32,7 @@ public class GoogleService {
 
     private final JwtUtil jwtUtil;
 
-    private final PasswordEncoder passwordEncoder;
-
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     @Value("${app.google.clientId}")
     private String googleClientId;
@@ -50,23 +44,18 @@ public class GoogleService {
     private String googleRedirectUrl;
 
     @Transactional
-    public ResponseLoginDto googleLogin(String code, HttpServletResponse response) {
+    public void googleLogin(String code, HttpServletResponse response) {
 
         try {
             String token = getToken(code);
-            Member loginMember = getGoogleMemberInfo(token);
-            Member member = memberRepository.findByEmail(loginMember.getEmail()).orElse(null);
+            MemberDto loginMemberDto = getGoogleMemberInfo(token);
+            String email = loginMemberDto.getEmail();
 
-            if (member == null) {
-                member = signupSocialMember(loginMember);
-            }
+            memberService.saveSocial(loginMemberDto);
 
-            member.socialUpdate(SocialTypeEnum.KAKAO);
-
-            response.addHeader(JwtUtil.AUTHORIZATION_ACCESS, jwtUtil.createAccessToken(member.getEmail()));
+            response.addHeader(JwtUtil.AUTHORIZATION_ACCESS, jwtUtil.createAccessToken(email));
             response.addHeader(JwtUtil.AUTHORIZATION_REFRESH, jwtUtil.createRefreshToken());
 
-            return ResponseLoginDto.toResponseLoginDto(false);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException(SOCIAL_LOGIN_ERROR.getMsg());
         }
@@ -100,7 +89,7 @@ public class GoogleService {
         return jsonNode.get("access_token").asText();
     }
 
-    private Member getGoogleMemberInfo(String accessToken) throws JsonProcessingException {
+    private MemberDto getGoogleMemberInfo(String accessToken) throws JsonProcessingException {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
@@ -123,26 +112,8 @@ public class GoogleService {
         String nickname = jsonNode.get("name").asText();
         String email = jsonNode.get("email").asText();
 
-        return new Member(email, nickname, SocialTypeEnum.GOOGLE);
-    }
+        MemberDto memberDto = MemberDto.toMemberDto(email, nickname, GOOGLE);
 
-    private Member signupSocialMember(Member socialMember) {
-
-        String socialEmail = socialMember.getEmail();
-        Member member = memberRepository.findByEmail(socialEmail).orElse(null);
-
-        if (member == null) {
-            String password = UUID.randomUUID().toString();
-            String encodedPassword = passwordEncoder.encode(password);
-
-            socialMember.setFirstLogin(true);
-            socialMember.setPassword(encodedPassword);
-
-            member = memberRepository.save(socialMember);
-        }
-
-        member.socialUpdate(SocialTypeEnum.GOOGLE);
-
-        return member;
+        return memberDto;
     }
 }
