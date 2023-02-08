@@ -1,9 +1,11 @@
-package com.hanghae.bulletbox.todo.dto;
+package com.hanghae.bulletbox.daily.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.todo.TodoBullet;
+import com.hanghae.bulletbox.todo.dto.TodoDto;
+import com.hanghae.bulletbox.todo.dto.TodoMemoDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

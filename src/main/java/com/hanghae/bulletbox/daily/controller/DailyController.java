@@ -1,19 +1,19 @@
-package com.hanghae.bulletbox.todo.controller;
+package com.hanghae.bulletbox.daily.controller;
 
 import com.hanghae.bulletbox.category.dto.ResponseCategoryDto;
 import com.hanghae.bulletbox.common.response.Response;
 import com.hanghae.bulletbox.common.security.UserDetailsImpl;
-import com.hanghae.bulletbox.todo.dto.DailyTodoDto;
-import com.hanghae.bulletbox.todo.dto.RequestCreateTodoDto;
-import com.hanghae.bulletbox.todo.dto.RequestLoadFavoriteDto;
-import com.hanghae.bulletbox.todo.dto.RequestUpdateTodoDto;
-import com.hanghae.bulletbox.todo.dto.ResponseDailyDto;
-import com.hanghae.bulletbox.todo.dto.ResponseLoadFavoriteDto;
-import com.hanghae.bulletbox.todo.dto.ResponseShowTodoCreatePageDto;
-import com.hanghae.bulletbox.todo.dto.ResponseTodoUpdatePageDto;
+import com.hanghae.bulletbox.daily.dto.DailyTodoDto;
+import com.hanghae.bulletbox.daily.dto.RequestCreateTodoDto;
+import com.hanghae.bulletbox.daily.dto.RequestLoadFavoriteDto;
+import com.hanghae.bulletbox.daily.dto.RequestUpdateTodoDto;
+import com.hanghae.bulletbox.daily.dto.ResponseDailyDto;
+import com.hanghae.bulletbox.daily.dto.ResponseLoadFavoriteDto;
+import com.hanghae.bulletbox.daily.dto.ResponseShowTodoCreatePageDto;
+import com.hanghae.bulletbox.daily.dto.ResponseTodoUpdatePageDto;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
-import com.hanghae.bulletbox.todo.service.DailyService;
-import com.hanghae.bulletbox.todo.service.DailyTodoService;
+import com.hanghae.bulletbox.daily.service.DailyService;
+import com.hanghae.bulletbox.daily.service.DailyTodoService;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 
 import io.swagger.v3.oas.annotations.Operation;

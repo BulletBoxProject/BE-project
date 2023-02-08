@@ -2,7 +2,7 @@ package com.hanghae.bulletbox.todo.service;
 
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
-import com.hanghae.bulletbox.todo.dto.DailyDto;
+import com.hanghae.bulletbox.daily.dto.DailyDto;
 import com.hanghae.bulletbox.todo.dto.SearchTodoDto;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 import com.hanghae.bulletbox.todo.dto.TodoMemoDto;

@@ -1,4 +1,6 @@
-package com.hanghae.bulletbox.todo.dto;
+package com.hanghae.bulletbox.daily.dto;
+
+import com.hanghae.bulletbox.todo.dto.TodoMemoDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -10,11 +12,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Schema(description = "할 일 수정 요청 Dto")
-public class RequestUpdateTodoDto {
-
-    @Schema(description = "할 일 ID", type = "Long", example = "1")
-    private Long todoId;
+public class RequestCreateTodoDto {
 
     @Schema(description = "할 일 내용", type = "String", example = "할 일 내용")
     private String todoContent;
@@ -42,5 +40,4 @@ public class RequestUpdateTodoDto {
 
     @Schema(description = "할 일의 메모 변수", type = "List")
     private List<TodoMemoDto> memos;
-
 }

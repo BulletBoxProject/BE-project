@@ -1,6 +1,6 @@
 package com.hanghae.bulletbox.category.dto;
 
-import com.hanghae.bulletbox.todo.dto.DailyDto;
+import com.hanghae.bulletbox.daily.dto.DailyDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

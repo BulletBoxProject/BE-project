@@ -1,4 +1,4 @@
-package com.hanghae.bulletbox.todo.service;
+package com.hanghae.bulletbox.daily.service;
 
 import com.hanghae.bulletbox.category.dto.CategoryDto;
 import com.hanghae.bulletbox.category.service.CategoryService;
@@ -7,12 +7,14 @@ import com.hanghae.bulletbox.favorite.dto.FavoriteDto;
 import com.hanghae.bulletbox.favorite.dto.FavoriteMemoDto;
 import com.hanghae.bulletbox.favorite.service.FavoriteService;
 import com.hanghae.bulletbox.member.dto.MemberDto;
-import com.hanghae.bulletbox.todo.dto.DailyTodoDto;
-import com.hanghae.bulletbox.todo.dto.ResponseLoadFavoriteDto;
-import com.hanghae.bulletbox.todo.dto.ResponseShowTodoCreatePageDto;
-import com.hanghae.bulletbox.todo.dto.ResponseTodoUpdatePageDto;
+import com.hanghae.bulletbox.daily.dto.DailyTodoDto;
+import com.hanghae.bulletbox.daily.dto.ResponseLoadFavoriteDto;
+import com.hanghae.bulletbox.daily.dto.ResponseShowTodoCreatePageDto;
+import com.hanghae.bulletbox.daily.dto.ResponseTodoUpdatePageDto;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 import com.hanghae.bulletbox.todo.dto.TodoMemoDto;
+import com.hanghae.bulletbox.todo.service.TodoMemoService;
+import com.hanghae.bulletbox.todo.service.TodoService;
 
 import lombok.RequiredArgsConstructor;
 
