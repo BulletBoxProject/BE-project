@@ -1,5 +1,6 @@
 package com.hanghae.bulletbox.member.entity;
 
+import com.hanghae.bulletbox.common.entity.TimeStamped;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.type.SocialTypeEnum;
 
@@ -24,7 +25,7 @@ import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Member {
+public class Member extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;

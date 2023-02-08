@@ -1,5 +1,6 @@
 package com.hanghae.bulletbox.diary.entity;
 
+import com.hanghae.bulletbox.common.entity.TimeStamped;
 import com.hanghae.bulletbox.diary.dto.DiaryDto;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;
@@ -21,7 +22,7 @@ import javax.persistence.ManyToOne;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Diary {
+public class Diary extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
