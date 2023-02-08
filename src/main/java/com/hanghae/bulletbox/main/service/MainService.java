@@ -1,15 +1,17 @@
-package com.hanghae.bulletbox.todo.service;
+package com.hanghae.bulletbox.main.service;
 
 import com.hanghae.bulletbox.category.dto.CategoryDto;
 import com.hanghae.bulletbox.category.service.CategoryService;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.service.MemberService;
-import com.hanghae.bulletbox.todo.dto.CalendarDto;
-import com.hanghae.bulletbox.todo.dto.DailyDto;
-import com.hanghae.bulletbox.todo.dto.ResponseShowCalendarDto;
-import com.hanghae.bulletbox.todo.dto.ResponseShowDailyDto;
-import com.hanghae.bulletbox.todo.dto.ResponseShowMainPageDto;
+import com.hanghae.bulletbox.main.dto.CalendarDto;
+import com.hanghae.bulletbox.daily.dto.DailyDto;
+import com.hanghae.bulletbox.main.dto.ResponseShowCalendarDto;
+import com.hanghae.bulletbox.main.dto.ResponseShowDailyDto;
+import com.hanghae.bulletbox.main.dto.ResponseShowMainPageDto;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
+import com.hanghae.bulletbox.todo.service.TodoMemoService;
+import com.hanghae.bulletbox.todo.service.TodoService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

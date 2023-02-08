@@ -1,4 +1,4 @@
-package com.hanghae.bulletbox.todo.dto;
+package com.hanghae.bulletbox.main.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

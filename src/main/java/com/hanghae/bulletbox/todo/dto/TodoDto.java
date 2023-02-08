@@ -2,6 +2,7 @@ package com.hanghae.bulletbox.todo.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import com.hanghae.bulletbox.daily.dto.DailyTodoDto;
 import com.hanghae.bulletbox.favorite.dto.FavoriteDto;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.entity.Member;

@@ -1,4 +1,4 @@
-package com.hanghae.bulletbox.todo.dto;
+package com.hanghae.bulletbox.daily.dto;
 
 import com.hanghae.bulletbox.category.dto.CategoryDto;
 
