@@ -23,11 +23,11 @@ import lombok.Setter;
 public class FavoriteMemoDto {
 
     @Schema(description = "루틴 메모 ID", example = "1", type = "Long")
-    private Long FavoriteMemoId;
+    private Long favoriteMemoId;
 
     @Setter
     @Schema(description = "루틴 메모 내용", example = "루틴 메모 내용", type = "String")
-    private String FavoriteMemoContent;
+    private String favoriteMemoContent;
 
     @JsonIgnore
     @Setter
@@ -41,8 +41,8 @@ public class FavoriteMemoDto {
 
     @Builder(access = AccessLevel.PRIVATE)
     private FavoriteMemoDto(Long favoriteMemoId, String favoriteMemoContent, MemberDto memberDto, FavoriteDto favoriteDto) {
-        FavoriteMemoId = favoriteMemoId;
-        FavoriteMemoContent = favoriteMemoContent;
+        this.favoriteMemoId = favoriteMemoId;
+        this.favoriteMemoContent = favoriteMemoContent;
         this.memberDto = memberDto;
         this.favoriteDto = favoriteDto;
     }
