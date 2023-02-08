@@ -1,0 +1,65 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
+
+name: BulletBox CI
+
+on:
+  pull_request:
+    branches: [ "develop" ]
+
+permissions:
+  contents: read
+
+jobs:
+  BulletBox:
+
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # jwt secret 로딩 및 security 파일 생성
+      - uses: actions/checkout@v3
+      - run: touch ./src/main/resources/application-security.properties
+      - run: echo "${{ secrets.SECURITY_SECRET }}" > ./src/main/resources/application-security.properties
+
+      # db 정보 로딩 및 application-dev 파일 생성
+      - run: touch ./src/main/resources/application-dev.properties
+      - run: echo "${{ secrets.DB }}" > ./src/main/resources/application-dev.properties
+
+      # 이메일 인증에 필요한 파일 생성
+      - run: touch ./src/main/resources/mail-security.properties
+      - run: echo "${{ secrets.MAIL }}" > ./src/main/resources/mail-security.properties
+
+      # OAuth 필요한 파일 생성
+      - run: touch ./src/main/resources/application-security-oauth.properties
+      - run: echo "${{ secrets.OAUTH }}" > ./src/main/resources/application-security-oauth.properties
+
+      # Gradle 캐싱
+      - name: Gradle Caching
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      # Gradle 권한 설정
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # Gradle로 빌드
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+        with:
+          arguments: clean build
