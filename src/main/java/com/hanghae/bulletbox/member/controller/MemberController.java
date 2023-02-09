@@ -8,7 +8,7 @@ import com.hanghae.bulletbox.member.dto.VerifyCodeDto;
 import com.hanghae.bulletbox.member.service.GoogleService;
 import com.hanghae.bulletbox.member.service.KakaoService;
 import com.hanghae.bulletbox.member.service.MailService;
-import com.hanghae.bulletbox.member.service.MemberService;
+import com.hanghae.bulletbox.member.service.AuthService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -35,7 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 public class MemberController {
 
-    private final MemberService memberService;
+    private final AuthService authService;
 
     private final MailService mailService;
 
@@ -53,7 +53,7 @@ public class MemberController {
 
         MemberDto memberDto = MemberDto.toMemberDto(requestSignupDto);
 
-        memberService.signup(memberDto);
+        authService.signup(memberDto);
 
         return Response.success(201, "회원가입이 완료되었습니다.", null);
     }
@@ -97,11 +97,11 @@ public class MemberController {
             @ApiResponse(responseCode = "400-2", description = "이메일 또는 비밀번호가 일치하지 않습니다.")
     })
     @PostMapping("/login")
-    public Response<RequestLoginDto> login(@RequestBody RequestLoginDto requestLoginDto, HttpServletResponse httpServletResponse) {
+    public Response<?> login(@RequestBody RequestLoginDto requestLoginDto, HttpServletResponse httpServletResponse) {
 
         MemberDto memberDto = MemberDto.toMemberDto(requestLoginDto);
 
-        memberService.login(memberDto, httpServletResponse);
+        authService.login(memberDto, httpServletResponse);
 
         return Response.success(200, "로그인이 완료되었습니다.", null);
     }
@@ -114,7 +114,7 @@ public class MemberController {
     @PostMapping("/auth/token")
     public Response<?> reissueToken(HttpServletRequest request, HttpServletResponse response) {
 
-        memberService.reissueToken(request, response);
+        authService.reissueToken(request, response);
 
         return Response.success(200, "토큰 재발행 성공", null);
     }
@@ -150,9 +150,9 @@ public class MemberController {
             @ApiResponse(responseCode = "200", description = "테스트 로그인을 성공했습니다.")
     })
     @PostMapping("/login/test")
-    public Response<?> testLogin(HttpServletResponse response, MemberDto memberDto){
+    public Response<?> testLogin(HttpServletResponse response){
 
-        memberService.testLogin(response, memberDto);
+        authService.testLogin(response);
 
         return Response.success(201, "테스트 로그인 성공", null);
     }
