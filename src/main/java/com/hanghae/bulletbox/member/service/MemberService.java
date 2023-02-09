@@ -62,9 +62,9 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public MemberDto findDtoByEmailAndPassword(String email, String password) {
+    public MemberDto findDtoByEmail(String email) {
 
-        Member member = memberRepository.findByEmailAndPassword(email, password)
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new NoSuchElementException(NOT_FOUND_EMAIL_MSG.getMsg()));
 
         MemberDto memberDto = MemberDto.toMemberDto(member);

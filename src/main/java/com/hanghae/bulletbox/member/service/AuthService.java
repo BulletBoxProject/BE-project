@@ -15,8 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.NoSuchElementException;
 import java.util.Random;
 
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.DIFFERENT_PASSWORD_MSG;
 import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_MATCH_REFRESH_TOKEN;
 import static com.hanghae.bulletbox.common.security.jwt.JwtUtil.AUTHORIZATION_ACCESS;
 import static com.hanghae.bulletbox.common.security.jwt.JwtUtil.AUTHORIZATION_REFRESH;
@@ -50,9 +52,13 @@ public class AuthService {
     public void login(MemberDto memberDto, HttpServletResponse response) {
 
         String email = memberDto.getEmail();
-        String encodedPassword = passwordEncoder.encode(memberDto.getPassword());
+        String password = memberDto.getPassword();
 
-        MemberDto loginMemberDto = memberService.findDtoByEmailAndPassword(email,encodedPassword);
+        MemberDto loginMemberDto = memberService.findDtoByEmail(email);
+
+        if (!passwordEncoder.matches(password, loginMemberDto.getPassword())) {
+            throw new NoSuchElementException(DIFFERENT_PASSWORD_MSG.getMsg());
+        }
 
         issueTokens(response, email);
     }

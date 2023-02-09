@@ -18,9 +18,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import java.util.NoSuchElementException;
-
-import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_MEMBER_MSG;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -67,11 +64,6 @@ public class Member extends TimeStamped {
         SocialTypeEnum socialType = memberDto.getSocialTypeEnum();
         Boolean firstLogin = memberDto.getFirstLogin();
 
-
-        if (memberId == null) {
-            throw new NoSuchElementException(NOT_FOUND_MEMBER_MSG.getMsg());
-        }
-
         return Member.builder()
                 .memberId(memberId)
                 .email(email)
@@ -80,10 +72,6 @@ public class Member extends TimeStamped {
                 .socialType(socialType)
                 .firstLogin(firstLogin)
                 .build();
-    }
-
-    public void socialUpdate(SocialTypeEnum type) {
-        this.socialType = type;
     }
 
     public  Member(String email, SocialTypeEnum socialType) {
