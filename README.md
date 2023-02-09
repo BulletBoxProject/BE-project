@@ -14,9 +14,9 @@
 4. [ERD](#4erd)
 5. [API 명세](#5api-명세)
 6. [기술적 의사결정](#6기술적-의사결정) <br>
-   6-1. [builder의 private화/정적 팩토리 메소드 활용](#6-1builder의-private화정적-팩토리-메소드-활용) <br>
-   6-2. [FACADE 패턴](#6-2facade-패턴) <br>
-   6-3. [계층 별 DTO 분리](#6-3계층-별-dto-분리) <br>
+   6-1. [builder의 private화/정적 팩토리 메소드 활용](#6-1) <br>
+   6-2. [FACADE 패턴](#6-2) <br>
+   6-3. [계층 별 DTO 분리](#6-3) <br>
 <br>
 
 ## 1.프로젝트 소개
@@ -93,10 +93,11 @@
 ### [📜 API 명세](http://bulletbox.store:8080/swagger-ui/index.html#/)
 
 ## 6.기술적 의사결정
-#### 6-1.builder의 private화/정적 팩토리 메소드 활용
+#### 6-1
 <details>
-<summary></summary>
+<summary>builder의 private화/정적 팩토리 메소드 활용</summary>
 <div markdown="1">       
+<br>
 
 본 프로젝트에선 객체 외부에서 객체를 생성할 때 **생성자** 대신 **static 메소드**를 사용합니다. <br>
 **static 메소드에선 Builder를 사용하여 객체를 생성**합니다.
@@ -130,18 +131,20 @@ static 메소드와 Builder를 함께 사용하면 내부 구현에 변화가 �
 </div>
 </details>
 
-#### 6-2.FACADE 패턴
+#### 6-2
 <details>
-<summary></summary>
+<summary>FACADE 패턴</summary>
 <div markdown="1">       
-
-본 프로젝트에선 다음 그림과 같이 기존 Spring 웹 계층에서 Facade 계층을 추가하여 사용합니다.
-![Untitled (5)](https://user-images.githubusercontent.com/114788315/217498356-e7a96a5d-b988-4790-a919-e0f95b53f86a.png) <br>
 <br>
 
+본 프로젝트에선 다음 그림과 같이 기존 Spring 웹 계층에서 Facade 계층을 추가하여 사용합니다.
+
+![Untitled (5)](https://user-images.githubusercontent.com/114788315/217498356-e7a96a5d-b988-4790-a919-e0f95b53f86a.png) <br>
+<br>
 기존에는 Service 계층에서 비즈니스 로직과 데이터 접근이라는 두 가지 일을 한꺼번에 처리하였는데, <br>
 Facade 계층을 도입하여 두 업무를 분리하였습니다. <br>
 <br>
+
 **Facade 계층**에서는 **비즈니스 로직을 처리**하고, **새로운 Service 계층**에서는 **데이터 접근과 관련된 업무만 진행**합니다.
 
 **새로운 Service 계층만 Repository에 의존하며 Controller와 Facade 계층에서는 Repository에 의존하지 않고,** <br>
@@ -164,15 +167,17 @@ Diary Entity를 사용하기 위한 DiaryService <br>
 </div>
 </details>
 
-#### 6-3.계층 별 DTO 분리
+#### 6-3
 <details>
-<summary></summary>
+<summary>계층 별 DTO 분리</summary>
 <div markdown="1">       
-
+<br>
 6-2에서 확인할 수 있듯이 저희의 웹 계층은 다음과 같이 이루어져 있습니다.<br>
+
 ![Untitled (5)](https://user-images.githubusercontent.com/114788315/217498978-2dd4be4d-c5fe-46ca-b59d-6c56b9b189db.png) <br>
 본 프로젝트에선 Presentation Layer, Business Layer 에서 사용하는 DTO들을 크게 3종류로 분리하여 사용합니다. <br>
 <br>
+
 ![Untitled (7)](https://user-images.githubusercontent.com/114788315/217499047-dfbb2fc0-cc1e-4483-ad89-2af675a76971.png) <br>
 <br>
 
