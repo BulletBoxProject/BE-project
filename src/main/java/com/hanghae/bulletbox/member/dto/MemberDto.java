@@ -2,6 +2,7 @@ package com.hanghae.bulletbox.member.dto;
 
 import com.hanghae.bulletbox.common.security.UserDetailsImpl;
 import com.hanghae.bulletbox.member.entity.Member;
+import com.hanghae.bulletbox.member.type.SocialTypeEnum;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -9,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 
@@ -27,18 +29,23 @@ public class MemberDto {
     @Schema(description = "닉네임", example = "닉네임", type = "String")
     private String nickname;
 
+    @Setter
     @Schema(description = "비밀번호", type = "String", example = "a!1234567", minLength = 8, maxLength = 25)
     private String password;
+
+    @Schema(description = "소셜 로그인 여부", type = "Enum", example = "KAKAO")
+    private SocialTypeEnum socialTypeEnum;
 
     @Schema(description = "첫 로그인 판별 여부", type = "Boolean", example = "true")
     private Boolean firstLogin = true;
 
     @Builder(access = AccessLevel.PRIVATE)
-    private MemberDto(Long memberId, String email, String nickname, String password, Boolean firstLogin) {
+    private MemberDto(Long memberId, String email, String nickname, String password, SocialTypeEnum socialTypeEnum, Boolean firstLogin) {
         this.memberId = memberId;
         this.email = email;
         this.nickname = nickname;
         this.password = password;
+        this.socialTypeEnum = socialTypeEnum;
         this.firstLogin = firstLogin;
     }
 
@@ -84,6 +91,22 @@ public class MemberDto {
         return MemberDto.builder()
                 .email(email)
                 .password(password)
+                .build();
+    }
+
+    public static MemberDto toMemberDto(String email, String nickname, String password){
+        return MemberDto.builder()
+                .email(email)
+                .nickname(nickname)
+                .password(password)
+                .build();
+    }
+
+    public static MemberDto toMemberDto(String email, String nickname, SocialTypeEnum socialTypeEnum){
+        return MemberDto.builder()
+                .email(email)
+                .nickname(nickname)
+                .socialTypeEnum(socialTypeEnum)
                 .build();
     }
 }

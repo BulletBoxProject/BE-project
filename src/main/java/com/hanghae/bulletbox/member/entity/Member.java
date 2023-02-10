@@ -1,5 +1,6 @@
 package com.hanghae.bulletbox.member.entity;
 
+import com.hanghae.bulletbox.common.entity.TimeStamped;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.type.SocialTypeEnum;
 
@@ -17,14 +18,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import java.util.NoSuchElementException;
-
-import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_MEMBER_MSG;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Member {
+public class Member extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
@@ -46,20 +44,15 @@ public class Member {
     @Column(nullable = false)
     private Boolean firstLogin;
 
+
     @Builder(access = AccessLevel.PRIVATE)
-    private Member(Long memberId, String email, String nickname, String password, Boolean firstLogin) {
+    private Member(Long memberId, String email, String nickname, String password, SocialTypeEnum socialType, Boolean firstLogin) {
         this.memberId = memberId;
         this.email = email;
         this.nickname = nickname;
         this.password = password;
-        this.firstLogin = firstLogin;
-    }
-
-    @Builder(access = AccessLevel.PRIVATE)
-    public Member(String email, String nickname, SocialTypeEnum socialType) {
-        this.email = email;
-        this.nickname = nickname;
         this.socialType = socialType;
+        this.firstLogin = firstLogin;
     }
 
     // MemberDto를 Member로 변환
@@ -68,32 +61,17 @@ public class Member {
         String email = memberDto.getEmail();
         String password = memberDto.getPassword();
         String nickname = memberDto.getNickname();
+        SocialTypeEnum socialType = memberDto.getSocialTypeEnum();
         Boolean firstLogin = memberDto.getFirstLogin();
-
-        if (memberId == null) {
-            throw new NoSuchElementException(NOT_FOUND_MEMBER_MSG.getMsg());
-        }
 
         return Member.builder()
                 .memberId(memberId)
                 .email(email)
                 .nickname(nickname)
                 .password(password)
+                .socialType(socialType)
                 .firstLogin(firstLogin)
                 .build();
-    }
-
-    public static Member toMember(String email, String nickname, String password) {
-        return Member.builder()
-                .email(email)
-                .nickname(nickname)
-                .password(password)
-                .firstLogin(true)
-                .build();
-    }
-
-    public void socialUpdate(SocialTypeEnum type) {
-        this.socialType = type;
     }
 
     public  Member(String email, SocialTypeEnum socialType) {
