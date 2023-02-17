@@ -5,7 +5,7 @@ import com.hanghae.bulletbox.common.security.UserDetailsImpl;
 import com.hanghae.bulletbox.member.entity.Member;
 import com.hanghae.bulletbox.mypage.dto.MyPageDto;
 import com.hanghae.bulletbox.mypage.dto.ResponseShowMyPageDto;
-import com.hanghae.bulletbox.mypage.service.MyPageService;
+import com.hanghae.bulletbox.mypage.service.MyPageFacade;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,7 +27,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequestMapping("/api/mypages")
 public class MyPageController {
 
-    private final MyPageService myPageService;
+    private final MyPageFacade myPageFacade;
 
     @Operation(tags = {"MyPage"}, summary = "마이 페이지 조회")
     @ApiResponses(value = {
@@ -41,7 +41,7 @@ public class MyPageController {
         String nickname = member.getNickname();
 
         MyPageDto myPageDto = MyPageDto.toMyPageDto(email, nickname);
-        ResponseShowMyPageDto responseShowMyPageDto = myPageService.showMyPage(myPageDto);
+        ResponseShowMyPageDto responseShowMyPageDto = myPageFacade.showMyPage(myPageDto);
 
         return Response.success(200, "마이 페이지 조회를 성공했습니다.", responseShowMyPageDto);
     }

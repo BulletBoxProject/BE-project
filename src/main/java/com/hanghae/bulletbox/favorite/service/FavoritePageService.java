@@ -18,13 +18,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class FavoritePageService {
+public class FavoritePageService implements FavoriteFacade {
 
     private final FavoriteService favoriteService;
 
     private final FavoriteMemoService favoriteMemoService;
 
     // 루틴 생성
+    @Override
     @Transactional
     public ResponseCreateFavoriteDto createFavorite(FavoritePageDto favoritePageDto) {
 
@@ -54,6 +55,7 @@ public class FavoritePageService {
     }
 
     // 루틴 조회
+    @Override
     @Transactional(readOnly = true)
     public ResponseShowFavoritePageDto showFavoritePage(FavoritePageDto favoritePageDto) {
 
@@ -69,6 +71,7 @@ public class FavoritePageService {
     }
 
     // 루틴 삭제
+    @Override
     @Transactional
     public void deleteFavoriteTodo(FavoritePageDto favoritePageDto) {
 
@@ -93,6 +96,7 @@ public class FavoritePageService {
     }
 
     // 루틴 수정
+    @Override
     @Transactional
     public ResponseUpdateFavoriteDto updateFavoriteTodo(FavoritePageDto favoritePageDto) {
 

@@ -17,7 +17,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class DiaryPageService {
+public class DiaryFacade {
 
     private final DiaryService diaryService;
 

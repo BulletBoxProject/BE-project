@@ -28,7 +28,7 @@ import static com.hanghae.bulletbox.member.type.SocialTypeEnum.GOOGLE;
 
 @Service
 @RequiredArgsConstructor
-public class GoogleService {
+public abstract class GoogleService implements MemberFacade {
 
     private final JwtUtil jwtUtil;
 
@@ -43,6 +43,7 @@ public class GoogleService {
     @Value("${app.google.redirect.uri}")
     private String googleRedirectUrl;
 
+    @Override
     @Transactional
     public void googleLogin(String code, HttpServletResponse response) {
 
@@ -61,7 +62,8 @@ public class GoogleService {
         }
     }
 
-    private String getToken(String code) throws JsonProcessingException {
+    @Override
+    public String getToken(String code) throws JsonProcessingException {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/x-www-form-urlencoded");
@@ -89,7 +91,8 @@ public class GoogleService {
         return jsonNode.get("access_token").asText();
     }
 
-    private MemberDto getGoogleMemberInfo(String accessToken) throws JsonProcessingException {
+    @Override
+    public MemberDto getGoogleMemberInfo(String accessToken) throws JsonProcessingException {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);

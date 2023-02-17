@@ -5,7 +5,7 @@ import com.hanghae.bulletbox.common.security.UserDetailsImpl;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.todo.dto.ResponseSearchTodoDto;
 import com.hanghae.bulletbox.todo.dto.SearchPageDto;
-import com.hanghae.bulletbox.todo.service.SearchTodoService;
+import com.hanghae.bulletbox.todo.service.SearchTodoFacade;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Todo", description = "할 일 API")
 public class TodoController {
 
-    private final SearchTodoService searchTodoService;
+    private final SearchTodoFacade searchTodoFacade;
 
     @Operation(tags = {"Todo"}, summary = "메인 페이지 조회")
     @ApiResponses(value = {
@@ -40,7 +40,7 @@ public class TodoController {
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
         SearchPageDto searchPageDto = SearchPageDto.toSearchTodoDto(memberDto, todoContent);
 
-        ResponseSearchTodoDto responseSearchTodoDto = searchTodoService.searchTodo(searchPageDto);
+        ResponseSearchTodoDto responseSearchTodoDto = searchTodoFacade.searchTodo(searchPageDto);
 
         return Response.success(200, "할 일 검색을 성공했습니다", responseSearchTodoDto);
     }

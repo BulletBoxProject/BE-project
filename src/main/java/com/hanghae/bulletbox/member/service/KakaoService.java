@@ -27,7 +27,7 @@ import static com.hanghae.bulletbox.member.type.SocialTypeEnum.KAKAO;
 
 @Service
 @RequiredArgsConstructor
-public class KakaoService {
+public abstract class KakaoService implements MemberFacade {
 
     private final JwtUtil jwtUtil;
 
@@ -38,7 +38,7 @@ public class KakaoService {
     @Value("${kakao.redirect.uri}")
     private String kakaoRedirectUri;
 
-
+    @Override
     @Transactional
     public void kakaoLogin(String code, HttpServletResponse response) {
 
@@ -57,7 +57,8 @@ public class KakaoService {
         }
     }
 
-    private String getToken(String code) throws JsonProcessingException {
+    @Override
+    public String getToken(String code) throws JsonProcessingException {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -84,7 +85,8 @@ public class KakaoService {
         return jsonNode.get("access_token").asText();
     }
 
-    private MemberDto getKakaoMemberInfo(String accessToken) throws JsonProcessingException {
+    @Override
+    public MemberDto getKakaoMemberInfo(String accessToken) throws JsonProcessingException {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);

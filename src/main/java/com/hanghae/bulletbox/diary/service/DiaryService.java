@@ -35,7 +35,7 @@ public class DiaryService {
         List<DiaryDto> diaryDtoList = new ArrayList<>();
 
 
-        for(Diary diary: diaryList){
+        for (Diary diary: diaryList) {
             DiaryDto diaryDto = DiaryDto.toDiaryDto(diary);
             diaryDtoList.add(diaryDto);
         }
@@ -51,7 +51,7 @@ public class DiaryService {
 
         Optional<Diary> diaryOptioanl = diaryRepository.findByMemberAndYearAndMonthAndDay(member, year, month, day);
 
-        if(diaryOptioanl.isPresent()){
+        if (diaryOptioanl.isPresent()) {
             Diary diary = diaryOptioanl.get();
             DiaryDto diaryDto = DiaryDto.toDiaryDto(diary);
 
@@ -76,7 +76,7 @@ public class DiaryService {
         // 같은 날짜의 일기가 이미 있는지 검사
         Optional<Diary> diaryOptional = diaryRepository.findByMemberAndYearAndMonthAndDay(member, year, month, day);
 
-        if(diaryOptional.isPresent()){
+        if (diaryOptional.isPresent()) {
             throw new NoSuchElementException(DUPLICATE_DIARY_MSG.getMsg());
         }
 

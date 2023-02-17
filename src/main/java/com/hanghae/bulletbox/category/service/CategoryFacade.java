@@ -18,7 +18,7 @@ import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_
 
 @Service
 @RequiredArgsConstructor
-public class CategoryPageService {
+public class CategoryFacade {
 
     private final CategoryService categoryService;
 

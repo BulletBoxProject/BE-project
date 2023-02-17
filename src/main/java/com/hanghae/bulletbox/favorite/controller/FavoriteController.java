@@ -8,6 +8,7 @@ import com.hanghae.bulletbox.favorite.dto.RequestUpdateFavoriteTodoDto;
 import com.hanghae.bulletbox.favorite.dto.ResponseCreateFavoriteDto;
 import com.hanghae.bulletbox.favorite.dto.ResponseShowFavoritePageDto;
 import com.hanghae.bulletbox.favorite.dto.ResponseUpdateFavoriteDto;
+import com.hanghae.bulletbox.favorite.service.FavoriteFacade;
 import com.hanghae.bulletbox.favorite.service.FavoritePageService;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 
@@ -33,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Favorite", description = "루틴 API")
 public class FavoriteController {
 
-    private final FavoritePageService favoritePageService;
+    private final FavoriteFacade favoriteFacade;
 
     @Operation(tags = {"Favorite"}, summary = "루틴 생성")
     @ApiResponses(value = {
@@ -48,7 +49,7 @@ public class FavoriteController {
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
         FavoritePageDto favoritePageDto = FavoritePageDto.toFavoritePageDto(requestCreateFavoriteTodoDto, memberDto);
 
-        ResponseCreateFavoriteDto responseCreateFavoriteTodoDto = favoritePageService.createFavorite(favoritePageDto);
+        ResponseCreateFavoriteDto responseCreateFavoriteTodoDto = favoriteFacade.createFavorite(favoritePageDto);
 
         return Response.success(201, "루틴 생성을 성공하였습니다.", responseCreateFavoriteTodoDto);
     }
@@ -65,7 +66,7 @@ public class FavoriteController {
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
         FavoritePageDto favoritePageDto = FavoritePageDto.toFavoritePageDto(memberDto);
 
-        ResponseShowFavoritePageDto responseShowFavoritePageDto = favoritePageService.showFavoritePage(favoritePageDto);
+        ResponseShowFavoritePageDto responseShowFavoritePageDto = favoriteFacade.showFavoritePage(favoritePageDto);
 
         return Response.success(200, "루틴 페이지 조회를 성공했습니다.", responseShowFavoritePageDto);
     }
@@ -83,7 +84,7 @@ public class FavoriteController {
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
         FavoritePageDto favoritePageDto = FavoritePageDto.toFavoritePageDto(memberDto, favoriteId);
 
-        favoritePageService.deleteFavoriteTodo(favoritePageDto);
+        favoriteFacade.deleteFavoriteTodo(favoritePageDto);
 
         return Response.success(200, "루틴 삭제를 성공했습니다.", null);
     }
@@ -103,7 +104,7 @@ public class FavoriteController {
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
         FavoritePageDto favoritePageDto = FavoritePageDto.toFavoritePageDto(favoriteId, requestUpdateFavoriteTodoDto, memberDto);
 
-        ResponseUpdateFavoriteDto responseUpdateFavoriteDto = favoritePageService.updateFavoriteTodo(favoritePageDto);
+        ResponseUpdateFavoriteDto responseUpdateFavoriteDto = favoriteFacade.updateFavoriteTodo(favoritePageDto);
 
         return Response.success(200, "루틴 수정을 성공했습니다.", responseUpdateFavoriteDto);
     }

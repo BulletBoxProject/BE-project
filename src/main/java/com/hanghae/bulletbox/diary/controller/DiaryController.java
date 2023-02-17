@@ -6,7 +6,7 @@ import com.hanghae.bulletbox.diary.dto.DiaryDto;
 import com.hanghae.bulletbox.diary.dto.RequestDiaryUpdateDto;
 import com.hanghae.bulletbox.diary.dto.ResponseDiaryCalendarPageDto;
 import com.hanghae.bulletbox.diary.dto.ResponseDiaryPageDto;
-import com.hanghae.bulletbox.diary.service.DiaryPageService;
+import com.hanghae.bulletbox.diary.service.DiaryFacade;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Diary", description = "일기장 API")
 public class DiaryController {
 
-    private final DiaryPageService diaryPageService;
+    private final DiaryFacade diaryFacade;
 
     // 일기장 페이지 조회
     @Operation(tags = {"Diary"}, summary = "일기장 페이지 조회")
@@ -43,7 +43,7 @@ public class DiaryController {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
 
-        ResponseDiaryPageDto responseDiaryPageDto = diaryPageService.showDiaryPage(memberDto);
+        ResponseDiaryPageDto responseDiaryPageDto = diaryFacade.showDiaryPage(memberDto);
 
         return Response.success(200, "일기장 페이지 조회를 성공했습니다.", responseDiaryPageDto);
     }
@@ -61,7 +61,7 @@ public class DiaryController {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
 
-        ResponseDiaryCalendarPageDto responseDiaryCalendarPageDto = diaryPageService.changeMonthOfDiaryPage(year, month, memberDto);
+        ResponseDiaryCalendarPageDto responseDiaryCalendarPageDto = diaryFacade.changeMonthOfDiaryPage(year, month, memberDto);
 
         return Response.success(200, "일기장 페이지 조회 날짜를 변경하였습니다.", responseDiaryCalendarPageDto);
     }
@@ -80,7 +80,7 @@ public class DiaryController {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
 
-        DiaryDto diaryDto = diaryPageService.showDiaryOfAnotherDay(year, month, day, memberDto);
+        DiaryDto diaryDto = diaryFacade.showDiaryOfAnotherDay(year, month, day, memberDto);
 
         return Response.success(200, "해당 날짜의 일기를 조회하였습니다.", diaryDto);
     }
@@ -100,7 +100,7 @@ public class DiaryController {
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
         DiaryDto diaryDto = DiaryDto.toDiaryDto(requestDiaryUpdateDto, memberDto);
 
-        ResponseDiaryPageDto responseDiaryPageDto = diaryPageService.updateDiary(diaryDto);
+        ResponseDiaryPageDto responseDiaryPageDto = diaryFacade.updateDiary(diaryDto);
 
         return Response.success(200, "일기장 수정을 완료했습니다.", responseDiaryPageDto);
     }

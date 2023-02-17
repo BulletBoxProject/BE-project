@@ -15,7 +15,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class SearchTodoService {
+public class SearchTodoFacade {
 
     private final TodoService todoService;
 

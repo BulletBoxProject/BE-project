@@ -24,7 +24,7 @@ import static com.hanghae.bulletbox.common.exception.ExceptionMessage.FAILED_TO_
 
 @Service
 @RequiredArgsConstructor
-public class MailService {
+public abstract class MailService implements MemberFacade {
 
     private final JavaMailSender javaMailSender;
 
@@ -34,7 +34,7 @@ public class MailService {
 
     private String authNum;
 
-
+    @Override
     public MimeMessage createMessage(String to) throws MessagingException, UnsupportedEncodingException {
 
         MimeMessage message = javaMailSender.createMimeMessage();
@@ -60,7 +60,8 @@ public class MailService {
         return message;
     }
 
-    private String createCode() {
+    @Override
+    public String createCode() {
 
         Random random = new Random();
         StringBuilder key = new StringBuilder();
@@ -78,6 +79,7 @@ public class MailService {
         return authNum = key.toString();
     }
 
+    @Override
     @Transactional(readOnly = true)
     public void sendSimpleMessage(String email) throws Exception {
 
@@ -103,6 +105,7 @@ public class MailService {
         redisUtil.setDataExpire(email, authNum, 5 * 60 * 1000L);
     }
 
+    @Override
     @Transactional
     public void verifyCode(String email, String code) {
 

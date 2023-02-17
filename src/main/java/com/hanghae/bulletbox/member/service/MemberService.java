@@ -14,7 +14,9 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.hanghae.bulletbox.common.exception.ExceptionMessage.*;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.DUPLICATE_EMAIL_MSG;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_EMAIL_MSG;
+import static com.hanghae.bulletbox.common.exception.ExceptionMessage.NOT_FOUND_MEMBER_MSG;
 
 @RequiredArgsConstructor
 @Service

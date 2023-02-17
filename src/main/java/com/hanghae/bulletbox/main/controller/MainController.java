@@ -5,7 +5,7 @@ import com.hanghae.bulletbox.common.security.UserDetailsImpl;
 import com.hanghae.bulletbox.main.dto.ResponseShowCalendarDto;
 import com.hanghae.bulletbox.main.dto.ResponseShowMainPageDto;
 import com.hanghae.bulletbox.main.dto.ResponseShowDailyDto;
-import com.hanghae.bulletbox.main.service.MainService;
+import com.hanghae.bulletbox.main.service.MainFacade;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
 
@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/main")
 public class MainController {
 
-    private final MainService mainService;
+    private final MainFacade mainFacade;
 
     @Operation(tags = {"Main"}, summary = "메인 페이지 조회")
     @ApiResponses(value = {
@@ -41,7 +41,7 @@ public class MainController {
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
         TodoDto todoDto = TodoDto.toTodoDto(memberDto);
 
-        ResponseShowMainPageDto responseMainDto = mainService.showMainPage(todoDto);
+        ResponseShowMainPageDto responseMainDto = mainFacade.showMainPage(todoDto);
 
         return Response.success(200, "메인 페이지 조회를 성공했습니다.", responseMainDto);
     }
@@ -60,7 +60,7 @@ public class MainController {
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
         TodoDto todoDto = TodoDto.toTodoDto(memberDto, year, month);
 
-        ResponseShowCalendarDto responseChangeCalendarDto = mainService.showCalendar(todoDto);
+        ResponseShowCalendarDto responseChangeCalendarDto = mainFacade.showCalendar(todoDto);
 
         return Response.success(200, "메인 페이지 달력 조회 날짜 변경을 성공했습니다.", responseChangeCalendarDto);
     }
@@ -79,7 +79,7 @@ public class MainController {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
 
-        ResponseShowDailyDto responseShowDailyDto = mainService.showDaily(memberDto, year, month, day);
+        ResponseShowDailyDto responseShowDailyDto = mainFacade.showDaily(memberDto, year, month, day);
 
         return Response.success(200, "데일리 로그 날짜 변경 조회를 성공했습니다.", responseShowDailyDto);
     }

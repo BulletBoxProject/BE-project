@@ -5,10 +5,7 @@ import com.hanghae.bulletbox.member.dto.MemberDto;
 import com.hanghae.bulletbox.member.dto.RequestLoginDto;
 import com.hanghae.bulletbox.member.dto.RequestSignupDto;
 import com.hanghae.bulletbox.member.dto.VerifyCodeDto;
-import com.hanghae.bulletbox.member.service.GoogleService;
-import com.hanghae.bulletbox.member.service.KakaoService;
-import com.hanghae.bulletbox.member.service.MailService;
-import com.hanghae.bulletbox.member.service.AuthService;
+import com.hanghae.bulletbox.member.service.MemberFacade;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -35,13 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 public class MemberController {
 
-    private final AuthService authService;
-
-    private final MailService mailService;
-
-    private final KakaoService kakaoService;
-
-    private final GoogleService googleService;
+    private final MemberFacade memberFacade;
 
     @Operation(tags = {"Member"}, summary = "회원가입")
     @ApiResponses(value = {
@@ -53,7 +44,7 @@ public class MemberController {
 
         MemberDto memberDto = MemberDto.toMemberDto(requestSignupDto);
 
-        authService.signup(memberDto);
+        memberFacade.signup(memberDto);
 
         return Response.success(201, "회원가입이 완료되었습니다.", null);
     }
@@ -69,7 +60,7 @@ public class MemberController {
 
         String email = verifyCodeDto.getEmail();
 
-        mailService.sendSimpleMessage(email);
+        memberFacade.sendSimpleMessage(email);
 
         return Response.success(200, "이메일 인증 메일이 전송되었습니다.", null);
     }
@@ -85,7 +76,7 @@ public class MemberController {
         String email = verifyCodeDto.getEmail();
         String code = verifyCodeDto.getVerifyCode();
 
-        mailService.verifyCode(email, code);
+        memberFacade.verifyCode(email, code);
 
         return Response.success(200, "이메일 인증이 완료되었습니다.", true);
     }
@@ -101,7 +92,7 @@ public class MemberController {
 
         MemberDto memberDto = MemberDto.toMemberDto(requestLoginDto);
 
-        authService.login(memberDto, httpServletResponse);
+        memberFacade.login(memberDto, httpServletResponse);
 
         return Response.success(200, "로그인이 완료되었습니다.", null);
     }
@@ -114,7 +105,7 @@ public class MemberController {
     @PostMapping("/auth/token")
     public Response<?> reissueToken(HttpServletRequest request, HttpServletResponse response) {
 
-        authService.reissueToken(request, response);
+        memberFacade.reissueToken(request, response);
 
         return Response.success(200, "토큰 재발행 성공", null);
     }
@@ -127,7 +118,7 @@ public class MemberController {
     @GetMapping("/login/kakao")
     public Response<?> kakaoLogin(@RequestParam String code, HttpServletResponse response) {
 
-        kakaoService.kakaoLogin(code, response);
+        memberFacade.kakaoLogin(code, response);
 
         return Response.success(200, "카카오 로그인 성공", null);
     }
@@ -140,7 +131,7 @@ public class MemberController {
     @GetMapping("/login/google")
     public Response<?> googleLogin(@RequestParam String code, HttpServletResponse response) {
 
-        googleService.googleLogin(code, response);
+        memberFacade.googleLogin(code, response);
 
         return Response.success(200, "구글 로그인 성공", null);
     }
@@ -152,7 +143,7 @@ public class MemberController {
     @PostMapping("/login/test")
     public Response<?> testLogin(HttpServletResponse response){
 
-        authService.testLogin(response);
+        memberFacade.testLogin(response);
 
         return Response.success(201, "테스트 로그인 성공", null);
     }

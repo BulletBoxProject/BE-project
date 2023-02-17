@@ -6,7 +6,7 @@ import com.hanghae.bulletbox.category.dto.RequestUpdateCategoryDto;
 import com.hanghae.bulletbox.category.dto.ResponseCreateCategoryDto;
 import com.hanghae.bulletbox.category.dto.ResponseDeleteCategoryDto;
 import com.hanghae.bulletbox.category.dto.ResponseShowCategoryDto;
-import com.hanghae.bulletbox.category.service.CategoryPageService;
+import com.hanghae.bulletbox.category.service.CategoryFacade;
 import com.hanghae.bulletbox.common.response.Response;
 import com.hanghae.bulletbox.common.security.UserDetailsImpl;
 import com.hanghae.bulletbox.member.dto.MemberDto;
@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class CategoryController {
 
-    private final CategoryPageService categoryService;
+    private final CategoryFacade categoryFacade;
 
     @Operation(tags = {"Category"}, summary = "카테고리 목록 페이지 조회")
     @ApiResponses(value = {
@@ -47,7 +47,7 @@ public class CategoryController {
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
         CategoryDto categoryDto = CategoryDto.toCategoryDto(memberDto);
 
-        ResponseShowCategoryDto responseShowCategoryDto = categoryService.showCategory(categoryDto);
+        ResponseShowCategoryDto responseShowCategoryDto = categoryFacade.showCategory(categoryDto);
 
         return Response.success(200, "카테고리 목록 조회를 성공했습니다.", responseShowCategoryDto);
     }
@@ -69,7 +69,7 @@ public class CategoryController {
 
         CategoryDto categoryDto = CategoryDto.toCategoryDto(categoryName, categoryColor, memberDto);
 
-        ResponseCreateCategoryDto responseCreateCategoryDto = categoryService.createCategory(categoryDto);
+        ResponseCreateCategoryDto responseCreateCategoryDto = categoryFacade.createCategory(categoryDto);
 
         return Response.success(200, "카테고리 생성을 성공했습니다.", responseCreateCategoryDto);
     }
@@ -92,7 +92,7 @@ public class CategoryController {
 
         CategoryDto categoryDto = CategoryDto.toCategoryDto(memberDto, categoryId, categoryName, categoryColor);
 
-        categoryService.updateCategory(categoryDto);
+        categoryFacade.updateCategory(categoryDto);
 
         return Response.success(200, "카테고리 수정을 성공했습니다.", null);
     }
@@ -111,7 +111,7 @@ public class CategoryController {
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
         CategoryDto categoryDto = CategoryDto.toCategoryDto(memberDto, categoryId);
 
-        ResponseDeleteCategoryDto responseDeleteCategoryDto = categoryService.deleteCategory(categoryDto);
+        ResponseDeleteCategoryDto responseDeleteCategoryDto = categoryFacade.deleteCategory(categoryDto);
 
         return Response.success(200, "카테고리 삭제를 성공했습니다.", responseDeleteCategoryDto);
     }

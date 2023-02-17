@@ -25,7 +25,7 @@ import static com.hanghae.bulletbox.common.security.jwt.JwtUtil.AUTHORIZATION_RE
 
 @RequiredArgsConstructor
 @Service
-public class AuthService {
+public abstract class AuthService implements MemberFacade {
 
     private final PasswordEncoder passwordEncoder;
 
@@ -38,6 +38,7 @@ public class AuthService {
     private final MemberService memberService;
 
     // 회원가입
+    @Override
     @Transactional
     public void signup(MemberDto memberDto) {
 
@@ -48,6 +49,7 @@ public class AuthService {
         memberService.save(memberDto);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public void login(MemberDto memberDto, HttpServletResponse response) {
 
@@ -64,7 +66,8 @@ public class AuthService {
     }
 
     // 토큰 발급
-    private void issueTokens(HttpServletResponse response, String email) {
+    @Override
+    public void issueTokens(HttpServletResponse response, String email) {
 
         String accessToken = jwtUtil.createAccessToken(email);
         String refreshToken = jwtUtil.createRefreshToken();
@@ -75,6 +78,7 @@ public class AuthService {
         redisUtil.setDataExpire(email, refreshToken, 2 * 60 * 60 * 1000L);
     }
 
+    @Override
     public void reissueToken(HttpServletRequest request, HttpServletResponse response) {
 
         String refreshTokenFromRequest = request.getHeader(AUTHORIZATION_REFRESH); // 요청헤더에서 온 RTK
@@ -93,6 +97,7 @@ public class AuthService {
     }
 
     // 체험하기 로그인
+    @Override
     @Transactional
     public void testLogin(HttpServletResponse response) {
 
@@ -107,6 +112,7 @@ public class AuthService {
         issueTokens(response, email);
     }
 
+    @Override
     public String createEmail() {
 
         Random random = new Random();

@@ -27,7 +27,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class MainService {
+public class MainFacade {
 
     private final CategoryService categoryService;
 
@@ -65,7 +65,7 @@ public class MainService {
         // 첫 로그인 여부 확인
         Boolean firstLogin = memberDto.getFirstLogin();
 
-        if(firstLogin.equals(true)){
+        if (firstLogin.equals(true)) {
             memberService.updateFirstLogin(memberDto);
 
             return ResponseShowMainPageDto.toResponseShowMainPageDto(categoryDtoList, calendarDtoList, dailyDtoList, true);

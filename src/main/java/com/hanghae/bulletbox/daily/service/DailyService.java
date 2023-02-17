@@ -20,7 +20,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class DailyService {
+public abstract class DailyService implements DailyFacade {
 
     private final CategoryService categoryService;
 
@@ -29,6 +29,7 @@ public class DailyService {
     private final TodoMemoService todoMemoService;
 
     // 데일리 로그 페이지 조회
+    @Override
     @Transactional(readOnly = true)
     public ResponseDailyDto showDailyPage(MemberDto memberDto) {
 
@@ -42,6 +43,7 @@ public class DailyService {
     }
 
     // 데일리 로그 조회 날짜 변경
+    @Override
     @Transactional(readOnly = true)
     public ResponseDailyDto showDailyPageChangeDay(MemberDto memberDto, Long todoYear, Long todoMonth, Long todoDay) {
 
@@ -60,8 +62,9 @@ public class DailyService {
     }
 
     // 데일리 로그 카테고리별 조회
+    @Override
     @Transactional(readOnly = true)
-    public ResponseCategoryDto showDailyByCategory(TodoDto todoDto){
+    public ResponseCategoryDto showDailyByCategory(TodoDto todoDto) {
 
         MemberDto memberDto = todoDto.getMemberDto();
 

@@ -26,7 +26,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class DailyTodoService {
+public abstract class DailyTodoService implements DailyFacade {
 
     private final CategoryService categoryService;
 
@@ -39,6 +39,7 @@ public class DailyTodoService {
     private final FavoriteMemoService favoriteMemoService;
 
     // 데일리 로그 할 일 추가 페이지 조회
+    @Override
     @Transactional(readOnly = true)
     public ResponseShowTodoCreatePageDto showTodoCreatePage(DailyTodoDto dailyTodoDto) {
 
@@ -53,6 +54,7 @@ public class DailyTodoService {
     }
 
     // 데일리 로그 할 일 추가
+    @Override
     @Transactional
     public void createTodo(DailyTodoDto dailyTodoDto) {
 
@@ -74,6 +76,7 @@ public class DailyTodoService {
     }
 
     // 할 일 삭제하기
+    @Override
     @Transactional
     public void deleteTodo(MemberDto memberDto, Long todoId) {
 
@@ -87,6 +90,7 @@ public class DailyTodoService {
     }
 
     // 할 일 수정 페이지 조회하기
+    @Override
     @Transactional(readOnly = true)
     public ResponseTodoUpdatePageDto showTodoUpdatePage(Long todoId, MemberDto memberDto) {
 
@@ -108,6 +112,7 @@ public class DailyTodoService {
     }
 
     // 할 일 수정하기
+    @Override
     @Transactional
     public void updateTodo(DailyTodoDto dailyTodoDto) {
 
@@ -144,6 +149,7 @@ public class DailyTodoService {
     }
 
     // 루틴 불러와서 할 일로 저장하기
+    @Override
     @Transactional
     public ResponseLoadFavoriteDto loadFavorite(Long favoriteId, DailyTodoDto dailyTodoDto) {
 
