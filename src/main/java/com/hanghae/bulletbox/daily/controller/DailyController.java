@@ -11,9 +11,8 @@ import com.hanghae.bulletbox.daily.dto.ResponseDailyDto;
 import com.hanghae.bulletbox.daily.dto.ResponseLoadFavoriteDto;
 import com.hanghae.bulletbox.daily.dto.ResponseShowTodoCreatePageDto;
 import com.hanghae.bulletbox.daily.dto.ResponseTodoUpdatePageDto;
+import com.hanghae.bulletbox.daily.service.DailyFacade;
 import com.hanghae.bulletbox.todo.dto.TodoDto;
-import com.hanghae.bulletbox.daily.service.DailyService;
-import com.hanghae.bulletbox.daily.service.DailyTodoService;
 import com.hanghae.bulletbox.member.dto.MemberDto;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,9 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/dailys")
 public class DailyController {
 
-    private final DailyService dailyService;
-
-    private final DailyTodoService dailyTodoService;
+    private final DailyFacade dailyFacade;
 
     @Operation(tags = {"Daily"}, summary = "데일리 로그 조회")
     @ApiResponses(value = {
@@ -55,7 +52,7 @@ public class DailyController {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
 
-        ResponseDailyDto responseDailyDto = dailyService.showDailyPage(memberDto);
+        ResponseDailyDto responseDailyDto = dailyFacade.showDailyPage(memberDto);
 
         return Response.success(200, "데일리 페이지 조회를 성공했습니다.", responseDailyDto);
     }
@@ -73,7 +70,7 @@ public class DailyController {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
 
-        ResponseDailyDto responseDailyDto = dailyService.showDailyPageChangeDay(memberDto, todoYear, todoMonth, todoDay);
+        ResponseDailyDto responseDailyDto = dailyFacade.showDailyPageChangeDay(memberDto, todoYear, todoMonth, todoDay);
 
         return Response.success(200, "데일리 로그 조회 날짜 변경을 성공했습니다.", responseDailyDto);
     }
@@ -95,7 +92,7 @@ public class DailyController {
 
         TodoDto todoDto = TodoDto.toTodoDto(memberDto, categoryId, todoYear, todoMonth, todoDay);
 
-        ResponseCategoryDto responseCategoryDto = dailyService.showDailyByCategory(todoDto);
+        ResponseCategoryDto responseCategoryDto = dailyFacade.showDailyByCategory(todoDto);
 
         return Response.success(200, "카테고리별 데일리 로그 조회를 성공했습니다.", responseCategoryDto);
     }
@@ -115,7 +112,7 @@ public class DailyController {
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
         DailyTodoDto dailyTodoDto = DailyTodoDto.toDailyTodoDto(memberDto, year, month, day);
 
-        ResponseShowTodoCreatePageDto responseShowTodoCreatePageDto = dailyTodoService.showTodoCreatePage(dailyTodoDto);
+        ResponseShowTodoCreatePageDto responseShowTodoCreatePageDto = dailyFacade.showTodoCreatePage(dailyTodoDto);
 
         return Response.success(200, "할 일 추가 페이지 조회를 성공했습니다.", responseShowTodoCreatePageDto);
     }
@@ -137,7 +134,7 @@ public class DailyController {
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
         DailyTodoDto dailyTodoDto = DailyTodoDto.toDailyTodoDto(requestCreateTodoDto, memberDto);
 
-        dailyTodoService.createTodo(dailyTodoDto);
+        dailyFacade.createTodo(dailyTodoDto);
 
         return Response.success(201, "할 일을 생성하였습니다.", null);
     }
@@ -156,7 +153,7 @@ public class DailyController {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
 
-        dailyTodoService.deleteTodo(memberDto, todoId);
+        dailyFacade.deleteTodo(memberDto, todoId);
 
         return Response.success(200, "할 일을 삭제하였습니다.", null);
     }
@@ -172,7 +169,7 @@ public class DailyController {
 
         MemberDto memberDto = MemberDto.toMemberDto(userDetails);
 
-        ResponseTodoUpdatePageDto responseTodoUpdatePageDto = dailyTodoService.showTodoUpdatePage(todoId, memberDto);
+        ResponseTodoUpdatePageDto responseTodoUpdatePageDto = dailyFacade.showTodoUpdatePage(todoId, memberDto);
 
         return Response.success(200, "할 일 수정 페이지를 조회하였습니다.", responseTodoUpdatePageDto);
 
@@ -194,7 +191,7 @@ public class DailyController {
 
         DailyTodoDto dailyTodoDto = DailyTodoDto.toDailyTodoDto(requestUpdateTodoDto, memberDto);
 
-        dailyTodoService.updateTodo(dailyTodoDto);
+        dailyFacade.updateTodo(dailyTodoDto);
 
         return Response.success(200, "할 일이 수정되었습니다.", null);
     }
@@ -220,7 +217,7 @@ public class DailyController {
 
         DailyTodoDto dailyTodoDto = DailyTodoDto.toDailyTodoDto(memberDto, year, month, day);
 
-        ResponseLoadFavoriteDto responseLoadFavoriteDto = dailyTodoService.loadFavorite(favoriteId, dailyTodoDto);
+        ResponseLoadFavoriteDto responseLoadFavoriteDto = dailyFacade.loadFavorite(favoriteId, dailyTodoDto);
 
         return Response.success(201, "루틴을 오늘의 할 일에 담았습니다.", responseLoadFavoriteDto);
 
