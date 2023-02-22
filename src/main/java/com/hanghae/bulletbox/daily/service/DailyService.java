@@ -61,7 +61,7 @@ public class DailyService {
 
     // 데일리 로그 카테고리별 조회
     @Transactional(readOnly = true)
-    public ResponseCategoryDto showDailyByCategory(TodoDto todoDto){
+    public ResponseCategoryDto showDailyByCategory(TodoDto todoDto) {
 
         MemberDto memberDto = todoDto.getMemberDto();
 
